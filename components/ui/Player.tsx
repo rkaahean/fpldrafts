@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function Player() {
   return (
-    <div className="flex flex-row w-30 h-36 2xl:w-48 2xl:h-48 border rounded-sm hover:bg-yellow-100 p-2">
+    <div className="flex flex-row w-30 h-36 2xl:w-48 2xl:h-48 border rounded-md hover:bg-yellow-100 p-2">
       <PlayerFixtureTicker />
       <div className="w-9/12 text-xs flex flex-col h-full items-end">
         <div className="h-1/12">
@@ -24,7 +24,7 @@ export default function Player() {
 
 function PlayerFixtureTicker() {
   return (
-    <div className="w-3/12 grid grid-rows-5 text-xs tracking-tighter">
+    <div className="w-3/12 grid grid-rows-5 text-[9px] tracking-tighter">
       <div className="flex flex-col bg-red-200 text-center justify-center">
         MUN
       </div>
@@ -46,7 +46,7 @@ function PlayerFixtureTicker() {
 
 function PlayerStatsTicker() {
   return (
-    <div className="bg-stone-300 h-1/6 grid grid-cols-3 text-[9px] 2xl:text-xs">
+    <div className="h-1/6 grid grid-cols-3 text-[9px] 2xl:text-xs">
       <div className="flex flex-col text-center justify-center">
         <div>6.5$</div>
       </div>
