@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function Player() {
   return (
-    <div className="flex flex-row w-28 h-28 border rounded-sm hover:bg-yellow-100">
+    <div className="flex flex-row w-30 h-36 border rounded-sm hover:bg-yellow-100 p-2">
       <PlayerFixtureTicker />
       <div className="w-9/12 text-xs flex flex-col h-full items-end">
         <div className="h-1/12">
