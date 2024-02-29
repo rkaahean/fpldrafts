@@ -2,7 +2,7 @@ import Player from "./Player";
 
 export default function PlayerPitch() {
   return (
-    <div className="w-full min-h-full bg-slate-50 flex flex-col justify-between gap-1">
+    <div className="w-full min-h-full bg-slate-50 flex flex-col justify-between">
       <PitchRow num={1} />
       <PitchRow num={3} />
       <PitchRow num={5} />
