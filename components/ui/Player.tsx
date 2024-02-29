@@ -3,17 +3,17 @@ import Image from "next/image";
 
 export default function Player() {
   return (
-    <div className="flex flex-col w-36 h-36 border rounded-sm hover:bg-yellow-100">
-      <div className="h-1/12 text-xs flex flex-row justify-end">
-        <button className="text-xs w-4 h-4 rounded-sm">
-          <div className="flex flex-row justify-center">
-            <DoubleArrowDownIcon className=" w-3 h-3" />
-          </div>
-        </button>
-      </div>
-      <div className="flex flex-row h-full">
-        <PlayerFixtureTicker />
-        <div className="flex flex-col w-9/12">
+    <div className="flex flex-row w-36 h-36 border rounded-sm hover:bg-yellow-100">
+      <PlayerFixtureTicker />
+      <div className="w-9/12 text-xs flex flex-col h-full items-end">
+        <div className="h-1/12">
+          <button className="text-xs w-4 h-4 rounded-sm">
+            <div className="flex flex-row justify-center">
+              <DoubleArrowDownIcon className="w-3 h-3" />
+            </div>
+          </button>
+        </div>
+        <div className="flex flex-col h-full w-full">
           <PlayerDescription />
           <PlayerStatsTicker />
         </div>
@@ -46,7 +46,7 @@ function PlayerFixtureTicker() {
 
 function PlayerStatsTicker() {
   return (
-    <div className="h-1/6 grid grid-cols-3 text-[10px]">
+    <div className="bg-stone-300 h-1/6 grid grid-cols-3 text-[10px]">
       <div className="flex flex-col text-center justify-center">
         <div>6.5$</div>
       </div>
