@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function Player() {
   return (
-    <div className="flex flex-row w-36 h-36 border rounded-sm hover:bg-yellow-100">
+    <div className="flex flex-row w-28 h-28 border rounded-sm hover:bg-yellow-100">
       <PlayerFixtureTicker />
       <div className="w-9/12 text-xs flex flex-col h-full items-end">
         <div className="h-1/12">
@@ -46,7 +46,7 @@ function PlayerFixtureTicker() {
 
 function PlayerStatsTicker() {
   return (
-    <div className="bg-stone-300 h-1/6 grid grid-cols-3 text-[10px]">
+    <div className="bg-stone-300 h-1/6 grid grid-cols-3 text-[9px]">
       <div className="flex flex-col text-center justify-center">
         <div>6.5$</div>
       </div>
@@ -67,11 +67,11 @@ function PlayerDescription() {
         <Image
           src="https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_3-110.webp"
           alt="Player"
-          width={50}
-          height={50}
+          width={40}
+          height={40}
         />
       </div>
-      <div className="text-sm h-1/6 font-semibold">Saka</div>
+      <div className="text-xs h-1/6 font-semibold">Saka</div>
     </div>
   );
 }
