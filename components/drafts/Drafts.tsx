@@ -1,31 +1,31 @@
-import { Payment, columns } from "./columns";
+import { Draft, columns } from "./columns";
 import { DataTable } from "./data-table";
 
 export default function Drafts() {
-  const data: Payment[] = [
+  const data: Draft[] = [
     {
       id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
+      name: "Draft 1",
+      createdAt: new Date("2022-03-01").toDateString(),
+      basedOn: "GW 27",
     },
     {
       id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
+      name: "Draft 2",
+      createdAt: new Date("2022-03-01").toDateString(),
+      basedOn: "GW 28",
     },
     {
       id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
+      name: "Draft 3",
+      createdAt: new Date("2022-03-01").toDateString(),
+      basedOn: "GW 29",
     },
     {
       id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
+      name: "Draft 4",
+      createdAt: new Date("2022-03-01").toDateString(),
+      basedOn: "GW 30",
     },
   ];
 
