@@ -23,11 +23,15 @@ import { Input } from "./input";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  name: string;
+  isFilterable: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  name,
+  isFilterable,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -42,16 +46,18 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="w-1/2 max-w-sm"
-        />
-      </div>
+      {isFilterable && (
+        <div className="flex items-center py-1">
+          <Input
+            placeholder={`Filter ${name}...`}
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("name")?.setFilterValue(event.target.value)
+            }
+            className="w-1/2 max-w-sm"
+          />
+        </div>
+      )}
       <div className="rounded-sm border">
         <Table>
           <TableHeader>

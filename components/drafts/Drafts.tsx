@@ -1,39 +1,18 @@
 import { DataTable } from "../ui/data-table";
-import { Draft, columns } from "./columns";
+import { columns } from "./columns";
+import { data } from "./data";
 
 export default function Drafts() {
-  const data: Draft[] = [
-    {
-      id: "728ed52f",
-      name: "Draft 1",
-      createdAt: new Date("2022-03-01").toDateString(),
-      basedOn: "GW 27",
-    },
-    {
-      id: "728ed52f",
-      name: "Draft 2",
-      createdAt: new Date("2022-03-01").toDateString(),
-      basedOn: "GW 28",
-    },
-    {
-      id: "728ed52f",
-      name: "Draft 3",
-      createdAt: new Date("2022-03-01").toDateString(),
-      basedOn: "GW 29",
-    },
-    {
-      id: "728ed52f",
-      name: "Draft 4",
-      createdAt: new Date("2022-03-01").toDateString(),
-      basedOn: "GW 30",
-    },
-  ];
-
   return (
     <div className="h-full">
       <div className="px-2 flex flex-col">
         <div className="text-lg font-semibold">Drafts</div>
-        <DataTable columns={columns} data={data} />
+        <DataTable
+          columns={columns}
+          data={data}
+          name="drafts"
+          isFilterable={false}
+        />
       </div>
     </div>
   );

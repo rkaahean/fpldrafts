@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Home() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col min-h-screen">
       <div className="text-white p-2 flex flex-row justify-end">
         <Avatar>
           <AvatarImage src="https://github.com/shadcn.png" />
