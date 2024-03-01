@@ -13,8 +13,8 @@ export default function Home() {
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </div>
-      <div className="grid grid-cols-4 min-h-full px-5">
-        <div className="col-span-1">
+      <div className="grid grid-cols-4 min-h-full px-5 gap-5">
+        <div className="col-span-1 h-full">
           <Selector />
         </div>
         <div className="col-span-1 h-full">

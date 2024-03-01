@@ -1,5 +1,5 @@
+import { DataTable } from "../ui/data-table";
 import { Draft, columns } from "./columns";
-import { DataTable } from "./data-table";
 
 export default function Drafts() {
   const data: Draft[] = [
