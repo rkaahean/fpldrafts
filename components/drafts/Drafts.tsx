@@ -31,7 +31,7 @@ export default function Drafts() {
 
   return (
     <div className="h-full">
-      <div className="p-2 flex flex-col gap-2">
+      <div className="px-2 flex flex-col">
         <div className="text-lg font-semibold">Drafts</div>
         <DataTable columns={columns} data={data} />
       </div>
