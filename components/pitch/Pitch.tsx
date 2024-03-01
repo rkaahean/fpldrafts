@@ -1,8 +1,18 @@
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import Player from "./Player";
 
 export default function PlayerPitch() {
   return (
-    <div className="w-full min-h-full flex flex-col justify-between">
+    <div className="w-full min-h-full flex flex-col justify-around">
+      <div className="flex flex-row justify-between">
+        <div>
+          <ArrowLeft className="w-5 h-5" />
+        </div>
+        <div className="text-lg font-bold">Gameweek 26</div>
+        <div>
+          <ArrowRight className="w-5 h-5" />
+        </div>
+      </div>
       <PitchRow num={1} />
       <PitchRow num={3} />
       <PitchRow num={5} />

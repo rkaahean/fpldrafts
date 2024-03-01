@@ -1,5 +1,5 @@
 import Drafts from "@/components/drafts/Drafts";
-import Pitch from "@/components/ui/Pitch";
+import Pitch from "@/components/pitch/Pitch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Home() {
