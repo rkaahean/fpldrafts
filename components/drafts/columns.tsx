@@ -9,9 +9,14 @@ export type Draft = {
   name: string;
   createdAt: string;
   basedOn: string;
+  scenario: string;
 };
 
 export const columns: ColumnDef<Draft>[] = [
+  {
+    accessorKey: "scenario",
+    header: "Scenario",
+  },
   {
     accessorKey: "name",
     header: "Name",

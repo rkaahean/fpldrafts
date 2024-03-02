@@ -1,5 +1,11 @@
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import Timeline from "../timeline/Timeline";
 import { Button } from "../ui/button";
 import Player from "./Player";
 
@@ -7,9 +13,16 @@ export default function PlayerPitch() {
   return (
     <div className="w-full min-h-full flex flex-col justify-around gap-5">
       <div className="flex flex-row gap-5">
-        <Button>Save draft</Button>
-        <Button variant="outline">Draft Summary</Button>
-        <Timeline />
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Button variant="outline">Draft Options</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>Save draft</DropdownMenuItem>
+            <DropdownMenuItem>View timeline</DropdownMenuItem>
+            <DropdownMenuItem>View changes</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <div className="flex flex-row justify-between">
         <div>
