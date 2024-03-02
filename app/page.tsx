@@ -1,5 +1,4 @@
 import Drafts from "@/components/drafts/Drafts";
-import Leagues from "@/components/leagues/leagues";
 import Pitch from "@/components/pitch/Pitch";
 import Selector from "@/components/player-selector/selector";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -22,10 +21,9 @@ export default function Home() {
             <div className="h-1/3">
               <Drafts />
             </div>
-            <div className="h-1/3">
-              <Leagues />
+            <div>
+              <div className="text-lg font-semibold h-2/3">Scenarios</div>
             </div>
-            <div className="h-1/3">Price Changes</div>
           </div>
         </div>
         <div className="col-span-2">

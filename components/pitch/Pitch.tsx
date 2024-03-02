@@ -1,9 +1,16 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import Timeline from "../timeline/Timeline";
+import { Button } from "../ui/button";
 import Player from "./Player";
 
 export default function PlayerPitch() {
   return (
-    <div className="w-full min-h-full flex flex-col justify-around">
+    <div className="w-full min-h-full flex flex-col justify-around gap-5">
+      <div className="flex flex-row gap-5">
+        <Button>Save draft</Button>
+        <Button variant="outline">Draft Summary</Button>
+        <Timeline />
+      </div>
       <div className="flex flex-row justify-between">
         <div>
           <ArrowLeft className="w-5 h-5" />
@@ -13,11 +20,13 @@ export default function PlayerPitch() {
           <ArrowRight className="w-5 h-5" />
         </div>
       </div>
-      <PitchRow num={1} />
-      <PitchRow num={3} />
-      <PitchRow num={5} />
-      <PitchRow num={2} />
-      <PitchRow num={4} position="subs" />
+      <div>
+        <PitchRow num={1} />
+        <PitchRow num={3} />
+        <PitchRow num={5} />
+        <PitchRow num={2} />
+        <PitchRow num={4} position="subs" />
+      </div>
     </div>
   );
 }
