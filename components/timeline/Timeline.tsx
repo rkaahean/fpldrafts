@@ -1,3 +1,4 @@
+import { RowsIcon } from "@radix-ui/react-icons";
 import { Button } from "../ui/button";
 import {
   Drawer,
@@ -14,7 +15,9 @@ export default function Timeline() {
   return (
     <Drawer>
       <DrawerTrigger>
-        <Button variant="outline">Timeline</Button>
+        <Button variant="ghost">
+          <RowsIcon />
+        </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>

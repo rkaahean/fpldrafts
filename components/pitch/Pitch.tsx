@@ -1,73 +1,31 @@
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
+import { ResetIcon } from "@radix-ui/react-icons";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import DraftChanges from "../drafts/DraftChanges";
+import DraftSave from "../drafts/DraftSave";
+import Timeline from "../timeline/Timeline";
 import { Button } from "../ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
 import Player from "./Player";
 
 export default function PlayerPitch() {
   return (
     <div className="w-full min-h-full flex flex-col justify-around gap-5">
-      <div className="flex flex-row gap-5">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline">Save draft</Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Save draft</DialogTitle>
-              <DialogDescription>
-                Make changes to your draft here. Click save when you're done.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-3 py-2">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Name
-                </Label>
-                <Input id="name" value="GW 27 draft" className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="description" className="text-right">
-                  Description
-                </Label>
-                <Input
-                  id="username"
-                  value="A draft for chip strategy"
-                  className="col-span-3"
-                />
-              </div>
+      <div className="flex flex-row justify-between">
+        <div className="flex gap-2">
+          <DraftSave />
+          <Timeline />
+          <DraftChanges />
+          <Button variant="destructive">
+            <ResetIcon />
+          </Button>
+        </div>
+        <div>
+          <div className="flex flex-col">
+            <div className="font-semibold tracing-tighter text-sm">
+              Viewing GW27 draft
             </div>
-            <DialogFooter>
-              <Button type="submit" className="h-8 w-24 text-xs">
-                Save changes
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button variant="outline">Draft Options</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>View changes</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            <div className="font-light text-sm">4 changes, -4 hit</div>
+          </div>
+        </div>
       </div>
       <div className="flex flex-row justify-between">
         <div>
