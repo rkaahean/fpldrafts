@@ -19,11 +19,8 @@ export default function DraftChanges() {
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Are you absolutely sure?</SheetTitle>
-          <SheetDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </SheetDescription>
+          <SheetTitle>Draft Changes</SheetTitle>
+          <SheetDescription>Scenario 1 - GW 27 Draft changes</SheetDescription>
         </SheetHeader>
       </SheetContent>
     </Sheet>
