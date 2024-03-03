@@ -36,7 +36,7 @@ export default function PlayerPitch() {
           <ArrowRight className="w-5 h-5" />
         </div>
       </div>
-      <div>
+      <div className="h-full">
         <PitchRow num={1} />
         <PitchRow num={3} />
         <PitchRow num={5} />
