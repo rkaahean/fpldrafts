@@ -14,7 +14,7 @@ import {
 export default function Timeline() {
   return (
     <Drawer>
-      <DrawerTrigger>
+      <DrawerTrigger asChild>
         <Button variant="ghost">
           <RowsIcon />
         </Button>

@@ -12,7 +12,7 @@ import {
 export default function DraftChanges() {
   return (
     <Sheet>
-      <SheetTrigger>
+      <SheetTrigger asChild>
         <Button variant="ghost">
           <LoopIcon />
         </Button>
