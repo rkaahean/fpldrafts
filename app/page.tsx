@@ -1,5 +1,5 @@
 import Drafts from "@/components/drafts/Drafts";
-import Pitch from "@/components/pitch/Pitch";
+import Team from "@/components/pitch/Team";
 import Selector from "@/components/player-selector/selector";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -27,7 +27,7 @@ export default function Home() {
           </div>
         </div>
         <div className="col-span-2">
-          <Pitch />
+          <Team />
         </div>
       </div>
     </div>

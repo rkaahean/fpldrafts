@@ -6,7 +6,7 @@ import Timeline from "../timeline/Timeline";
 import { Button } from "../ui/button";
 import Player from "./Player";
 
-export default function PlayerPitch() {
+export default function Team() {
   return (
     <div className="w-full min-h-full flex flex-col justify-around gap-5">
       <div className="flex flex-row justify-between">
