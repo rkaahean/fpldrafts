@@ -1,7 +1,11 @@
+import { getPlayerData } from "@/app/api/data";
 import { DoubleArrowDownIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 
-export default function Player() {
+export default async function Player({ id }: { id: number }) {
+  const [data] = await getPlayerData([id]);
+
+  console.log("Data", data);
   return (
     <div className="flex flex-row w-30 h-36 2xl:w-48 2xl:h-48 border rounded-md hover:bg-yellow-100 p-2">
       <PlayerFixtureTicker />
@@ -14,7 +18,7 @@ export default function Player() {
           </button>
         </div>
         <div className="flex flex-col h-full w-full">
-          <PlayerDescription />
+          <PlayerDescription data={data} />
           <PlayerStatsTicker />
         </div>
       </div>
@@ -60,18 +64,20 @@ function PlayerStatsTicker() {
   );
 }
 
-function PlayerDescription() {
+function PlayerDescription({ data }: { data: any }) {
   return (
     <div className="flex flex-col h-5/6 items-center justify-around">
       <div className="h-4/6">
         <Image
-          src="https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_3-110.webp"
+          src={`https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${data.team_code}-110.webp`}
           alt="Player"
           width={40}
           height={40}
         />
       </div>
-      <div className="text-xs h-1/6 font-semibold 2xl:text-sm">Saka</div>
+      <div className="text-xs h-1/6 font-semibold 2xl:text-sm">
+        {data.web_name}
+      </div>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { getGameweekData, getPlayerData } from "@/app/api/data";
 import { ResetIcon } from "@radix-ui/react-icons";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import DraftChanges from "../drafts/DraftChanges";
@@ -17,11 +18,13 @@ export default async function Team(params: { gameWeek: number }) {
   data = await getPlayerData(players.map((player: any) => player.id));
 
   // join player data with the position on the pitch
-  data = data.map((player: any, i: number) => {
-    return {
-      ...player,
-      position: players[i].position,
-    };
+  data = data.map((player: any) => {
+    players.map((p: any) => {
+      if (p.id == player.id) {
+        player.position = p.position;
+      }
+    });
+    return player;
   });
   console.log(data);
   // console.log(Object.keys(data));
@@ -41,7 +44,7 @@ export default async function Team(params: { gameWeek: number }) {
         <div>
           <div className="flex flex-col">
             <div className="font-semibold tracing-tighter text-sm">
-              Viewing GW27 draft
+              {`Viewing GW${params.gameWeek} draft`}
             </div>
             <div className="font-light text-sm">4 changes, -4 hit</div>
           </div>
@@ -51,7 +54,7 @@ export default async function Team(params: { gameWeek: number }) {
         <div>
           <ArrowLeft className="w-5 h-5" />
         </div>
-        <div className="text-lg font-bold">Gameweek 26</div>
+        <div className="text-lg font-bold">{`Gameweek ${params.gameWeek}`}</div>
         <div>
           <ArrowRight className="w-5 h-5" />
         </div>
@@ -88,50 +91,25 @@ function getPitchRowElements(
     })
     .map((player: any) => player.id);
 }
-async function getPlayerData(ids: number[]) {
-  const res = await fetch(
-    `https://fantasy.premierleague.com/api/bootstrap-static/`
-  );
-  return res.json().then((data) =>
-    data["elements"]
-      .filter((player: any) => ids.includes(player.id))
-      .map((player: any) => {
-        // console.log(player);
-        return {
-          id: player.id,
-          web_name: player.web_name,
-          team: player.team,
-          element_type: player.element_type,
-        };
-      })
-  );
-}
-
-async function getGameweekData(gameWeek: number) {
-  const res = await fetch(
-    `https://fantasy.premierleague.com/api/entry/44421/event/${gameWeek}/picks/`
-  );
-  return res.json();
-}
 
 function PitchRow(props: {
   num: number;
   position?: "subs" | "starters";
-  ids?: number[];
+  ids: number[];
 }) {
   // create an array of 5 elements
-  console.log("Pitch elements", props.ids);
+  // console.log("Pitch elements", props.ids);
   const arr = Array.from({ length: props.num }, (_, i) => i);
   return props.position === "subs" ? (
     <div className="flex flex-row w-full h-1/5 items-center justify-around mt-5 bg-green-50 py-2">
-      {arr.map((i) => (
-        <Player key={i} />
+      {props.ids.map((id) => (
+        <Player key={id} id={id} />
       ))}
     </div>
   ) : (
     <div className="flex flex-row w-full h-1/5 items-center justify-evenly py-2">
-      {arr.map((i) => (
-        <Player key={i} />
+      {props.ids.map((id) => (
+        <Player key={id} id={id} />
       ))}
     </div>
   );
