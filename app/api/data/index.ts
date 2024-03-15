@@ -1,6 +1,13 @@
+const PROXY_URL = "https://web-production-e2df.up.railway.app/";
+
 export async function getPlayerData(ids: number[]) {
   const res = await fetch(
-    `https://fantasy.premierleague.com/api/bootstrap-static/`
+    PROXY_URL + `https://fantasy.premierleague.com/api/bootstrap-static/`,
+    {
+      headers: {
+        origin: "localhost:3000",
+      },
+    }
   );
   return res.json().then((data) =>
     data["elements"]
@@ -20,7 +27,13 @@ export async function getPlayerData(ids: number[]) {
 
 export async function getGameweekData(gameWeek: number) {
   const res = await fetch(
-    `https://fantasy.premierleague.com/api/entry/44421/event/${gameWeek}/picks/`
-  );
-  return res.json();
+    PROXY_URL +
+      `https://fantasy.premierleague.com/api/entry/44421/event/${gameWeek}/picks/`,
+    {
+      headers: {
+        origin: "localhost:3000",
+      },
+    }
+  ).then((res) => res.json());
+  return res;
 }
