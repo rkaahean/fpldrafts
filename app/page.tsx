@@ -27,7 +27,7 @@ export default function Home() {
           </div>
         </div>
         <div className="col-span-2">
-          <Team gameWeek={28} />
+          <Team />
         </div>
       </div>
     </div>
