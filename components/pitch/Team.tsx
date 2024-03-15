@@ -6,7 +6,27 @@ import Timeline from "../timeline/Timeline";
 import { Button } from "../ui/button";
 import Player from "./Player";
 
-export default function Team() {
+export default async function Team(params: { gameWeek: number }) {
+  let data = await getGameweekData(params.gameWeek);
+  const players = data["picks"].map((pick: any) => {
+    return {
+      id: pick.element,
+      position: pick.position,
+    };
+  });
+  data = await getPlayerData(players.map((player: any) => player.id));
+
+  // join player data with the position on the pitch
+  data = data.map((player: any, i: number) => {
+    return {
+      ...player,
+      position: players[i].position,
+    };
+  });
+  console.log(data);
+  // console.log(Object.keys(data));
+  // console.log(data["picks"]);
+
   return (
     <div className="w-full min-h-full flex flex-col justify-around gap-5">
       <div className="flex flex-row justify-between">
@@ -37,18 +57,70 @@ export default function Team() {
         </div>
       </div>
       <div className="h-full">
-        <PitchRow num={1} />
-        <PitchRow num={3} />
-        <PitchRow num={5} />
-        <PitchRow num={2} />
-        <PitchRow num={4} position="subs" />
+        <PitchRow num={1} ids={getPitchRowElements(data, 1)} />
+        <PitchRow num={3} ids={getPitchRowElements(data, 2)} />
+        <PitchRow num={5} ids={getPitchRowElements(data, 3)} />
+        <PitchRow num={2} ids={getPitchRowElements(data, 4)} />
+        <PitchRow
+          num={4}
+          position="subs"
+          ids={getPitchRowElements(data, undefined, true)}
+        />
       </div>
     </div>
   );
 }
 
-function PitchRow(props: { num: number; position?: "subs" | "starters" }) {
+function getPitchRowElements(
+  data: any,
+  element_type?: number,
+  subs: boolean = false
+) {
+  return data
+    .filter((player: any) => {
+      if (player.element_type == element_type && player.position < 11) {
+        return player.id;
+      }
+
+      if (subs && player.position > 11) {
+        return player.id;
+      }
+    })
+    .map((player: any) => player.id);
+}
+async function getPlayerData(ids: number[]) {
+  const res = await fetch(
+    `https://fantasy.premierleague.com/api/bootstrap-static/`
+  );
+  return res.json().then((data) =>
+    data["elements"]
+      .filter((player: any) => ids.includes(player.id))
+      .map((player: any) => {
+        // console.log(player);
+        return {
+          id: player.id,
+          web_name: player.web_name,
+          team: player.team,
+          element_type: player.element_type,
+        };
+      })
+  );
+}
+
+async function getGameweekData(gameWeek: number) {
+  const res = await fetch(
+    `https://fantasy.premierleague.com/api/entry/44421/event/${gameWeek}/picks/`
+  );
+  return res.json();
+}
+
+function PitchRow(props: {
+  num: number;
+  position?: "subs" | "starters";
+  ids?: number[];
+}) {
   // create an array of 5 elements
+  console.log("Pitch elements", props.ids);
   const arr = Array.from({ length: props.num }, (_, i) => i);
   return props.position === "subs" ? (
     <div className="flex flex-row w-full h-1/5 items-center justify-around mt-5 bg-green-50 py-2">
