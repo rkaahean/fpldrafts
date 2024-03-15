@@ -25,6 +25,7 @@ export function getPitchRowElements(
     .map((player: any) => player.id);
 }
 
+// eslint-disable-next-line @next/next/no-async-client-component
 export default async function PitchRow(props: {
   position: "DEF" | "MID" | "FWD" | "GK" | "subs";
   gameweek: number;
