@@ -59,6 +59,8 @@ function parseBoostrapData(data) {
             team: player.team,
             element_type: player.element_type,
             team_code: player.team_code,
+            first_name: player.first_name,
+            second_name: player.second_name,
         };
     });
     // insert into prisma
@@ -72,7 +74,8 @@ function parseBoostrapData(data) {
                             data: {
                                 player_id: player.id,
                                 web_name: player.web_name,
-                                name: player.web_name,
+                                first_name: player.first_name || "",
+                                second_name: player.second_name || "",
                                 team: player.team,
                                 element_type: player.element_type,
                                 team_code: player.team_code,
@@ -83,7 +86,13 @@ function parseBoostrapData(data) {
                     return [3 /*break*/, 3];
                 case 2:
                     e_1 = _a.sent();
-                    console.log("Player already exists in database.", player.id, player.web_name);
+                    if (e_1 instanceof client_1.Prisma.PrismaClientKnownRequestError) {
+                        if (e_1.code === "P2002") {
+                            console.log("Player already exists in database.", player.id, player.web_name);
+                        }
+                        return [2 /*return*/];
+                    }
+                    console.log(e_1);
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
             }

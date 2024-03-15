@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 function getData() {
@@ -23,6 +23,8 @@ function parseBoostrapData(data: any) {
       team: player.team,
       element_type: player.element_type,
       team_code: player.team_code,
+      first_name: player.first_name,
+      second_name: player.second_name,
     };
   });
 
@@ -33,18 +35,25 @@ function parseBoostrapData(data: any) {
         data: {
           player_id: player.id,
           web_name: player.web_name,
-          name: player.web_name,
+          first_name: player.first_name || "",
+          second_name: player.second_name || "",
           team: player.team,
           element_type: player.element_type,
           team_code: player.team_code,
         },
       });
     } catch (e) {
-      console.log(
-        "Player already exists in database.",
-        player.id,
-        player.web_name
-      );
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === "P2002") {
+          console.log(
+            "Player already exists in database.",
+            player.id,
+            player.web_name
+          );
+        }
+        return;
+      }
+      console.log(e);
     }
   });
 }
@@ -57,4 +66,6 @@ type FPLPlayer = {
   team: number;
   element_type: number;
   team_code: number;
+  first_name: string;
+  second_name: string;
 };

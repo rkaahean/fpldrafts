@@ -15,7 +15,8 @@ datasource db {
 
 model FPLPlayer {
   player_id Int @unique @id
-  name      String
+  first_name      String
+  second_name      String
   team      Int
   web_name   String
   team_code  Int
