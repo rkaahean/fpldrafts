@@ -1,5 +1,5 @@
 import { getGameweekData, getPlayerData } from "@/app/api/data";
-import { ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import PitchRow, { getPitchRowElements } from "./PitchRow";
 
 // eslint-disable-next-line @next/next/no-async-client-component
@@ -30,7 +30,9 @@ export default async function Gameweek() {
   return (
     <div>
       <div className="flex flex-row justify-between">
-        <button>Left</button>
+        <div>
+          <ArrowLeft className="w-5 h-5" />
+        </div>
         <div className="text-lg font-bold">{`Gameweek ${gameweek}`}</div>
         <div>
           <ArrowRight className="w-5 h-5" />
