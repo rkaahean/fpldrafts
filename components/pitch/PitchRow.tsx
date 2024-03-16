@@ -1,6 +1,3 @@
-"use client";
-
-import { getGameweekData, getPlayerData } from "@/app/api/data";
 import Player from "./Player";
 
 export function getPitchRowElements(
@@ -28,44 +25,17 @@ export function getPitchRowElements(
 // eslint-disable-next-line @next/next/no-async-client-component
 export default async function PitchRow(props: {
   position: "DEF" | "MID" | "FWD" | "GK" | "subs";
-  gameweek: number;
+  data: any;
 }) {
-  /**
-   * Get elements in position for gameweek?
-   */
-  let data = await getGameweekData(props.gameweek);
-  const players = data["picks"].map((pick: any) => {
-    return {
-      id: pick.element,
-      position: pick.position,
-    };
-  });
-  data = await getPlayerData(players.map((player: any) => player.id));
-
-  // join player data with the position on the pitch
-  data = data.map((player: any) => {
-    players.map((p: any) => {
-      if (p.id == player.player_id) {
-        player.position = p.position;
-      }
-    });
-    return player;
-  });
-
-  // console.log("Raw Pitch data", data);
-  // get data according to the position
-  data = getPitchRowElements(data, props.position);
-  // console.log("PitchRow", data);
-
   return props.position === "subs" ? (
     <div className="flex flex-row w-full h-1/5 items-center justify-around mt-5 bg-green-50 py-2">
-      {data.map((id: any) => (
+      {props.data.map((id: any) => (
         <Player key={id} id={id} />
       ))}
     </div>
   ) : (
     <div className="flex flex-row w-full h-1/5 items-center justify-evenly py-2">
-      {data.map((id: any) => (
+      {props.data.map((id: any) => (
         <Player key={id} id={id} />
       ))}
     </div>
