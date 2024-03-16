@@ -22,7 +22,7 @@ export function getPitchRowElements(
           return player.position > 11;
       }
     })
-    .map((player: any) => player.id);
+    .map((player: any) => player.player_id);
 }
 
 // eslint-disable-next-line @next/next/no-async-client-component
@@ -45,15 +45,17 @@ export default async function PitchRow(props: {
   // join player data with the position on the pitch
   data = data.map((player: any) => {
     players.map((p: any) => {
-      if (p.id == player.id) {
+      if (p.id == player.player_id) {
         player.position = p.position;
       }
     });
     return player;
   });
 
+  // console.log("Raw Pitch data", data);
   // get data according to the position
   data = getPitchRowElements(data, props.position);
+  // console.log("PitchRow", data);
 
   return props.position === "subs" ? (
     <div className="flex flex-row w-full h-1/5 items-center justify-around mt-5 bg-green-50 py-2">

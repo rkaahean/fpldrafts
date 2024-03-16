@@ -1,10 +1,14 @@
+"use client";
+
 import { getPlayerData } from "@/app/api/data";
 import { DoubleArrowDownIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 
+// eslint-disable-next-line @next/next/no-async-client-component
 export default async function Player({ id }: { id: number }) {
   const [data] = await getPlayerData([id]);
 
+  console.log("Loading player data", data);
   return (
     <div className="flex flex-row w-30 h-36 2xl:w-48 2xl:h-48 border rounded-md hover:bg-yellow-100 p-2">
       <PlayerFixtureTicker />
