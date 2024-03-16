@@ -2,7 +2,6 @@ import { getPlayerData } from "@/app/api/data";
 import { DoubleArrowDownIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 
-// eslint-disable-next-line @next/next/no-async-client-component
 export default async function Player({ id }: { id: number }) {
   const [data] = await getPlayerData([id]);
 
