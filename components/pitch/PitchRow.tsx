@@ -8,18 +8,18 @@ export function getPitchRowElements(
     .filter((player: any) => {
       switch (position) {
         case "DEF":
-          return player.element_type == 2 && player.position < 11;
+          return player.fpl_player.element_type == 2 && player.position <= 11;
         case "MID":
-          return player.element_type == 3 && player.position < 11;
+          return player.fpl_player.element_type == 3 && player.position <= 11;
         case "FWD":
-          return player.element_type == 4 && player.position < 11;
+          return player.fpl_player.element_type == 4 && player.position <= 11;
         case "GK":
-          return player.element_type == 1 && player.position < 11;
+          return player.fpl_player.element_type == 1 && player.position <= 11;
         case "subs":
           return player.position > 11;
       }
     })
-    .map((player: any) => player.player_id);
+    .map((player: any) => player.element);
 }
 
 // eslint-disable-next-line @next/next/no-async-client-component

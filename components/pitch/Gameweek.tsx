@@ -1,31 +1,13 @@
-import { getGameweekData, getPlayerData } from "@/app/api/data";
+import { getGameweekPicksData } from "@/app/api/data";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import PitchRow, { getPitchRowElements } from "./PitchRow";
 
 // eslint-disable-next-line @next/next/no-async-client-component
 export default async function Gameweek() {
-  /**
-   * Get elements in position for gameweek?
-   */
-  let gameweek = 28;
-  let data = await getGameweekData(gameweek);
-  const players = data["picks"].map((pick: any) => {
-    return {
-      id: pick.element,
-      position: pick.position,
-    };
-  });
-  data = await getPlayerData(players.map((player: any) => player.id));
+  const gameweek = 28;
+  const data = await getGameweekPicksData(gameweek);
 
-  // join player data with the position on the pitch
-  data = data.map((player: any) => {
-    players.map((p: any) => {
-      if (p.id == player.player_id) {
-        player.position = p.position;
-      }
-    });
-    return player;
-  });
+  console.log("DB Gameweekd data", data);
 
   return (
     <div>

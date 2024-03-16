@@ -1,6 +1,5 @@
 import prisma from "@/lib/db";
-
-const PROXY_URL = "https://web-production-e2df.up.railway.app/";
+import result from "postcss/lib/result";
 
 export async function getPlayerData(ids: number[]) {
   // get from prisma
@@ -14,15 +13,34 @@ export async function getPlayerData(ids: number[]) {
   return players;
 }
 
-export async function getGameweekData(gameWeek: number) {
-  const res = await fetch(
-    PROXY_URL +
-      `https://fantasy.premierleague.com/api/entry/44421/event/${gameWeek}/picks/`,
-    {
-      headers: {
-        origin: "localhost:3000",
+export async function getGameweekData(gameweek: number) {
+  const picks = await prisma.fPLGameweekPicks.findMany({
+    where: {
+      gameweek,
+    },
+  });
+  return picks;
+}
+
+export async function getGameweekPicksData(gameweek: number) {
+  const result = await prisma.fPLGameweekPicks.findMany({
+    include: {
+      fpl_player: {
+        // Include the related FPLPlayer record
+        select: {
+          player_id: true,
+          first_name: true,
+          second_name: true,
+          team: true,
+          web_name: true,
+          team_code: true,
+          element_type: true,
+        },
       },
-    }
-  ).then((res) => res.json());
-  return res;
+    },
+    where: {
+      gameweek,
+    },
+  });
+  return result;
 }
