@@ -44,7 +44,6 @@ try {
   }
 
   Promise.all(data).then(async (res) => {
-    // console.log("Picks", res);
     await prisma.fPLGameweekPicks.createMany({
       data: res.flat(),
     });
