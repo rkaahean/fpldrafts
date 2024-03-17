@@ -1,12 +1,10 @@
 import prisma from "@/lib/db";
 
-export async function getPlayerData(ids: number[]) {
+export async function getPlayerData(id: number) {
   // get from prisma
   const players = await prisma.fPLPlayer.findMany({
     where: {
-      player_id: {
-        in: ids,
-      },
+      player_id: id,
     },
   });
   return players;

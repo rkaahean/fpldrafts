@@ -24,17 +24,17 @@ export function getPitchRowElements(
 
 export default function PitchRow(props: {
   position: "DEF" | "MID" | "FWD" | "GK" | "subs";
-  data: any;
+  data: number[];
 }) {
   return props.position === "subs" ? (
     <div className="flex flex-row w-full h-1/5 items-center justify-around mt-5 bg-green-50 py-2">
-      {props.data.map((id: any) => (
+      {props.data.map((id: number) => (
         <Player key={id} id={id} />
       ))}
     </div>
   ) : (
     <div className="flex flex-row w-full h-1/5 items-center justify-evenly py-2">
-      {props.data.map((id: any) => (
+      {props.data.map((id: number) => (
         <Player key={id} id={id} />
       ))}
     </div>

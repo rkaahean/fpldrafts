@@ -6,14 +6,14 @@ import Image from "next/image";
 export default function Player({ id }: { id: number }) {
   // const [data] = await getPlayerData([id]);
   const { data, isLoading } = useQuery({
-    queryKey: ["player"],
-    queryFn: () => {
-      return fetch("/player", {
+    queryKey: ["player", id],
+    queryFn: async () => {
+      return await fetch("/player", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id: [id] }),
+        body: JSON.stringify({ id }),
       }).then((res) => res.json());
     },
   });
@@ -35,7 +35,7 @@ export default function Player({ id }: { id: number }) {
             </button>
           </div>
           <div className="flex flex-col h-full w-full">
-            <PlayerDescription data={data.data} />
+            <PlayerDescription data={data.data[0]} />
             <PlayerStatsTicker />
           </div>
         </div>
@@ -91,6 +91,7 @@ function PlayerDescription({ data }: { data: any }) {
           alt="Player"
           width={40}
           height={40}
+          unoptimized
         />
       </div>
       <div className="text-xs h-1/6 font-semibold 2xl:text-sm">

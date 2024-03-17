@@ -3,7 +3,7 @@ import { getPlayerData } from "../api/data";
 
 export async function POST(req: NextRequest) {
   const request = await req.json();
-  const data = await getPlayerData(request.ids);
+  const data = await getPlayerData(request.id);
 
   return Response.json({ data });
 }

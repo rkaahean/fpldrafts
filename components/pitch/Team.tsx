@@ -7,7 +7,7 @@ import Gameweek from "./Gameweek";
 
 export default function Team() {
   return (
-    <div className="w-full min-h-full flex flex-col justify-around gap-5">
+    <div className="w-full min-h-full flex flex-col justify-start gap-5">
       <div className="flex flex-row justify-between">
         <div className="flex gap-2">
           <DraftSave />

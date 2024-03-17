@@ -19,18 +19,14 @@ export default function Gameweek() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ gameweek }),
-      }).then((res) => {
-        const resp = res.json();
-        console.log(resp);
-        return resp;
-      });
+      }).then((res) => res.json());
     },
   });
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  console.log("DB Gameweekd data", data.data);
+  console.log("DB Gameweekd data", getPitchRowElements(data.data, "DEF"));
 
   return (
     <ReactQueryProvider>
