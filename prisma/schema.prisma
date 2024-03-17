@@ -11,10 +11,13 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model FPLPlayer {
-  player_id                         Int                @id @unique
+  id                                String             @id @default(uuid())
+  player_id                         Int // the player_id = element from the JSON
+  season_id                         String
   first_name                        String
   second_name                       String
   team                              Int
@@ -32,27 +35,54 @@ model FPLPlayer {
   expected_goal_involvements_per_90 Float
   minutes                           Int
   FPLGameweekPicks                  FPLGameweekPicks[]
+
+  // season id is foreign key in FPLSeason
+  fpl_season                FPLSeason                @relation(fields: [season_id], references: [id])
+  fpl_gameweek_player_stats FPLGameweekPlayerStats[]
 }
 
 model FPLGameweekPicks {
   id              String    @id @default(uuid())
   fpl_team_id     String
+  fpl_player_id   String
   gameweek        Int
-  element         Int
   position        Int
   multiplier      Int
   is_captain      Boolean
   is_vice_captain Boolean
   // fpl team id is foreign key in FPL TEAM
   fpl_team        FPLTeam   @relation(fields: [fpl_team_id], references: [id])
-  fpl_player      FPLPlayer @relation(fields: [element], references: [player_id])
+  fpl_player      FPLPlayer @relation(fields: [fpl_player_id], references: [id])
+}
+
+// store fpl player stats on a gameweek level that have 
+// been played so far
+model FPLGameweekPlayerStats {
+  id               String    @id @default(uuid())
+  fpl_player_id    String
+  gameweek         Int
+  total_points     Int
+  goals_scored     Int
+  assists          Int
+  expected_goals   Float
+  expected_assists Float
+  value            Int
+  fpl_player       FPLPlayer @relation(fields: [fpl_player_id], references: [id])
 }
 
 model FPLTeam {
-  id      String @id @default(uuid())
-  name    String
-  year    Int
-  team_id Int
+  id            String @id @default(uuid())
+  name          String
+  team_id       Int
+  fpl_season_id String
 
-  FPLGameweekPick FPLGameweekPicks[]
+  fpl_gameweek_picks FPLGameweekPicks[]
+  fpl_season         FPLSeason          @relation(fields: [fpl_season_id], references: [id])
+}
+
+model FPLSeason {
+  id          String      @id @default(uuid())
+  year        Int
+  fpl_teams   FPLTeam[]
+  fpl_players FPLPlayer[]
 }

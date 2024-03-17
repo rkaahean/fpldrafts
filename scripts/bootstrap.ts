@@ -24,6 +24,7 @@ function parseBoostrapData(data: any): FPLPlayer[] {
   const players: FPLPlayer[] = elements.map((player: any) => {
     return {
       player_id: player.id,
+      season_id: "133e854c-8817-47a9-888e-d07bd2cd76b6",
       web_name: player.web_name,
       team: player.team,
       element_type: player.element_type,
@@ -49,6 +50,7 @@ function parseBoostrapData(data: any): FPLPlayer[] {
 
 try {
   getData();
+  prisma.$disconnect();
 } catch (e) {
   console.error(e);
 }

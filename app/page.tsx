@@ -21,7 +21,7 @@ export default function Home() {
             <div>
               <Drafts />
             </div>
-            <div className="text-lg font-semibold">Scenarios</div>
+            <div className="text-lg font-semibold">Statistics</div>
           </div>
         </div>
         <div className="col-span-2">
