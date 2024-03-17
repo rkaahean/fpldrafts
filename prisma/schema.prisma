@@ -14,14 +14,24 @@ datasource db {
 }
 
 model FPLPlayer {
-  player_id        Int                @id @unique
-  first_name       String
-  second_name      String
-  team             Int
-  web_name         String
-  team_code        Int
-  element_type     Int
-  FPLGameweekPicks FPLGameweekPicks[]
+  player_id                         Int                @id @unique
+  first_name                        String
+  second_name                       String
+  team                              Int
+  web_name                          String
+  team_code                         Int
+  element_type                      Int
+  total_points                      Int
+  goals_scored                      Int
+  assists                           Int
+  expected_goals                    Float
+  expected_assists                  Float
+  expected_goal_involvements        Float
+  expected_goals_per_90             Float
+  expected_assists_per_90           Float
+  expected_goal_involvements_per_90 Float
+  minutes                           Int
+  FPLGameweekPicks                  FPLGameweekPicks[]
 }
 
 model FPLGameweekPicks {

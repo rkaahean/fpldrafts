@@ -5,38 +5,37 @@ import { ColumnDef } from "@tanstack/react-table";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type PlayerData = {
-  id: string;
-  name: string;
-  team: string;
-  points: number;
-  xGI_90: number;
-  xA_90: number;
-  price: number;
+  player_id: number;
+  web_name: string;
+  total_points: number;
+  expected_goal_involvements_per_90: number;
+  goals_scored: number;
+  assists: number;
 };
 
 export const columns: ColumnDef<PlayerData>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "web_name",
     header: "Name",
   },
   {
-    accessorKey: "team",
-    header: "Team",
-  },
-  {
-    accessorKey: "points",
+    accessorKey: "total_points",
     header: "Points",
   },
   {
-    accessorKey: "xGI_90",
-    header: "xGI/90",
+    accessorKey: "expected_goal_involvements_per_90",
+    header: "XGI/90",
   },
   {
-    accessorKey: "xA_90",
-    header: "xA/90",
+    accessorKey: "goals_scored",
+    header: "Goals",
   },
   {
-    accessorKey: "price",
-    header: "Price",
+    accessorKey: "assists",
+    header: "Assists",
+  },
+  {
+    accessorKey: "minutes",
+    header: "Minutes",
   },
 ];

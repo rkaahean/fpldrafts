@@ -41,3 +41,8 @@ export async function getGameweekPicksData(gameweek: number) {
   });
   return result;
 }
+
+export async function getAllPlayerData() {
+  const players = await prisma.fPLPlayer.findMany();
+  return players;
+}

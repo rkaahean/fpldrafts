@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "boostrap": "npx tsc scripts/bootstrap.ts --outDir build && node build/bootstrap.js",
+    "picks": "npx tsc scripts/picks.ts --outDir build && node build/picks.js"
   },
   "dependencies": {
     "@prisma/client": "^5.11.0",

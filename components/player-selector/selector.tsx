@@ -1,8 +1,9 @@
+import { getAllPlayerData } from "@/app/api/data";
 import { DataTable } from "../ui/data-table";
 import { columns } from "./columns";
-import { data } from "./data";
 
-export default function Selector() {
+export default async function Selector() {
+  const data = await getAllPlayerData();
   return (
     <div className="h-full">
       <div className="text-lg font-semibold">Players</div>
