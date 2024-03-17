@@ -20,7 +20,6 @@ function getData() {
 function parseBoostrapData(data: any): FPLPlayer[] {
   const elements = data["elements"];
 
-  console.log("Found players", elements.length);
   // get player info
   const players: FPLPlayer[] = elements.map((player: any) => {
     return {
