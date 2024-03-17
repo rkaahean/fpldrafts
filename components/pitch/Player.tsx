@@ -8,24 +8,6 @@ export default function Player(props: {
     web_name: string;
   };
 }) {
-  // const [data] = await getPlayerData([id]);
-  // const { data, isLoading } = useQuery({
-  //   queryKey: ["player", id],
-  //   queryFn: async () => {
-  //     return await fetch("/player", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ id }),
-  //     }).then((res) => res.json());
-  //   },
-  // });
-
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
-
   return (
     <ReactQueryProvider>
       <div className="flex flex-row w-30 h-36 2xl:w-48 2xl:h-48 border rounded-md hover:bg-yellow-100 p-2">
@@ -102,7 +84,6 @@ function PlayerDescription({
           alt="Player"
           width={40}
           height={40}
-          unoptimized
         />
       </div>
       <div className="text-xs h-1/6 font-semibold 2xl:text-sm">
