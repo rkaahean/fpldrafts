@@ -6,6 +6,7 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -18,6 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
+import { Button } from "./button";
 import { Input } from "./input";
 
 interface DataTableProps<TData, TValue> {
@@ -25,6 +27,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   name: string;
   isFilterable: boolean;
+  isPaginated?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -32,6 +35,7 @@ export function DataTable<TData, TValue>({
   data,
   name,
   isFilterable,
+  isPaginated = false,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -42,6 +46,12 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     state: { columnFilters },
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 20,
+      },
+    },
   });
 
   return (
@@ -110,6 +120,26 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+      {isPaginated && (
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

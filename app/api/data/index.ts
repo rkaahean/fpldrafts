@@ -43,6 +43,11 @@ export async function getGameweekPicksData(gameweek: number) {
 }
 
 export async function getAllPlayerData() {
-  const players = await prisma.fPLPlayer.findMany();
+  // sort by total_points
+  const players = await prisma.fPLPlayer.findMany({
+    orderBy: {
+      total_points: "desc",
+    },
+  });
   return players;
 }
