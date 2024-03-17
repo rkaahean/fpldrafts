@@ -17,13 +17,11 @@ export default function Home() {
           <Selector />
         </div>
         <div className="col-span-1 h-full">
-          <div className="flex flex-col h-full">
-            <div className="h-1/3">
+          <div className="flex flex-col h-full gap-2">
+            <div className="h-fit">
               <Drafts />
             </div>
-            <div>
-              <div className="text-lg font-semibold h-2/3">Scenarios</div>
-            </div>
+            <div className="text-lg font-semibold">Scenarios</div>
           </div>
         </div>
         <div className="col-span-2">
