@@ -101,4 +101,6 @@ function parsePicksData(data, gameweek) {
         });
     }); });
 }
-getData(44421, 28);
+for (var i = 1; i <= 28; i++) {
+    getData(44421, i);
+}

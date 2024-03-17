@@ -50,5 +50,6 @@ function parsePicksData(data: any, gameweek: number) {
     }
   });
 }
-
-getData(44421, 28);
+for (let i = 1; i <= 28; i++) {
+  getData(44421, i);
+}

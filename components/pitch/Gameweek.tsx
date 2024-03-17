@@ -3,15 +3,14 @@
 import ReactQueryProvider from "@/app/provider/ReactQuery";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useState } from "react";
 import PitchRow, { getPitchRowElements } from "./PitchRow";
 
-// eslint-disable-next-line @next/next/no-async-client-component
 export default function Gameweek() {
-  const gameweek = 28;
-  // const data = await getGameweekPicksData(gameweek);
+  const [gameweek, setGameweek] = useState(28);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["Hi"],
+    queryKey: [gameweek],
     queryFn: () => {
       return fetch("/gameweek", {
         method: "POST",
@@ -26,15 +25,14 @@ export default function Gameweek() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  console.log("DB Gameweekd data", getPitchRowElements(data.data, "DEF"));
 
   return (
     <ReactQueryProvider>
       <div>
         <div className="flex flex-row justify-between">
-          <div>
+          <button onClick={() => setGameweek(gameweek - 1)}>
             <ArrowLeft className="w-5 h-5" />
-          </div>
+          </button>
           <div className="text-lg font-bold">{`Gameweek ${gameweek}`}</div>
           <div>
             <ArrowRight className="w-5 h-5" />
