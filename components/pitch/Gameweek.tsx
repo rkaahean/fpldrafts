@@ -9,9 +9,9 @@ import PitchRow, { getPitchRowElements } from "./PitchRow";
 export default function Gameweek() {
   const [gameweek, setGameweek] = useState(28);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading: isLoadingGameweek } = useQuery({
     queryKey: [gameweek],
-    queryFn: () => {
+    queryFn: async () => {
       return fetch("/gameweek", {
         method: "POST",
         headers: {
@@ -22,8 +22,8 @@ export default function Gameweek() {
     },
   });
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (isLoadingGameweek) {
+    return <div>Loading Players...</div>;
   }
 
   return (

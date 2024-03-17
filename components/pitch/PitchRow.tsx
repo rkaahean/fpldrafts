@@ -2,8 +2,11 @@ import Player from "./Player";
 
 export function getPitchRowElements(
   data: any,
-  position: "DEF" | "MID" | "FWD" | "GK" | "subs"
-) {
+  position: string
+): {
+  team_code: number;
+  web_name: string;
+}[] {
   return data
     .filter((player: any) => {
       switch (position) {
@@ -19,23 +22,31 @@ export function getPitchRowElements(
           return player.position > 11;
       }
     })
-    .map((player: any) => player.element);
+    .map((player: any) => {
+      return {
+        team_code: player.fpl_player.team_code,
+        web_name: player.fpl_player.web_name,
+      };
+    });
 }
 
 export default function PitchRow(props: {
   position: "DEF" | "MID" | "FWD" | "GK" | "subs";
-  data: number[];
+  data: {
+    team_code: number;
+    web_name: string;
+  }[];
 }) {
   return props.position === "subs" ? (
     <div className="flex flex-row w-full h-1/5 items-center justify-around mt-5 bg-green-50 py-2">
-      {props.data.map((id: number) => (
-        <Player key={id} id={id} />
+      {props.data.map((player) => (
+        <Player key={player.web_name} data={player} />
       ))}
     </div>
   ) : (
     <div className="flex flex-row w-full h-1/5 items-center justify-evenly py-2">
-      {props.data.map((id: number) => (
-        <Player key={id} id={id} />
+      {props.data.map((player: any) => (
+        <Player key={player.web_name} data={player} />
       ))}
     </div>
   );

@@ -1,26 +1,30 @@
 import ReactQueryProvider from "@/app/provider/ReactQuery";
 import { DoubleArrowDownIcon } from "@radix-ui/react-icons";
-import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 
-export default function Player({ id }: { id: number }) {
+export default function Player(props: {
+  data: {
+    team_code: number;
+    web_name: string;
+  };
+}) {
   // const [data] = await getPlayerData([id]);
-  const { data, isLoading } = useQuery({
-    queryKey: ["player", id],
-    queryFn: async () => {
-      return await fetch("/player", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id }),
-      }).then((res) => res.json());
-    },
-  });
+  // const { data, isLoading } = useQuery({
+  //   queryKey: ["player", id],
+  //   queryFn: async () => {
+  //     return await fetch("/player", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ id }),
+  //     }).then((res) => res.json());
+  //   },
+  // });
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
     <ReactQueryProvider>
@@ -35,7 +39,7 @@ export default function Player({ id }: { id: number }) {
             </button>
           </div>
           <div className="flex flex-col h-full w-full">
-            <PlayerDescription data={data.data[0]} />
+            <PlayerDescription data={props.data} />
             <PlayerStatsTicker />
           </div>
         </div>
@@ -82,7 +86,14 @@ function PlayerStatsTicker() {
   );
 }
 
-function PlayerDescription({ data }: { data: any }) {
+function PlayerDescription({
+  data,
+}: {
+  data: {
+    team_code: number;
+    web_name: string;
+  };
+}) {
   return (
     <div className="flex flex-col h-5/6 items-center justify-around">
       <div className="h-4/6">
