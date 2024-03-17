@@ -1,27 +1,46 @@
-import { getPlayerData } from "@/app/api/data";
+import ReactQueryProvider from "@/app/provider/ReactQuery";
 import { DoubleArrowDownIcon } from "@radix-ui/react-icons";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 
-export default async function Player({ id }: { id: number }) {
-  const [data] = await getPlayerData([id]);
+export default function Player({ id }: { id: number }) {
+  // const [data] = await getPlayerData([id]);
+  const { data, isLoading } = useQuery({
+    queryKey: ["player"],
+    queryFn: () => {
+      return fetch("/player", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: [id] }),
+      }).then((res) => res.json());
+    },
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="flex flex-row w-30 h-36 2xl:w-48 2xl:h-48 border rounded-md hover:bg-yellow-100 p-2">
-      <PlayerFixtureTicker />
-      <div className="w-9/12 text-xs flex flex-col h-full items-end">
-        <div className="h-1/12">
-          <button className="text-xs w-4 h-4 rounded-sm">
-            <div className="flex flex-row justify-center">
-              <DoubleArrowDownIcon className="w-3 h-3" />
-            </div>
-          </button>
-        </div>
-        <div className="flex flex-col h-full w-full">
-          <PlayerDescription data={data} />
-          <PlayerStatsTicker />
+    <ReactQueryProvider>
+      <div className="flex flex-row w-30 h-36 2xl:w-48 2xl:h-48 border rounded-md hover:bg-yellow-100 p-2">
+        <PlayerFixtureTicker />
+        <div className="w-9/12 text-xs flex flex-col h-full items-end">
+          <div className="h-1/12">
+            <button className="text-xs w-4 h-4 rounded-sm">
+              <div className="flex flex-row justify-center">
+                <DoubleArrowDownIcon className="w-3 h-3" />
+              </div>
+            </button>
+          </div>
+          <div className="flex flex-col h-full w-full">
+            <PlayerDescription data={data.data} />
+            <PlayerStatsTicker />
+          </div>
         </div>
       </div>
-    </div>
+    </ReactQueryProvider>
   );
 }
 

@@ -1,5 +1,4 @@
 import prisma from "@/lib/db";
-import result from "postcss/lib/result";
 
 export async function getPlayerData(ids: number[]) {
   // get from prisma

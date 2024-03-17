@@ -22,8 +22,7 @@ export function getPitchRowElements(
     .map((player: any) => player.element);
 }
 
-// eslint-disable-next-line @next/next/no-async-client-component
-export default async function PitchRow(props: {
+export default function PitchRow(props: {
   position: "DEF" | "MID" | "FWD" | "GK" | "subs";
   data: any;
 }) {
