@@ -10,7 +10,8 @@
     "boostrap": "npx tsc scripts/bootstrap.ts --outDir build && node build/bootstrap.js",
     "picks": "npx tsc scripts/picks.ts --outDir build && node build/picks.js",
     "elements": "npx tsc scripts/elements.ts --outDir build && node build/elements.js",
-    "fixtures": "npx tsc scripts/fixtures.ts --outDir build && node build/fixtures.js"
+    "fixtures": "npx tsc scripts/fixtures.ts --outDir build && node build/fixtures.js",
+    "scratchpad": "npx tsc scripts/scratchpad.ts --outDir build && node build/scratchpad.js"
   },
   "dependencies": {
     "@prisma/client": "^5.11.0",
