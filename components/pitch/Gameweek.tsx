@@ -26,6 +26,8 @@ export default function Gameweek() {
     return <div>Loading Players...</div>;
   }
 
+  console.log("data", data.data);
+
   return (
     <ReactQueryProvider>
       <div>

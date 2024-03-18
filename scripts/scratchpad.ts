@@ -2,27 +2,52 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 function getData() {
-  const playerFixtures = prisma.fPLPlayer.findFirst({
-    where: {
-      player_id: 77,
-    },
+  const result = prisma.fPLGameweekPicks.findMany({
     include: {
-      fpl_team: {
-        include: {
-          home_fixtures: true,
-          away_fixtures: true,
+      fpl_player: {
+        // Include the related FPLPlayer record
+        select: {
+          player_id: true,
+          web_name: true,
+          team_code: true,
+          element_type: true,
+          fpl_player_team: {
+            include: {
+              home_fixtures: {
+                include: {
+                  fpl_team_a: {
+                    select: {
+                      short_name: true,
+                    },
+                  },
+                },
+              },
+              away_fixtures: {
+                include: {
+                  fpl_team_h: {
+                    select: {
+                      short_name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },
+    where: {
+      gameweek: 28,
+    },
   });
-  return playerFixtures;
+  return result;
 }
 
 try {
   // get all players
   const data = getData();
   data.then((res) => {
-    console.log(res?.fpl_team.home_fixtures);
+    console.log(res);
   });
   prisma.$disconnect();
 } catch (e) {

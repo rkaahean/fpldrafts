@@ -26,12 +26,31 @@ export async function getGameweekPicksData(gameweek: number) {
         // Include the related FPLPlayer record
         select: {
           player_id: true,
-          first_name: true,
-          second_name: true,
-          team: true,
           web_name: true,
           team_code: true,
           element_type: true,
+          fpl_player_team: {
+            include: {
+              home_fixtures: {
+                include: {
+                  fpl_team_a: {
+                    select: {
+                      short_name: true,
+                    },
+                  },
+                },
+              },
+              away_fixtures: {
+                include: {
+                  fpl_team_h: {
+                    select: {
+                      short_name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },

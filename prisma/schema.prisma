@@ -38,7 +38,7 @@ model FPLPlayer {
 
   fpl_season                FPLSeason                @relation(fields: [season_id], references: [id])
   fpl_gameweek_player_stats FPLGameweekPlayerStats[]
-  fpl_team                  FPLPlayerTeam            @relation(fields: [team_code], references: [code])
+  fpl_player_team                  FPLPlayerTeam            @relation(fields: [team_code], references: [code])
 }
 
 model FPLPlayerTeam {
