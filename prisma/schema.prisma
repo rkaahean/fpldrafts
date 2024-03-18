@@ -41,6 +41,39 @@ model FPLPlayer {
   fpl_team                  FPLPlayerTeam            @relation(fields: [team_code], references: [code])
 }
 
+model FPLPlayerTeam {
+  id         String @id @default(uuid())
+  season_id  String
+  code       Int    @unique // this is the actual team code that likely reamins across seasons
+  team_id    Int // this is the id (1-20). Usually used for sorting
+  name       String
+  short_name String
+  strength   Int
+
+  fpl_season    FPLSeason     @relation(fields: [season_id], references: [id])
+  home_fixtures FPLFixtures[] @relation("home_team")
+  away_fixtures FPLFixtures[] @relation("away_team")
+  FPLPlayer     FPLPlayer[]
+}
+
+model FPLFixtures {
+  id                String  @id @default(uuid())
+  season_id         String
+  code              Int
+  fixture_id        Int
+  finished          Boolean
+  team_h_id         String
+  team_a_id         String
+  event             Int?
+  team_h_score      Int?
+  team_a_score      Int?
+  team_h_difficulty Int
+  team_a_difficulty Int
+
+  fpl_season FPLSeason     @relation(fields: [season_id], references: [id])
+  fpl_team_h FPLPlayerTeam @relation("home_team", fields: [team_h_id], references: [id])
+  fpl_team_a FPLPlayerTeam @relation("away_team", fields: [team_a_id], references: [id])
+}
 model FPLGameweekPicks {
   id              String    @id @default(uuid())
   fpl_team_id     String
@@ -68,40 +101,6 @@ model FPLGameweekPlayerStats {
   expected_assists Float
   value            Int
   fpl_player       FPLPlayer @relation(fields: [fpl_player_id], references: [id])
-}
-
-model FPLFixtures {
-  id                String  @id @default(uuid())
-  season_id         String
-  code              Int
-  fixture_id        Int
-  finished          Boolean
-  team_h_id         String
-  team_a_id         String
-  event             Int?
-  team_h_score      Int?
-  team_a_score      Int?
-  team_h_difficulty Int
-  team_a_difficulty Int
-
-  fpl_season FPLSeason     @relation(fields: [season_id], references: [id])
-  fpl_team_h FPLPlayerTeam @relation("home_team", fields: [team_h_id], references: [id])
-  fpl_team_a FPLPlayerTeam @relation("away_team", fields: [team_a_id], references: [id])
-}
-
-model FPLPlayerTeam {
-  id         String @id @default(uuid())
-  season_id  String
-  code       Int    @unique // this is the actual team code that likely reamins across seasons
-  team_id    Int // this is the id (1-20). Usually used for sorting
-  name       String
-  short_name String
-  strength   Int
-
-  fpl_season    FPLSeason     @relation(fields: [season_id], references: [id])
-  home_fixtures FPLFixtures[] @relation("home_team")
-  away_fixtures FPLFixtures[] @relation("away_team")
-  FPLPlayer     FPLPlayer[]
 }
 
 model FPLTeam {
