@@ -1,4 +1,4 @@
-import { FPLPlayer, PrismaClient } from "@prisma/client";
+import { FPLPlayer, FPLPlayerTeam, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 function getData() {
@@ -7,9 +7,12 @@ function getData() {
     .then((data) => {
       return parseBoostrapData(data);
     })
-    .then(async (players) => {
-      await prisma.fPLPlayer.createMany({
-        data: players,
+    .then(async (data) => {
+      // await prisma.fPLPlayer.createMany({
+      //   data: data.players,
+      // });
+      await prisma.fPLPlayerTeam.createMany({
+        data: data.teams,
       });
     })
     .catch((error) => {
@@ -17,8 +20,12 @@ function getData() {
     });
 }
 
-function parseBoostrapData(data: any): FPLPlayer[] {
+function parseBoostrapData(data: any): {
+  players: FPLPlayer[];
+  teams: FPLPlayerTeam[];
+} {
   const elements = data["elements"];
+  const teams = data["teams"];
 
   // get player info
   const players: FPLPlayer[] = elements.map((player: any) => {
@@ -45,7 +52,21 @@ function parseBoostrapData(data: any): FPLPlayer[] {
       minutes: player.minutes,
     };
   });
-  return players;
+
+  const teamsData: FPLPlayerTeam[] = teams.map((team: any) => {
+    return {
+      season_id: "133e854c-8817-47a9-888e-d07bd2cd76b6",
+      name: team.name,
+      short_name: team.short_name,
+      code: team.code,
+      strength: team.strength,
+      team_id: team.id,
+    };
+  });
+  return {
+    players,
+    teams: teamsData,
+  };
 }
 
 try {

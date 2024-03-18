@@ -9,8 +9,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -70,6 +70,33 @@ model FPLGameweekPlayerStats {
   fpl_player       FPLPlayer @relation(fields: [fpl_player_id], references: [id])
 }
 
+model FPLFixtures {
+  id                String  @id @default(uuid())
+  season_id         String
+  code              Int
+  fixture_id        Int
+  finished          Boolean
+  team_h_id         String
+  team_a_id         String
+  event             Int?
+  team_h_score      Int?
+  team_a_score      Int?
+  team_h_difficulty Int
+  team_a_difficulty Int
+}
+
+model FPLPlayerTeam {
+  id         String @id @default(uuid())
+  season_id  String
+  code       Int
+  team_id    Int
+  name       String
+  short_name String
+  strength   Int
+
+  fpl_season FPLSeason @relation(fields: [season_id], references: [id])
+}
+
 model FPLTeam {
   id            String @id @default(uuid())
   name          String
@@ -81,8 +108,9 @@ model FPLTeam {
 }
 
 model FPLSeason {
-  id          String      @id @default(uuid())
-  year        Int
-  fpl_teams   FPLTeam[]
-  fpl_players FPLPlayer[]
+  id              String          @id @default(uuid())
+  year            Int
+  fpl_teams       FPLTeam[]
+  fpl_players     FPLPlayer[]
+  fpl_player_team FPLPlayerTeam[]
 }
