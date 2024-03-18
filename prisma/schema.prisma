@@ -83,6 +83,10 @@ model FPLFixtures {
   team_a_score      Int?
   team_h_difficulty Int
   team_a_difficulty Int
+
+  fpl_season FPLSeason     @relation(fields: [season_id], references: [id])
+  fpl_team_h FPLPlayerTeam @relation("home_team", fields: [team_h_id], references: [id])
+  fpl_team_a FPLPlayerTeam @relation("away_team", fields: [team_a_id], references: [id])
 }
 
 model FPLPlayerTeam {
@@ -94,7 +98,9 @@ model FPLPlayerTeam {
   short_name String
   strength   Int
 
-  fpl_season FPLSeason @relation(fields: [season_id], references: [id])
+  fpl_season    FPLSeason     @relation(fields: [season_id], references: [id])
+  home_fixtures FPLFixtures[] @relation("home_team")
+  away_fixtures FPLFixtures[] @relation("away_team")
 }
 
 model FPLTeam {
@@ -113,4 +119,5 @@ model FPLSeason {
   fpl_teams       FPLTeam[]
   fpl_players     FPLPlayer[]
   fpl_player_team FPLPlayerTeam[]
+  fpl_fixtures    FPLFixtures[]
 }
