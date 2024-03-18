@@ -39,6 +39,11 @@ export async function getGameweekPicksData(gameweek: number) {
                     },
                   },
                 },
+                where: {
+                  event: {
+                    gte: gameweek,
+                  },
+                },
               },
               away_fixtures: {
                 include: {
@@ -46,6 +51,11 @@ export async function getGameweekPicksData(gameweek: number) {
                     select: {
                       short_name: true,
                     },
+                  },
+                },
+                where: {
+                  event: {
+                    gte: gameweek,
                   },
                 },
               },
