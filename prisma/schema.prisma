@@ -20,7 +20,7 @@ model FPLPlayer {
   season_id                         String
   first_name                        String
   second_name                       String
-  team                              Int
+  team                              Int // this is the team id. will change across seasons
   web_name                          String
   team_code                         Int
   element_type                      Int
@@ -36,9 +36,9 @@ model FPLPlayer {
   minutes                           Int
   FPLGameweekPicks                  FPLGameweekPicks[]
 
-  // season id is foreign key in FPLSeason
   fpl_season                FPLSeason                @relation(fields: [season_id], references: [id])
   fpl_gameweek_player_stats FPLGameweekPlayerStats[]
+  fpl_team                  FPLPlayerTeam            @relation(fields: [team_code], references: [code])
 }
 
 model FPLGameweekPicks {
@@ -92,8 +92,8 @@ model FPLFixtures {
 model FPLPlayerTeam {
   id         String @id @default(uuid())
   season_id  String
-  code       Int
-  team_id    Int
+  code       Int    @unique // this is the actual team code that likely reamins across seasons
+  team_id    Int // this is the id (1-20). Usually used for sorting
   name       String
   short_name String
   strength   Int
@@ -101,6 +101,7 @@ model FPLPlayerTeam {
   fpl_season    FPLSeason     @relation(fields: [season_id], references: [id])
   home_fixtures FPLFixtures[] @relation("home_team")
   away_fixtures FPLFixtures[] @relation("away_team")
+  FPLPlayer     FPLPlayer[]
 }
 
 model FPLTeam {
