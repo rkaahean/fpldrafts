@@ -1,10 +1,22 @@
 "use client";
 
+import { FPLGameweekPicksData } from "@/app/api/data";
 import ReactQueryProvider from "@/app/provider/ReactQuery";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { create } from "zustand";
 import PitchRow, { filterData } from "./PitchRow";
+
+interface State {
+  data?: FPLGameweekPicksData;
+  incrementPop: () => void;
+  setPicks: (picks: FPLGameweekPicksData) => void;
+}
+const picksStore = create<State>()((set) => ({
+  incrementPop: () => console.log,
+  setPicks: (picks: FPLGameweekPicksData) => set({ data: picks }),
+}));
 
 export default function Gameweek() {
   const [gameweek, setGameweek] = useState(28);
@@ -23,11 +35,13 @@ export default function Gameweek() {
     enabled: gameweek < 29,
   });
 
+  // set picks as state
+  const updatePicks = picksStore((state) => state.setPicks);
   if (isLoadingGameweek) {
     return <div>Loading Players...</div>;
   }
-
-  console.log("Data", data);
+  updatePicks(data);
+  console.log("State", picksStore.getState().data, isLoadingGameweek);
 
   return (
     <ReactQueryProvider>

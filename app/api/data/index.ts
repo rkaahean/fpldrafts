@@ -71,6 +71,9 @@ export async function getGameweekPicksData(gameweek: number) {
   });
   return result;
 }
+export type FPLGameweekPicksData = Awaited<
+  ReturnType<typeof getGameweekPicksData>
+>;
 
 export async function getAllPlayerData() {
   // sort by total_points

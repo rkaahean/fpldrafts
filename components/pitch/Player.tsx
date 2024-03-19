@@ -3,7 +3,6 @@ import Image from "next/image";
 import { PlayerData } from "./PitchRow";
 
 export default function Player(props: { data: PlayerData; gameweek: number }) {
-  // console.log("Player", props.data);
   return (
     <div className="flex flex-row w-30 h-36 2xl:w-48 2xl:h-48 border rounded-md hover:bg-yellow-100 p-2">
       <PlayerFixtureTicker
@@ -51,16 +50,16 @@ function PlayerFixtureTicker({
 
   return (
     <div className="w-3/12 grid grid-rows-5 text-[10px] tracking-tighter">
-      {formattedFixtures.map((fixture) => {
+      {formattedFixtures.map((fixture, idx) => {
         if (fixture.length === 2) {
           return (
             <div
               className="grid grid-rows-2 text-[8px] tracking-tighter text-center border-[1px] rounded-sm border-stone-700"
-              key={fixture.id}
+              key={idx}
             >
               {fixture.map((fix: any) => {
                 return (
-                  <div key={fix.id} className="row-span-1">
+                  <div key={fix.name} className="row-span-1">
                     {fix.name}
                   </div>
                 );
@@ -70,7 +69,7 @@ function PlayerFixtureTicker({
         } else {
           return (
             <div
-              key={fixture.id}
+              key={fixture.name}
               className="flex flex-col text-center justify-center"
             >
               <div>{fixture.name}</div>
