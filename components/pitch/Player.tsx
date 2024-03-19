@@ -57,10 +57,10 @@ function PlayerFixtureTicker({
               className="grid grid-rows-2 text-[8px] tracking-tighter text-center border-[1px] rounded-sm border-stone-700"
               key={idx}
             >
-              {fixture.map((fix: any) => {
+              {fixture.map((double_fixture: any) => {
                 return (
-                  <div key={fix.name} className="row-span-1">
-                    {fix.name}
+                  <div key={double_fixture.name} className="row-span-1">
+                    {double_fixture.name}
                   </div>
                 );
               })}
