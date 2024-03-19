@@ -1,17 +1,17 @@
 import ReactQueryProvider from "@/app/provider/ReactQuery";
 import { DoubleArrowDownIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
+import { PlayerData } from "./PitchRow";
 
-export default function Player(props: {
-  data: {
-    team_code: number;
-    web_name: string;
-  };
-}) {
+export default function Player(props: { data: PlayerData; gameweek: number }) {
+  // console.log("Player", props.data);
   return (
     <ReactQueryProvider>
       <div className="flex flex-row w-30 h-36 2xl:w-48 2xl:h-48 border rounded-md hover:bg-yellow-100 p-2">
-        <PlayerFixtureTicker />
+        <PlayerFixtureTicker
+          fixtures={props.data.fixtures}
+          gameweek={props.gameweek}
+        />
         <div className="w-9/12 text-xs flex flex-col h-full items-end">
           <div className="h-1/12">
             <button className="text-xs w-4 h-4 rounded-sm">
@@ -30,24 +30,57 @@ export default function Player(props: {
   );
 }
 
-function PlayerFixtureTicker() {
+function PlayerFixtureTicker({
+  fixtures,
+  gameweek,
+}: {
+  fixtures: any[];
+  gameweek: number;
+}) {
+  const formattedFixtures = [];
+  for (let idx = gameweek; idx < gameweek + 5; idx++) {
+    const fixture = fixtures.filter((fixture: any) => fixture.event == idx);
+    if (fixture.length === 0) {
+      formattedFixtures.push({
+        event: idx,
+        name: "-",
+      });
+    } else if (fixture.length == 1) {
+      formattedFixtures.push(fixture[0]);
+    } else {
+      formattedFixtures.push(fixture);
+    }
+  }
+  // console.log("FOrmatted fixtures", formattedFixtures);
   return (
-    <div className="w-3/12 grid grid-rows-5 text-[9px] tracking-tighter">
-      <div className="flex flex-col bg-red-200 text-center justify-center">
-        MUN
-      </div>
-      <div className="flex flex-col bg-green-200 text-center justify-center">
-        whu
-      </div>
-      <div className="flex flex-col bg-green-200 text-center justify-center">
-        TOT
-      </div>
-      <div className="flex flex-col bg-red-200 text-center justify-center">
-        che
-      </div>
-      <div className="flex flex-col bg-green-200 text-center justify-center">
-        MCI
-      </div>
+    <div className="w-3/12 grid grid-rows-5 text-[10px] tracking-tighter ">
+      {formattedFixtures.map((fixture) => {
+        if (fixture.length === 2) {
+          return (
+            <div
+              className="grid grid-rows-2 text-[8px] tracking-tighter text-center border-[1px] rounded-sm border-stone-700"
+              key={fixture.id}
+            >
+              {fixture.map((fix: any) => {
+                return (
+                  <div key={fix.id} className="row-span-1">
+                    {fix.name}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        } else {
+          return (
+            <div
+              key={fixture.id}
+              className="flex flex-col text-center justify-center"
+            >
+              <div>{fixture.name}</div>
+            </div>
+          );
+        }
+      })}
     </div>
   );
 }

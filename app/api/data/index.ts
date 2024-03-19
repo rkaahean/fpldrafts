@@ -30,7 +30,8 @@ export async function getGameweekPicksData(gameweek: number) {
           team_code: true,
           element_type: true,
           fpl_player_team: {
-            include: {
+            select: {
+              short_name: true,
               home_fixtures: {
                 include: {
                   fpl_team_a: {

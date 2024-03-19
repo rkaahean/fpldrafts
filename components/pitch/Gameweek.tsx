@@ -4,7 +4,7 @@ import ReactQueryProvider from "@/app/provider/ReactQuery";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
-import PitchRow, { getPitchRowElements } from "./PitchRow";
+import PitchRow, { filterData } from "./PitchRow";
 
 export default function Gameweek() {
   const [gameweek, setGameweek] = useState(28);
@@ -26,8 +26,6 @@ export default function Gameweek() {
     return <div>Loading Players...</div>;
   }
 
-  console.log("data", data.data);
-
   return (
     <ReactQueryProvider>
       <div>
@@ -36,27 +34,35 @@ export default function Gameweek() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="text-lg font-bold">{`Gameweek ${gameweek}`}</div>
-          <div>
+          <button onClick={() => setGameweek(gameweek + 1)}>
             <ArrowRight className="w-5 h-5" />
-          </div>
+          </button>
         </div>
         <div className="h-full">
-          <PitchRow position="GK" data={getPitchRowElements(data.data, "GK")} />
+          <PitchRow
+            position="GK"
+            data={filterData(data.data, "GK")}
+            gameweek={gameweek}
+          />
           <PitchRow
             position="DEF"
-            data={getPitchRowElements(data.data, "DEF")}
+            data={filterData(data.data, "DEF")}
+            gameweek={gameweek}
           />
           <PitchRow
             position="MID"
-            data={getPitchRowElements(data.data, "MID")}
+            data={filterData(data.data, "MID")}
+            gameweek={gameweek}
           />
           <PitchRow
             position="FWD"
-            data={getPitchRowElements(data.data, "FWD")}
+            data={filterData(data.data, "FWD")}
+            gameweek={gameweek}
           />
           <PitchRow
             position="subs"
-            data={getPitchRowElements(data.data, "subs")}
+            data={filterData(data.data, "subs")}
+            gameweek={gameweek}
           />
         </div>
       </div>
