@@ -50,7 +50,7 @@ function PlayerFixtureTicker({
   }
 
   return (
-    <div className="w-3/12 grid grid-rows-5 text-[10px] tracking-tighter bg-green-200">
+    <div className="w-3/12 grid grid-rows-5 text-[10px] tracking-tighter">
       {formattedFixtures.map((fixture) => {
         if (fixture.length === 2) {
           return (
