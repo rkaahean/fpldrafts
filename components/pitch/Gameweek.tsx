@@ -10,9 +10,9 @@ export default function Gameweek() {
   const [gameweek, setGameweek] = useState(28);
 
   const { data, isLoading: isLoadingGameweek } = useQuery({
-    queryKey: [gameweek],
+    queryKey: ["hello", gameweek, gameweek < 29],
     queryFn: async () => {
-      return fetch("/gameweek", {
+      return await fetch("/gameweek", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -20,11 +20,14 @@ export default function Gameweek() {
         body: JSON.stringify({ gameweek }),
       }).then((res) => res.json());
     },
+    enabled: gameweek < 29,
   });
 
   if (isLoadingGameweek) {
     return <div>Loading Players...</div>;
   }
+
+  console.log("Data", data);
 
   return (
     <ReactQueryProvider>

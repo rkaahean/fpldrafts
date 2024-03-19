@@ -9,6 +9,11 @@ export default function ReactQueryProvider({
 }: {
   children: React.ReactNode;
 }) {
+  queryClient.setDefaultOptions({
+    queries: {
+      placeholderData: (prev: any) => prev,
+    },
+  });
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );

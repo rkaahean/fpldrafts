@@ -53,7 +53,7 @@ export function filterData(data: any, position: string): PlayerData[] {
         team_code: player.fpl_player.team_code,
         web_name: player.fpl_player.web_name,
         team_name: player.fpl_player.fpl_player_team.short_name,
-        fixtures: fixtures.slice(0, 5),
+        fixtures: fixtures,
       };
     });
 }
