@@ -6,7 +6,7 @@ import Gameweek from "./Gameweek";
 
 export default function Team() {
   return (
-    <div className="w-full min-h-full flex flex-col justify-start gap-2">
+    <div className="w-full min-h-full flex flex-col justify-start gap-5">
       <div className="flex flex-row gap-2 h-4">
         <DraftSave />
         {/* <Timeline /> */}
