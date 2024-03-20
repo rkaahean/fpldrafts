@@ -10,6 +10,8 @@ import PitchRow, { filterData } from "./PitchRow";
 
 interface State {
   data?: FPLGameweekPicksData;
+  pickSelectIns?: number[];
+  pickSelectOuts?: number[];
   incrementPop: () => void;
   setPicks: (picks: FPLGameweekPicksData) => void;
 }
@@ -43,7 +45,7 @@ export default function Gameweek() {
   if (isLoadingGameweek) {
     return <div>Loading Players...</div>;
   }
-  updatePicks(data);
+  updatePicks(data.data);
 
   return (
     <ReactQueryProvider>
