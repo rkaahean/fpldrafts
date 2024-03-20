@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 import { DoubleArrowDownIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { useState } from "react";
 import { picksStore } from "./Gameweek";
 import { PlayerData } from "./PitchRow";
 
@@ -10,17 +9,20 @@ export default function Player(props: {
   gameweek: number;
   isSubstitute: boolean;
 }) {
-  const [isSelected, setSelected] = useState(false);
-
   const subIn = picksStore((store) => store.setSubstituteIn);
   const subOut = picksStore((store) => store.setSubstituteOut);
   const makeSubs = picksStore((store) => store.makeSubs);
+
+  const substitutedIn = picksStore((store) => store.substitutedIn);
+  const substitutedOut = picksStore((store) => store.substitutedOut);
+
+  const player = props.isSubstitute ? substitutedIn : substitutedOut;
 
   return (
     <div
       className={cn(
         "flex flex-row w-30 h-36 2xl:w-48 2xl:h-48 border rounded-md  p-2",
-        isSelected ? "bg-yellow-100" : ""
+        player == props.data.player_id ? "bg-yellow-100" : ""
       )}
     >
       <PlayerFixtureTicker
@@ -32,7 +34,6 @@ export default function Player(props: {
           <button
             className="text-xs w-4 h-4 rounded-sm"
             onClick={() => {
-              setSelected(!isSelected);
               if (props.isSubstitute) {
                 subIn(props.data.player_id);
               } else {

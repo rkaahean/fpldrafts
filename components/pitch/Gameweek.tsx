@@ -67,6 +67,8 @@ export const picksStore = create<State>()((set, get) => ({
             outPlayer,
             ...data!.slice(outPlayerIndex + 1),
           ],
+          substitutedIn: undefined,
+          substitutedOut: undefined,
         });
       }
     }
