@@ -13,7 +13,7 @@ export default function DraftChanges() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost">
+        <Button variant="ghost" size="xs">
           <LoopIcon />
         </Button>
       </SheetTrigger>

@@ -15,7 +15,9 @@ export default function DraftSave() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Save draft</Button>
+        <Button variant="outline" size="xs">
+          Save draft
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
