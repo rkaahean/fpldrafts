@@ -10,16 +10,20 @@ import PitchRow, { filterData } from "./PitchRow";
 
 interface State {
   data?: FPLGameweekPicksData;
-  pickSelectIns?: number[];
-  pickSelectOuts?: number[];
+  pickSubIn?: number;
+  pickSubOut?: number;
   incrementPop: () => void;
   setPicks: (picks: FPLGameweekPicksData) => void;
+  setPickIn: (position: number) => void;
 }
 export const picksStore = create<State>()((set) => ({
   incrementPop: () => console.log,
   setPicks: (picks: FPLGameweekPicksData) => {
     console.log("Updating state...");
     set({ data: picks });
+  },
+  setPickIn: (pickSubIn: number) => {
+    set({ pickSubIn });
   },
 }));
 
@@ -62,27 +66,27 @@ export default function Gameweek() {
         <div className="h-full">
           <PitchRow
             position="GK"
-            data={filterData(data.data, "GK")}
+            data={filterData(picksStore.getState().data!, "GK")}
             gameweek={gameweek}
           />
           <PitchRow
             position="DEF"
-            data={filterData(data.data, "DEF")}
+            data={filterData(picksStore.getState().data!, "DEF")}
             gameweek={gameweek}
           />
           <PitchRow
             position="MID"
-            data={filterData(data.data, "MID")}
+            data={filterData(picksStore.getState().data!, "MID")}
             gameweek={gameweek}
           />
           <PitchRow
             position="FWD"
-            data={filterData(data.data, "FWD")}
+            data={filterData(picksStore.getState().data!, "FWD")}
             gameweek={gameweek}
           />
           <PitchRow
             position="subs"
-            data={filterData(data.data, "subs")}
+            data={filterData(picksStore.getState().data!, "subs")}
             gameweek={gameweek}
           />
         </div>

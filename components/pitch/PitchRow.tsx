@@ -1,6 +1,8 @@
+import { FPLGameweekPicksData } from "@/app/api/data";
 import Player from "./Player";
 
 export type PlayerData = {
+  player_id: number;
   team_code: number;
   web_name: string;
   fixtures: {
@@ -10,9 +12,12 @@ export type PlayerData = {
   }[];
 };
 
-export function filterData(data: any, position: string): PlayerData[] {
+export function filterData(
+  data: FPLGameweekPicksData,
+  position: string
+): PlayerData[] {
   return data
-    .filter((player: any) => {
+    .filter((player) => {
       switch (position) {
         case "DEF":
           return player.fpl_player.element_type == 2 && player.position <= 11;
@@ -26,19 +31,19 @@ export function filterData(data: any, position: string): PlayerData[] {
           return player.position > 11;
       }
     })
-    .map((player: any) => {
+    .map((player) => {
       const home_fixtures = player.fpl_player.fpl_player_team.home_fixtures;
       const away_fixtures = player.fpl_player.fpl_player_team.away_fixtures;
 
       const combined: any[] = [];
-      home_fixtures.map((fixture: any) => {
+      home_fixtures.map((fixture) => {
         combined.push({
           id: fixture.id,
           name: fixture.fpl_team_a.short_name,
           event: fixture.event,
         });
       });
-      away_fixtures.map((fixture: any) => {
+      away_fixtures.map((fixture) => {
         combined.push({
           id: fixture.id,
           name: fixture.fpl_team_h.short_name.toLowerCase(),
@@ -53,6 +58,7 @@ export function filterData(data: any, position: string): PlayerData[] {
       });
 
       return {
+        player_id: player.fpl_player.player_id,
         team_code: player.fpl_player.team_code,
         web_name: player.fpl_player.web_name,
         team_name: player.fpl_player.fpl_player_team.short_name,
@@ -69,13 +75,23 @@ export default function PitchRow(props: {
   return props.position === "subs" ? (
     <div className="flex flex-row w-full h-1/5 items-center justify-around mt-5 bg-green-50 py-2">
       {props.data.map((player) => (
-        <Player key={player.web_name} data={player} gameweek={props.gameweek} />
+        <Player
+          key={player.web_name}
+          data={player}
+          gameweek={props.gameweek}
+          isSubstitute={true}
+        />
       ))}
     </div>
   ) : (
     <div className="flex flex-row w-full h-1/5 items-center justify-evenly py-2">
       {props.data.map((player: any) => (
-        <Player key={player.web_name} data={player} gameweek={props.gameweek} />
+        <Player
+          key={player.web_name}
+          data={player}
+          gameweek={props.gameweek}
+          isSubstitute={false}
+        />
       ))}
     </div>
   );

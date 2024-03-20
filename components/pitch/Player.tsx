@@ -2,10 +2,17 @@ import { cn } from "@/lib/utils";
 import { DoubleArrowDownIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import { useState } from "react";
+import { picksStore } from "./Gameweek";
 import { PlayerData } from "./PitchRow";
 
-export default function Player(props: { data: PlayerData; gameweek: number }) {
+export default function Player(props: {
+  data: PlayerData;
+  gameweek: number;
+  isSubstitute: boolean;
+}) {
   const [isSelected, setSelected] = useState(false);
+
+  const subIn = picksStore((store) => store.setPickIn);
   return (
     <div
       className={cn(
@@ -21,7 +28,10 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
         <div className="h-1/12">
           <button
             className="text-xs w-4 h-4 rounded-sm"
-            onClick={() => setSelected(!isSelected)}
+            onClick={() => {
+              setSelected(!isSelected);
+              subIn(props.data.player_id);
+            }}
           >
             <div className="flex flex-row justify-center">
               <DoubleArrowDownIcon className="w-3 h-3" />
