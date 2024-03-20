@@ -13,9 +13,12 @@ interface State {
   incrementPop: () => void;
   setPicks: (picks: FPLGameweekPicksData) => void;
 }
-const picksStore = create<State>()((set) => ({
+export const picksStore = create<State>()((set) => ({
   incrementPop: () => console.log,
-  setPicks: (picks: FPLGameweekPicksData) => set({ data: picks }),
+  setPicks: (picks: FPLGameweekPicksData) => {
+    console.log("Updating state...");
+    set({ data: picks });
+  },
 }));
 
 export default function Gameweek() {
@@ -41,7 +44,6 @@ export default function Gameweek() {
     return <div>Loading Players...</div>;
   }
   updatePicks(data);
-  console.log("State", picksStore.getState().data, isLoadingGameweek);
 
   return (
     <ReactQueryProvider>

@@ -1,17 +1,28 @@
+import { cn } from "@/lib/utils";
 import { DoubleArrowDownIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
+import { useState } from "react";
 import { PlayerData } from "./PitchRow";
 
 export default function Player(props: { data: PlayerData; gameweek: number }) {
+  const [isSelected, setSelected] = useState(false);
   return (
-    <div className="flex flex-row w-30 h-36 2xl:w-48 2xl:h-48 border rounded-md hover:bg-yellow-100 p-2">
+    <div
+      className={cn(
+        "flex flex-row w-30 h-36 2xl:w-48 2xl:h-48 border rounded-md  p-2",
+        isSelected ? "bg-yellow-100" : ""
+      )}
+    >
       <PlayerFixtureTicker
         fixtures={props.data.fixtures}
         gameweek={props.gameweek}
       />
       <div className="w-9/12 text-xs flex flex-col h-full items-end">
         <div className="h-1/12">
-          <button className="text-xs w-4 h-4 rounded-sm">
+          <button
+            className="text-xs w-4 h-4 rounded-sm"
+            onClick={() => setSelected(!isSelected)}
+          >
             <div className="flex flex-row justify-center">
               <DoubleArrowDownIcon className="w-3 h-3" />
             </div>
@@ -30,14 +41,15 @@ function PlayerFixtureTicker({
   fixtures,
   gameweek,
 }: {
-  fixtures: any[];
+  fixtures: PlayerData["fixtures"];
   gameweek: number;
 }) {
   const formattedFixtures = [];
   for (let idx = gameweek; idx < gameweek + 5; idx++) {
-    const fixture = fixtures.filter((fixture: any) => fixture.event == idx);
+    const fixture = fixtures.filter((fixture) => fixture.event == idx);
     if (fixture.length === 0) {
       formattedFixtures.push({
+        id: idx,
         event: idx,
         name: "-",
       });
@@ -51,15 +63,15 @@ function PlayerFixtureTicker({
   return (
     <div className="w-3/12 grid grid-rows-5 text-[10px] tracking-tighter">
       {formattedFixtures.map((fixture, idx) => {
-        if (fixture.length === 2) {
+        if (Array.isArray(fixture)) {
           return (
             <div
               className="grid grid-rows-2 text-[8px] tracking-tighter text-center border-[1px] rounded-sm border-stone-700"
               key={idx}
             >
-              {fixture.map((double_fixture: any) => {
+              {fixture.map((double_fixture) => {
                 return (
-                  <div key={double_fixture.name} className="row-span-1">
+                  <div key={double_fixture.id} className="row-span-1">
                     {double_fixture.name}
                   </div>
                 );
@@ -69,7 +81,7 @@ function PlayerFixtureTicker({
         } else {
           return (
             <div
-              key={fixture.name}
+              key={fixture.id}
               className="flex flex-col text-center justify-center"
             >
               <div>{fixture.name}</div>

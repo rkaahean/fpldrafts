@@ -33,12 +33,14 @@ export async function getGameweekPicksData(gameweek: number) {
             select: {
               short_name: true,
               home_fixtures: {
-                include: {
+                select: {
                   fpl_team_a: {
                     select: {
                       short_name: true,
                     },
                   },
+                  id: true,
+                  event: true,
                 },
                 where: {
                   event: {
@@ -47,12 +49,14 @@ export async function getGameweekPicksData(gameweek: number) {
                 },
               },
               away_fixtures: {
-                include: {
+                select: {
                   fpl_team_h: {
                     select: {
                       short_name: true,
                     },
                   },
+                  id: true,
+                  event: true,
                 },
                 where: {
                   event: {

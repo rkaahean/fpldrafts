@@ -4,6 +4,7 @@ export type PlayerData = {
   team_code: number;
   web_name: string;
   fixtures: {
+    id: string;
     name: string;
     event: number;
   }[];
@@ -32,12 +33,14 @@ export function filterData(data: any, position: string): PlayerData[] {
       const combined: any[] = [];
       home_fixtures.map((fixture: any) => {
         combined.push({
+          id: fixture.id,
           name: fixture.fpl_team_a.short_name,
           event: fixture.event,
         });
       });
       away_fixtures.map((fixture: any) => {
         combined.push({
+          id: fixture.id,
           name: fixture.fpl_team_h.short_name.toLowerCase(),
           event: fixture.event,
         });
