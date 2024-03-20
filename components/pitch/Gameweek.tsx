@@ -91,12 +91,15 @@ export default function Gameweek() {
   });
 
   // set picks as state
+  let picksData = picksStore((state) => state.data!);
+
   const updatePicks = picksStore((state) => state.setPicks);
-  const picksData = picksStore((state) => state.data!);
   if (isLoadingGameweek) {
     return <div>Loading Players...</div>;
-  } else {
-    updatePicks(data.data);
+  }
+  updatePicks(data.data);
+
+  if (picksData) {
     return (
       <ReactQueryProvider>
         <div>
