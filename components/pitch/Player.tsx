@@ -21,7 +21,7 @@ export default function Player(props: {
   return (
     <div
       className={cn(
-        "flex flex-row w-30 h-36 2xl:w-48 2xl:h-48 border rounded-md  p-2",
+        "flex flex-row w-32 h-36 2xl:w-48 2xl:h-48 border rounded-md  p-2",
         player == props.data.player_id ? "bg-yellow-100" : ""
       )}
     >
@@ -49,7 +49,7 @@ export default function Player(props: {
         </div>
         <div className="flex flex-col h-full w-full">
           <PlayerDescription data={props.data} />
-          <PlayerStatsTicker />
+          <PlayerStatsTicker data={props.data} />
         </div>
       </div>
     </div>
@@ -112,17 +112,17 @@ function PlayerFixtureTicker({
   );
 }
 
-function PlayerStatsTicker() {
+function PlayerStatsTicker({ data }: { data: PlayerData }) {
   return (
-    <div className="h-1/6 grid grid-cols-3 text-[9px] 2xl:text-xs">
+    <div className="h-1/6 grid grid-cols-3 text-[9px] 2xl:text-xs w-full">
       <div className="flex flex-col text-center justify-center">
         <div>6.5$</div>
       </div>
       <div className="flex flex-col text-center justify-center">
-        <div>100Pts</div>
+        <div>{`${data.total_points}`}</div>
       </div>
       <div className="flex flex-col text-center justify-center">
-        <div>0.56</div>
+        <div>{`${data.expected_goal_involvements_per_90}`}</div>
       </div>
     </div>
   );

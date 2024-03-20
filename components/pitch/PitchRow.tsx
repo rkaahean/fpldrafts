@@ -3,8 +3,11 @@ import Player from "./Player";
 
 export type PlayerData = {
   player_id: number;
+  position: number;
   team_code: number;
   web_name: string;
+  expected_goal_involvements_per_90: number;
+  total_points: number;
   fixtures: {
     id: string;
     name: string;
@@ -59,10 +62,8 @@ export function filterData(
         });
 
         return {
-          player_id: player.fpl_player.player_id,
+          ...player.fpl_player,
           position: player.position,
-          team_code: player.fpl_player.team_code,
-          web_name: player.fpl_player.web_name,
           team_name: player.fpl_player.fpl_player_team.short_name,
           fixtures: fixtures,
         };

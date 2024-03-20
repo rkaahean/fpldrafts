@@ -29,6 +29,8 @@ export async function getGameweekPicksData(gameweek: number) {
           web_name: true,
           team_code: true,
           element_type: true,
+          total_points: true,
+          expected_goal_involvements_per_90: true,
           fpl_player_team: {
             select: {
               short_name: true,

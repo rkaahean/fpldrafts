@@ -15,7 +15,7 @@ export default function DraftSave() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="xs">
+        <Button variant="ghost" size="xs">
           Save draft
         </Button>
       </DialogTrigger>
