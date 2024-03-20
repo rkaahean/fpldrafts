@@ -1,7 +1,7 @@
+import { picksStore } from "@/app/store/picks";
 import { cn } from "@/lib/utils";
 import { DoubleArrowDownIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { picksStore } from "./Gameweek";
 import { PlayerData } from "./PitchRow";
 
 export default function Player(props: {
