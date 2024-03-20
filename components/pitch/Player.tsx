@@ -12,7 +12,10 @@ export default function Player(props: {
 }) {
   const [isSelected, setSelected] = useState(false);
 
-  const subIn = picksStore((store) => store.setPickIn);
+  const subIn = picksStore((store) => store.setSubstituteIn);
+  const subOut = picksStore((store) => store.setSubstituteOut);
+  const makeSubs = picksStore((store) => store.makeSubs);
+
   return (
     <div
       className={cn(
@@ -30,7 +33,12 @@ export default function Player(props: {
             className="text-xs w-4 h-4 rounded-sm"
             onClick={() => {
               setSelected(!isSelected);
-              subIn(props.data.player_id);
+              if (props.isSubstitute) {
+                subIn(props.data.player_id);
+              } else {
+                subOut(props.data.player_id);
+              }
+              makeSubs();
             }}
           >
             <div className="flex flex-row justify-center">
