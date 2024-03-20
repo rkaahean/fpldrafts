@@ -144,6 +144,7 @@ function PlayerDescription({
           alt="Player"
           width={40}
           height={40}
+          className="w-auto h-auto"
         />
       </div>
       <div className="text-xs h-1/6 font-semibold 2xl:text-sm">

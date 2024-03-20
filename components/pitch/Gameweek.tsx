@@ -12,28 +12,25 @@ export default function Gameweek() {
   const updatePicks = picksStore((state) => state.setPicks);
   let picksData = picksStore((state) => state.data!);
 
-  const { data, isLoading: isLoadingGameweek } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ["hello", gameweek],
     queryFn: async () => {
-      return await fetch("/gameweek", {
+      const response = await fetch("/gameweek", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ gameweek }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setTimeout(() => {
-            updatePicks(data.data);
-          }, 1000);
-          return data;
-        });
+      });
+      const data = await response.json();
+      // Schedule the setTimeout outside of the Promise chain
+      updatePicks(data.data);
+      return data;
     },
     enabled: gameweek < 29,
   });
 
-  if (isLoadingGameweek) {
+  if (isFetching) {
     return <div>Loading Players...</div>;
   }
 

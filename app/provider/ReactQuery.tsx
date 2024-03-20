@@ -11,7 +11,7 @@ export default function ReactQueryProvider({
 }) {
   queryClient.setDefaultOptions({
     queries: {
-      placeholderData: (prev: any) => prev,
+      // placeholderData: (prev: any) => prev,
     },
   });
   return (

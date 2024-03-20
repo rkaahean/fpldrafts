@@ -77,13 +77,12 @@ export default function PitchRow(props: {
   data: PlayerData[];
   gameweek: number;
 }) {
-  console.log("Pitch data", props.position, props.data);
   // sort props.data with position == "GK being the first"
   return props.position === "subs" ? (
     <div className="flex flex-row w-full h-1/5 items-center justify-around mt-5 bg-green-50 py-2">
       {props.data.map((player) => (
         <Player
-          key={player.web_name}
+          key={player.player_id}
           data={player}
           gameweek={props.gameweek}
           isSubstitute={true}
@@ -92,9 +91,9 @@ export default function PitchRow(props: {
     </div>
   ) : (
     <div className="flex flex-row w-full h-1/5 items-center justify-evenly py-2">
-      {props.data.map((player: any) => (
+      {props.data.map((player) => (
         <Player
-          key={player.id}
+          key={player.player_id}
           data={player}
           gameweek={props.gameweek}
           isSubstitute={false}
