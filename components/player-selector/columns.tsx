@@ -24,7 +24,15 @@ export const columns: ColumnDef<PlayerData>[] = [
   },
   {
     accessorKey: "expected_goal_involvements_per_90",
-    header: "XGI/90",
+    header: "xGI/90",
+  },
+  {
+    accessorKey: "expected_goals_per_90",
+    header: "xG/90",
+  },
+  {
+    accessorKey: "expected_assists_per_90",
+    header: "xA/90",
   },
   {
     accessorKey: "goals_scored",
