@@ -74,7 +74,7 @@ export function filterData(
 }
 
 export default function PitchRow(props: {
-  position: "DEF" | "MID" | "FWD" | "GK" | "subs";
+  position: string;
   data: PlayerData[];
   gameweek: number;
 }) {

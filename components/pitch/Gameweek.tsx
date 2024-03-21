@@ -47,31 +47,14 @@ export default function Gameweek() {
             </button>
           </div>
           <div className="h-full">
-            <PitchRow
-              position="GK"
-              data={filterData(picksData, "GK")}
-              gameweek={gameweek}
-            />
-            <PitchRow
-              position="DEF"
-              data={filterData(picksData, "DEF")}
-              gameweek={gameweek}
-            />
-            <PitchRow
-              position="MID"
-              data={filterData(picksData, "MID")}
-              gameweek={gameweek}
-            />
-            <PitchRow
-              position="FWD"
-              data={filterData(picksData, "FWD")}
-              gameweek={gameweek}
-            />
-            <PitchRow
-              position="subs"
-              data={filterData(picksData, "subs")}
-              gameweek={gameweek}
-            />
+            {["GK", "DEF", "MID", "FWD", "subs"].map((position: string) => (
+              <PitchRow
+                key={position}
+                position={position}
+                data={filterData(picksData, position)}
+                gameweek={gameweek}
+              />
+            ))}
           </div>
         </div>
       </ReactQueryProvider>
