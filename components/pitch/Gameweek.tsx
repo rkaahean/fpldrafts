@@ -2,8 +2,8 @@
 
 import ReactQueryProvider from "@/app/provider/ReactQuery";
 import { picksStore } from "@/app/store/picks";
+import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import PitchRow, { filterData } from "./PitchRow";
 
@@ -23,7 +23,6 @@ export default function Gameweek() {
         body: JSON.stringify({ gameweek }),
       });
       const data = await response.json();
-      // Schedule the setTimeout outside of the Promise chain
       updatePicks(data.data);
       return data;
     },
@@ -40,11 +39,11 @@ export default function Gameweek() {
         <div>
           <div className="flex flex-row justify-between">
             <button onClick={() => setGameweek(gameweek - 1)}>
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeftIcon />
             </button>
             <div className="text-lg font-bold">{`Gameweek ${gameweek}`}</div>
             <button onClick={() => setGameweek(gameweek + 1)}>
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRightIcon />
             </button>
           </div>
           <div className="h-full">

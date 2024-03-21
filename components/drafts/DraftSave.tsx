@@ -1,3 +1,4 @@
+import { DownloadIcon } from "@radix-ui/react-icons";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -16,7 +17,7 @@ export default function DraftSave() {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="ghost" size="xs">
-          Save draft
+          <DownloadIcon />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

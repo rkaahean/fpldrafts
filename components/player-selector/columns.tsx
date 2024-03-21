@@ -36,11 +36,11 @@ export const columns: ColumnDef<PlayerData>[] = [
   },
   {
     accessorKey: "goals_scored",
-    header: "Goals",
+    header: "G",
   },
   {
     accessorKey: "assists",
-    header: "Assists",
+    header: "A",
   },
   {
     accessorKey: "minutes",
