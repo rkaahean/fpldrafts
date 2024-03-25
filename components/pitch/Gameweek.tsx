@@ -1,7 +1,7 @@
 "use client";
 
 import ReactQueryProvider from "@/app/provider/ReactQuery";
-import { picksStore } from "@/app/store/picks";
+import { picksStore, swapPlayers } from "@/app/store/picks";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -10,16 +10,10 @@ import PitchRow, { filterData } from "./PitchRow";
 export default function Gameweek() {
   const [gameweek, setGameweek] = useState(28);
   const updatePicks = picksStore((state) => state.setPicks);
+  const setBase = picksStore((state) => state.setBase);
+
   const drafts = picksStore((state) => state.drafts);
 
-  console.log("All drafrs", drafts);
-
-  // check if there is draft for GW
-  let gameweekDraft = drafts?.filter((draft) => draft.gameweek == gameweek);
-  if (gameweekDraft && gameweekDraft.length > 0) {
-    // console.log("Updating gameweek with draft", gameweekDraft);
-    updatePicks(gameweekDraft![0].data);
-  }
   let picksData = picksStore((state) => state.data!);
 
   const { data, isFetching } = useQuery({
@@ -33,10 +27,33 @@ export default function Gameweek() {
         body: JSON.stringify({ gameweek }),
       });
       const data = await response.json();
-      updatePicks(data.data);
+      if (data.data.length > 0) {
+        console.log("Setting base...");
+        setBase(data.data);
+      }
+
+      let gameweekDraft = drafts.changes.filter(
+        (draft) => draft.gameweek <= gameweek
+      );
+
+      let base = drafts.base;
+      if (base.length > 0) {
+        for (let draftChange of gameweekDraft) {
+          console.log("Changing", draftChange);
+          base = swapPlayers(base, draftChange.in, draftChange.out);
+          console.log("New picks data", base);
+        }
+        updatePicks(base);
+      } else if (data.data.length > 0) {
+        console.log("Updating directly...", data);
+        updatePicks(data.data);
+      } else {
+        console.log("No data", data);
+        const base = picksStore((state) => state.base);
+        updatePicks(base!);
+      }
       return data;
     },
-    enabled: gameweek < 29,
   });
 
   if (isFetching) {

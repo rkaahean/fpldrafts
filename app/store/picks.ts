@@ -3,26 +3,35 @@ import { FPLGameweekPicksData } from "../api/data";
 
 interface State {
   data?: FPLGameweekPicksData;
+  base?: FPLGameweekPicksData;
   substitutedIn?: number;
   substitutedOut?: number;
-  drafts?: {
-    data: FPLGameweekPicksData;
-    gameweek: number;
-  }[];
+  drafts: {
+    base: FPLGameweekPicksData;
+    changes: {
+      in: number;
+      out: number;
+      gameweek: number;
+    }[];
+  };
   incrementPop: () => void;
   setPicks: (picks: FPLGameweekPicksData) => void;
+  setBase: (picks: FPLGameweekPicksData) => void;
   setSubstituteIn: (id: number) => void;
   setSubstituteOut: (id: number) => void;
   makeSubs: (gameweek: number) => void;
-  updateDraft: (gameweek: number) => {
-    data: FPLGameweekPicksData;
-    gameweek: number;
-  }[];
 }
 export const picksStore = create<State>()((set, get) => ({
+  drafts: {
+    base: [],
+    changes: [],
+  },
   incrementPop: () => console.log,
   setPicks: (picks: FPLGameweekPicksData) => {
     set({ data: picks });
+  },
+  setBase: (picks: FPLGameweekPicksData) => {
+    set({ base: picks });
   },
   setSubstituteIn: (player_id: number) => {
     /**
@@ -37,64 +46,78 @@ export const picksStore = create<State>()((set, get) => ({
     set({ substitutedOut: player_id });
   },
   makeSubs: (gameweek: number) => {
-    const { data, substitutedIn, substitutedOut, updateDraft } = get();
+    const { data, drafts, substitutedIn, substitutedOut } = get();
 
     // if both subs are set
-    if (!!substitutedIn && !!substitutedOut) {
-      console.log("Making subs...");
-      const inPlayerIndex = data!.findIndex(
-        (player) => player.fpl_player.player_id === substitutedIn
-      );
-      const outPlayerIndex = data!.findIndex(
-        (player) => player.fpl_player.player_id === substitutedOut
-      );
-      if (inPlayerIndex !== -1 && outPlayerIndex !== -1) {
-        const inPlayer = data![inPlayerIndex];
-        const outPlayer = data![outPlayerIndex];
-
-        // Swap the position attribute
-        const tempPosition = inPlayer.position;
-        inPlayer.position = outPlayer.position;
-        outPlayer.position = tempPosition;
-
-        const newData = data!.filter(
-          (_, index) => index !== inPlayerIndex && index !== outPlayerIndex
-        );
-
-        // Add the modified elements to the new array
-        newData.splice(inPlayerIndex, 0, inPlayer);
-        newData.splice(outPlayerIndex, 0, outPlayer);
-
-        // Update the state with the modified data array
-        set({
-          data: newData,
-          substitutedIn: undefined,
-          substitutedOut: undefined,
+    if (!!substitutedIn && !!substitutedOut && data!) {
+      const newData = swapPlayers(data, substitutedIn, substitutedOut);
+      if (drafts && drafts.base.length > 0) {
+        drafts.changes.push({
+          in: substitutedIn,
+          out: substitutedOut,
+          gameweek,
         });
-
-        const updatedDrafts = updateDraft(gameweek);
-        console.log("Saved drafts", updatedDrafts);
+      } else if (drafts) {
+        drafts.base = data!;
+        drafts.changes = [
+          {
+            in: substitutedIn,
+            out: substitutedOut,
+            gameweek,
+          },
+        ];
       }
+      // Update the state with the modified data array
+      set({
+        data: newData,
+        substitutedIn: undefined,
+        substitutedOut: undefined,
+        drafts,
+      });
     }
   },
-  updateDraft: (gameweek: number) => {
-    console.log(gameweek);
-    const { drafts, data } = get();
-
-    // if object doesn't exist, create it
-    let newDrafts = !drafts ? [] : [...drafts];
-
-    // if drafts has gameweek
-    const filteredDrafts = newDrafts.filter(
-      (draft) => draft.gameweek != gameweek
-    );
-    filteredDrafts.push({
-      data: data!,
-      gameweek,
-    });
-    set({
-      drafts: filteredDrafts,
-    });
-    return filteredDrafts;
-  },
 }));
+
+export function swapPlayers(
+  data: FPLGameweekPicksData,
+  substitutedIn: number,
+  substitutedOut: number
+): FPLGameweekPicksData {
+  const inPlayerIndex = data.findIndex(
+    (player) => player.fpl_player.player_id === substitutedIn
+  );
+  const outPlayerIndex = data.findIndex(
+    (player) => player.fpl_player.player_id === substitutedOut
+  );
+
+  if (inPlayerIndex === -1 || outPlayerIndex === -1) {
+    // One or both players not found, return the original data
+    return data;
+  }
+
+  const inPlayer = { ...data[inPlayerIndex] }; // Create a new object
+  const outPlayer = { ...data[outPlayerIndex] }; // Create a new object
+
+  console.log("substituting in", inPlayer, "substituting out", outPlayer);
+
+  // Swap the position attribute
+  const tempPosition = inPlayer.position;
+  inPlayer.position = outPlayer.position;
+  outPlayer.position = tempPosition;
+  console.log(
+    "in position",
+    inPlayer.fpl_player.web_name,
+    inPlayer.position,
+    "out position",
+    outPlayer.position
+  );
+
+  const newData = [...data]; // Create a new array with the same elements as data
+
+  // Replace the modified elements in the new array
+  newData[inPlayerIndex] = inPlayer;
+  newData[outPlayerIndex] = outPlayer;
+
+  console.log("Function data", newData);
+  return newData;
+}
