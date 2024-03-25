@@ -5,11 +5,19 @@ interface State {
   data?: FPLGameweekPicksData;
   substitutedIn?: number;
   substitutedOut?: number;
+  drafts?: {
+    data: FPLGameweekPicksData;
+    gameweek: number;
+  }[];
   incrementPop: () => void;
   setPicks: (picks: FPLGameweekPicksData) => void;
   setSubstituteIn: (id: number) => void;
   setSubstituteOut: (id: number) => void;
-  makeSubs: () => void;
+  makeSubs: (gameweek: number) => void;
+  updateDraft: (gameweek: number) => {
+    data: FPLGameweekPicksData;
+    gameweek: number;
+  }[];
 }
 export const picksStore = create<State>()((set, get) => ({
   incrementPop: () => console.log,
@@ -28,8 +36,8 @@ export const picksStore = create<State>()((set, get) => ({
      */
     set({ substitutedOut: player_id });
   },
-  makeSubs: () => {
-    const { data, substitutedIn, substitutedOut } = get();
+  makeSubs: (gameweek: number) => {
+    const { data, substitutedIn, substitutedOut, updateDraft } = get();
 
     // if both subs are set
     if (!!substitutedIn && !!substitutedOut) {
@@ -63,7 +71,30 @@ export const picksStore = create<State>()((set, get) => ({
           substitutedIn: undefined,
           substitutedOut: undefined,
         });
+
+        const updatedDrafts = updateDraft(gameweek);
+        console.log("Saved drafts", updatedDrafts);
       }
     }
+  },
+  updateDraft: (gameweek: number) => {
+    console.log(gameweek);
+    const { drafts, data } = get();
+
+    // if object doesn't exist, create it
+    let newDrafts = !drafts ? [] : [...drafts];
+
+    // if drafts has gameweek
+    const filteredDrafts = newDrafts.filter(
+      (draft) => draft.gameweek != gameweek
+    );
+    filteredDrafts.push({
+      data: data!,
+      gameweek,
+    });
+    set({
+      drafts: filteredDrafts,
+    });
+    return filteredDrafts;
   },
 }));

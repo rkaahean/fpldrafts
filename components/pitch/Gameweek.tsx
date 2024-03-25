@@ -10,6 +10,16 @@ import PitchRow, { filterData } from "./PitchRow";
 export default function Gameweek() {
   const [gameweek, setGameweek] = useState(28);
   const updatePicks = picksStore((state) => state.setPicks);
+  const drafts = picksStore((state) => state.drafts);
+
+  console.log("All drafrs", drafts);
+
+  // check if there is draft for GW
+  let gameweekDraft = drafts?.filter((draft) => draft.gameweek == gameweek);
+  if (gameweekDraft && gameweekDraft.length > 0) {
+    // console.log("Updating gameweek with draft", gameweekDraft);
+    updatePicks(gameweekDraft![0].data);
+  }
   let picksData = picksStore((state) => state.data!);
 
   const { data, isFetching } = useQuery({
@@ -33,6 +43,7 @@ export default function Gameweek() {
     return <div>Loading Players...</div>;
   }
 
+  // console.log("Final pitch data", picksData);
   if (picksData) {
     return (
       <ReactQueryProvider>
