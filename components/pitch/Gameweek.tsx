@@ -28,10 +28,12 @@ export default function Gameweek() {
       });
       const data = await response.json();
       if (data.data.length > 0) {
+        // if the gameweek has valid data, that is the base
         console.log("Setting base...");
         setBase(data.data);
       }
-
+      // dealing with drafts into a future gameweek
+      // we need to apply the drafts to the base
       let gameweekDraft = drafts.changes.filter(
         (draft) => draft.gameweek <= gameweek
       );
