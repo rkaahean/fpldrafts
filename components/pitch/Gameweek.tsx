@@ -16,8 +16,8 @@ export default function Gameweek() {
   const drafts = picksStore((state) => state.drafts);
   const picksData = picksStore((state) => state.data!);
 
-  const { data, isFetching } = useQuery({
-    queryKey: ["hello", gameweek, picksData],
+  const { data } = useQuery({
+    queryKey: [gameweek, picksData],
     queryFn: async () => {
       const response = await fetch("/gameweek", {
         method: "POST",
@@ -59,11 +59,6 @@ export default function Gameweek() {
     },
   });
 
-  if (isFetching) {
-    return <div>Loading Players...</div>;
-  }
-
-  console.log("Final pitch data", data);
   if (data) {
     return (
       <ReactQueryProvider>
