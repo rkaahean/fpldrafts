@@ -3,10 +3,7 @@ import { createDraft } from "../../api";
 
 export async function POST(req: NextRequest) {
   const request = await req.json();
-
-  let data;
-  console.log("Creating draft", request);
-  data = await createDraft(request);
+  const data = await createDraft(request);
 
   return Response.json({ data });
 }

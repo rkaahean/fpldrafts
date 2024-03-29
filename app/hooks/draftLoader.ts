@@ -18,8 +18,6 @@ export const useDraftLoader = () => {
       }),
     }).then((res) => res.json());
 
-    console.log("Drafts gotten", drafts.data);
-
     const formattedDrafts = drafts.data.map((draft: any) => {
       return {
         in: draft.player_in_id,

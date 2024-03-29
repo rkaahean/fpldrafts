@@ -110,7 +110,6 @@ export async function createDraft(request: {
       description: request.description,
     },
   });
-  console.log("Draft", draft);
 
   const data = request.changes.map((change) => {
     return {

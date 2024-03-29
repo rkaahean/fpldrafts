@@ -41,7 +41,6 @@ export const columns: ColumnDef<Draft>[] = [
             size="table"
             variant="ghost"
             onClick={async () => {
-              console.log("Reload draft", row.original);
               loadDrafts(
                 row.original.id,
                 row.original.name,

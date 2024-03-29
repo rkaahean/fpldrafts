@@ -19,7 +19,7 @@ export default function Home() {
         </div>
         <div className="col-span-1 h-full">
           <div className="flex flex-col h-full gap-2">
-            <div className="h-1/3">
+            <div className="min-h-64">
               <Drafts />
             </div>
             <div className="text-md font-semibold">Fixtures</div>

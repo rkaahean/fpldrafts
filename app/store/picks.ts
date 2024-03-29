@@ -53,8 +53,6 @@ export const picksStore = create<State>()((set, get) => ({
   setDrafts: (drafts) => set({ drafts }),
   makeSubs: (gameweek: number) => {
     const { data, drafts, substitutedIn, substitutedOut } = get();
-
-    console.log("making subs...", data);
     // if both subs are set
     if (!!substitutedIn && !!substitutedOut) {
       const newData = swapPlayers(data!, substitutedIn, substitutedOut);
@@ -104,19 +102,10 @@ export function swapPlayers(
   const inPlayer = { ...data[inPlayerIndex] }; // Create a new object
   const outPlayer = { ...data[outPlayerIndex] }; // Create a new object
 
-  // console.log("substituting in", inPlayer, "substituting out", outPlayer);
-
   // Swap the position attribute
   const tempPosition = inPlayer.position;
   inPlayer.position = outPlayer.position;
   outPlayer.position = tempPosition;
-  // console.log(
-  //   "in position",
-  //   inPlayer.fpl_player.web_name,
-  //   inPlayer.position,
-  //   "out position",
-  //   outPlayer.position
-  // );
 
   const newData = [...data]; // Create a new array with the same elements as data
 
@@ -124,6 +113,5 @@ export function swapPlayers(
   newData[inPlayerIndex] = inPlayer;
   newData[outPlayerIndex] = outPlayer;
 
-  // console.log("Function data", newData);
   return newData;
 }
