@@ -53,6 +53,8 @@ export default function Gameweek() {
           draftData = swapPlayers(draftData, draftChange.in, draftChange.out);
         }
         return draftData;
+      } else if (data.data.length > 0) {
+        return data.data;
       }
     },
   });
