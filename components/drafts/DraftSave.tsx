@@ -1,3 +1,6 @@
+"use client";
+
+import { picksStore } from "@/app/store/picks";
 import { DownloadIcon } from "@radix-ui/react-icons";
 import { Button } from "../ui/button";
 import {
@@ -13,6 +16,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
 export default function DraftSave() {
+  const drafts = picksStore((state) => state.drafts);
   return (
     <Dialog>
       <DialogTrigger asChild>

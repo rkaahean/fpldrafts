@@ -38,7 +38,7 @@ model FPLPlayer {
 
   fpl_season                FPLSeason                @relation(fields: [season_id], references: [id])
   fpl_gameweek_player_stats FPLGameweekPlayerStats[]
-  fpl_player_team                  FPLPlayerTeam            @relation(fields: [team_code], references: [code])
+  fpl_player_team           FPLPlayerTeam            @relation(fields: [team_code], references: [code])
 }
 
 model FPLPlayerTeam {
@@ -74,6 +74,7 @@ model FPLFixtures {
   fpl_team_h FPLPlayerTeam @relation("home_team", fields: [team_h_id], references: [id])
   fpl_team_a FPLPlayerTeam @relation("away_team", fields: [team_a_id], references: [id])
 }
+
 model FPLGameweekPicks {
   id              String    @id @default(uuid())
   fpl_team_id     String
@@ -120,4 +121,22 @@ model FPLSeason {
   fpl_players     FPLPlayer[]
   fpl_player_team FPLPlayerTeam[]
   fpl_fixtures    FPLFixtures[]
+}
+
+model FPLDrafts {
+  id                String              @id @default(uuid())
+  name              String
+  description       String?
+  fpl_team_id       String
+  base_gameweek     Int
+  FPLDraftTransfers FPLDraftTransfers[]
+}
+
+model FPLDraftTransfers {
+  id            String    @id @default(uuid())
+  fpl_draft_id  String
+  player_in_id  Int
+  player_out_id Int
+  gameweek      Int
+  fpl_draft     FPLDrafts @relation(fields: [fpl_draft_id], references: [id])
 }

@@ -90,3 +90,35 @@ export async function getAllPlayerData() {
   });
   return players;
 }
+
+export async function createDraft(request: {
+  name: string;
+  team_id: string;
+  gameweek: number;
+  changes: {
+    in: number;
+    out: number;
+    gameweek: number;
+  }[];
+}) {
+  const draft = await prisma.fPLDrafts.create({
+    data: {
+      name: request.name,
+      fpl_team_id: request.team_id,
+      base_gameweek: request.gameweek,
+    },
+  });
+
+  const data = request.changes.map((change) => {
+    return {
+      player_in_id: change.in,
+      player_out_id: change.out,
+      gameweek: change.gameweek,
+      fpl_draft_id: draft.id,
+    };
+  });
+
+  await prisma.fPLDraftTransfers.createMany({
+    data,
+  });
+}
