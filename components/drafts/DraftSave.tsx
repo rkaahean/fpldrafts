@@ -19,6 +19,10 @@ import { Label } from "../ui/label";
 export default function DraftSave() {
   const drafts = picksStore((state) => state.drafts);
   const [open, setOpen] = useState(false);
+  const [draftName, setDraftName] = useState("GW 27 draft");
+  const [draftDescription, setDraftDescription] = useState(
+    "A draft for chip strategy"
+  );
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -42,6 +46,7 @@ export default function DraftSave() {
               id="name"
               defaultValue="GW 27 draft"
               className="col-span-3"
+              onChange={(e) => setDraftName(e.target.value)}
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
@@ -49,9 +54,10 @@ export default function DraftSave() {
               Description
             </Label>
             <Input
-              id="username"
+              id="description"
               defaultValue="A draft for chip strategy"
               className="col-span-3"
+              onChange={(e) => setDraftDescription(e.target.value)}
             />
           </div>
         </div>
@@ -68,9 +74,9 @@ export default function DraftSave() {
                 },
                 body: JSON.stringify({
                   changes: drafts.changes,
-                  name: "GW 27 draft",
+                  name: draftName,
                   team_id: "53ed0ea1-7298-4069-b609-f8108468c885",
-                  description: "A draft for chip strategy",
+                  description: draftDescription,
                   gameweek: 27,
                 }),
               });

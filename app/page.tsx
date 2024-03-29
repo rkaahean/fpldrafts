@@ -1,6 +1,6 @@
 import Drafts from "@/components/drafts/Drafts";
 import Team from "@/components/pitch/Team";
-import Selector from "@/components/player-selector/selector";
+import Selector from "@/components/player-selector/Selector";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
