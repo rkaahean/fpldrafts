@@ -1,4 +1,4 @@
-import { getAllDrafts } from "@/app/api/data";
+import { getAllDrafts } from "@/app/api";
 import { DataTable } from "../ui/data-table";
 import { columns } from "./columns";
 

@@ -1,9 +1,11 @@
 import { NextRequest } from "next/server";
-import { getPlayerData } from "../api";
+import { getDraftTransfers } from "../../api";
 
 export async function POST(req: NextRequest) {
   const request = await req.json();
-  const data = await getPlayerData(request.id);
+
+  console.log("Loading draft transfers...");
+  const data = await getDraftTransfers(request.draftId);
 
   return Response.json({ data });
 }

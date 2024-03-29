@@ -1,25 +1,31 @@
 import { create } from "zustand";
-import { FPLGameweekPicksData } from "../api/data";
+import { FPLGameweekPicksData } from "../api";
 
+interface DraftState {
+  id?: string;
+  name?: string;
+  description?: string;
+  changes: {
+    in: number;
+    out: number;
+    gameweek: number;
+  }[];
+}
 interface State {
   data?: FPLGameweekPicksData;
   base?: FPLGameweekPicksData;
   substitutedIn?: number;
   substitutedOut?: number;
-  drafts: {
-    changes: {
-      in: number;
-      out: number;
-      gameweek: number;
-    }[];
-  };
+  drafts: DraftState;
   incrementPop: () => void;
   setPicks: (picks: FPLGameweekPicksData) => void;
   setBase: (picks: FPLGameweekPicksData) => void;
   setSubstituteIn: (id: number) => void;
   setSubstituteOut: (id: number) => void;
   makeSubs: (gameweek: number) => void;
+  setDrafts: (drafts: DraftState) => void;
 }
+
 export const picksStore = create<State>()((set, get) => ({
   drafts: {
     base: [],
@@ -44,6 +50,7 @@ export const picksStore = create<State>()((set, get) => ({
      */
     set({ substitutedOut: player_id });
   },
+  setDrafts: (drafts) => set({ drafts }),
   makeSubs: (gameweek: number) => {
     const { data, drafts, substitutedIn, substitutedOut } = get();
 

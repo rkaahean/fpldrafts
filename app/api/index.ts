@@ -1,4 +1,4 @@
-import prisma from "../../../lib/db";
+import prisma from "../../lib/db";
 
 export async function getPlayerData(id: number) {
   // get from prisma
@@ -128,4 +128,12 @@ export async function createDraft(request: {
 
 export async function getAllDrafts() {
   return await prisma.fPLDrafts.findMany();
+}
+
+export async function getDraftTransfers(draftId: string) {
+  return await prisma.fPLDraftTransfers.findMany({
+    where: {
+      fpl_draft_id: draftId,
+    },
+  });
 }

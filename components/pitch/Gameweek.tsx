@@ -17,7 +17,10 @@ export default function Gameweek() {
   const picksData = picksStore((state) => state.data!);
 
   const { data } = useQuery({
-    queryKey: [gameweek, picksData],
+    // gameweek: whenever the gameweek state is changed
+    // picksData: whenever a substitution is made
+    // drafts: whenever a draft is loaded
+    queryKey: [gameweek, picksData, drafts],
     queryFn: async () => {
       const response = await fetch("/gameweek", {
         method: "POST",

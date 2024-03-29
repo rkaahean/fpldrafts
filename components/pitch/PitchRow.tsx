@@ -1,4 +1,4 @@
-import { FPLGameweekPicksData } from "@/app/api/data";
+import { FPLGameweekPicksData } from "@/app/api";
 import Player from "./Player";
 
 export type PlayerData = {
