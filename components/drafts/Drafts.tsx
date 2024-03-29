@@ -1,11 +1,12 @@
+import { getAllDrafts } from "@/app/api/data";
 import { DataTable } from "../ui/data-table";
 import { columns } from "./columns";
-import { data } from "./data";
 
-export default function Drafts() {
+export default async function Drafts() {
+  const data = await getAllDrafts();
   return (
     <div className="flex flex-col h-full">
-      <div className="text-lg font-semibold">Scenarios & Drafts</div>
+      <div className="text-md font-semibold">Drafts</div>
       <DataTable
         columns={columns}
         data={data}

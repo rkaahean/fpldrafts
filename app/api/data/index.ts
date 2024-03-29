@@ -125,3 +125,7 @@ export async function createDraft(request: {
     data,
   });
 }
+
+export async function getAllDrafts() {
+  return await prisma.fPLDrafts.findMany();
+}

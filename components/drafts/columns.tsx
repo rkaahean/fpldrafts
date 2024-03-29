@@ -7,26 +7,25 @@ import { ColumnDef } from "@tanstack/react-table";
 export type Draft = {
   id: string;
   name: string;
-  createdAt: string;
-  basedOn: string;
-  scenario: string;
+  description: string | null;
+  base_gameweek: number;
 };
 
 export const columns: ColumnDef<Draft>[] = [
   {
-    accessorKey: "scenario",
-    header: "Scenario",
+    accessorKey: "id",
+    header: "ID",
   },
   {
     accessorKey: "name",
     header: "Name",
   },
   {
-    accessorKey: "createdAt",
-    header: "Created At",
+    accessorKey: "description",
+    header: "Description",
   },
   {
-    accessorKey: "basedOn",
-    header: "Based On",
+    accessorKey: "base_gameweek",
+    header: "Base",
   },
 ];

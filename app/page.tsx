@@ -1,6 +1,7 @@
 import Drafts from "@/components/drafts/Drafts";
 import Team from "@/components/pitch/Team";
 import Selector from "@/components/player-selector/selector";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Home() {
@@ -21,7 +22,7 @@ export default function Home() {
             <div>
               <Drafts />
             </div>
-            <div className="text-lg font-semibold">Statistics</div>
+            <div className="text-md font-semibold">Fixtures</div>
           </div>
         </div>
         <div className="col-span-2">
