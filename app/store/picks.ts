@@ -7,7 +7,6 @@ interface State {
   substitutedIn?: number;
   substitutedOut?: number;
   drafts: {
-    base: FPLGameweekPicksData;
     changes: {
       in: number;
       out: number;
@@ -48,17 +47,17 @@ export const picksStore = create<State>()((set, get) => ({
   makeSubs: (gameweek: number) => {
     const { data, drafts, substitutedIn, substitutedOut } = get();
 
+    console.log("making subs...", data);
     // if both subs are set
-    if (!!substitutedIn && !!substitutedOut && data!) {
-      const newData = swapPlayers(data, substitutedIn, substitutedOut);
-      if (drafts && drafts.base.length > 0) {
+    if (!!substitutedIn && !!substitutedOut) {
+      const newData = swapPlayers(data!, substitutedIn, substitutedOut);
+      if (drafts && drafts.changes) {
         drafts.changes.push({
           in: substitutedIn,
           out: substitutedOut,
           gameweek,
         });
-      } else if (drafts) {
-        drafts.base = data!;
+      } else {
         drafts.changes = [
           {
             in: substitutedIn,

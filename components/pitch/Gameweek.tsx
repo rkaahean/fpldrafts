@@ -11,13 +11,13 @@ export default function Gameweek() {
   const [gameweek, setGameweek] = useState(28);
   const updatePicks = picksStore((state) => state.setPicks);
   const setBase = picksStore((state) => state.setBase);
+  const dbbase = picksStore((state) => state.base!);
 
   const drafts = picksStore((state) => state.drafts);
-
-  let picksData = picksStore((state) => state.data!);
+  const picksData = picksStore((state) => state.data!);
 
   const { data, isFetching } = useQuery({
-    queryKey: ["hello", gameweek],
+    queryKey: ["hello", gameweek, picksData],
     queryFn: async () => {
       const response = await fetch("/gameweek", {
         method: "POST",
@@ -27,10 +27,18 @@ export default function Gameweek() {
         body: JSON.stringify({ gameweek }),
       });
       const data = await response.json();
+      let base;
       if (data.data.length > 0) {
         // if the gameweek has valid data, that is the base
         console.log("Setting base...");
+        updatePicks(data.data);
         setBase(data.data);
+        base = data.data;
+      } else {
+        // else, if viewing a future gameweek, we need to use the base data
+        console.log("No DB data...");
+        base = dbbase;
+        console.log("Base data", base);
       }
       // dealing with drafts into a future gameweek
       // we need to apply the drafts to the base
@@ -38,23 +46,14 @@ export default function Gameweek() {
         (draft) => draft.gameweek <= gameweek
       );
 
-      let base = drafts.base;
-      if (base.length > 0) {
+      // if there's a base, apply changes
+      let draftData = base;
+      if (base && base.length > 0) {
         for (let draftChange of gameweekDraft) {
-          console.log("Changing", draftChange);
-          base = swapPlayers(base, draftChange.in, draftChange.out);
-          console.log("New picks data", base);
+          draftData = swapPlayers(draftData, draftChange.in, draftChange.out);
         }
-        updatePicks(base);
-      } else if (data.data.length > 0) {
-        console.log("Updating directly...", data);
-        updatePicks(data.data);
-      } else {
-        console.log("No data", data);
-        const base = picksStore((state) => state.base);
-        updatePicks(base!);
+        return draftData;
       }
-      return data;
     },
   });
 
@@ -62,8 +61,8 @@ export default function Gameweek() {
     return <div>Loading Players...</div>;
   }
 
-  // console.log("Final pitch data", picksData);
-  if (picksData) {
+  console.log("Final pitch data", data);
+  if (data) {
     return (
       <ReactQueryProvider>
         <div>
@@ -81,7 +80,7 @@ export default function Gameweek() {
               <PitchRow
                 key={position}
                 position={position}
-                data={filterData(picksData, position)}
+                data={filterData(data, position)}
                 gameweek={gameweek}
               />
             ))}
