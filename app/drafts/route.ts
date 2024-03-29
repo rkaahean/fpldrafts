@@ -8,6 +8,7 @@ export async function POST(req: NextRequest) {
   // if (request.draftId) {
   //   data = await updateDraftTransfers(request);
   // } else {
+  console.log("Creating draft", request);
   data = await createDraft(request);
   // }
 

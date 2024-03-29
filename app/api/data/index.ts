@@ -95,6 +95,7 @@ export async function createDraft(request: {
   name: string;
   team_id: string;
   gameweek: number;
+  description: string;
   changes: {
     in: number;
     out: number;
@@ -106,8 +107,10 @@ export async function createDraft(request: {
       name: request.name,
       fpl_team_id: request.team_id,
       base_gameweek: request.gameweek,
+      description: request.description,
     },
   });
+  console.log("Draft", draft);
 
   const data = request.changes.map((change) => {
     return {
