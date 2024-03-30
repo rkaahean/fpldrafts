@@ -9,15 +9,13 @@ export default function Team() {
   const drafts = picksStore((state) => state.drafts);
   return (
     <div className="w-full min-h-full flex flex-col justify-start gap-5">
-      <div className="flex flex-row gap-2 h-4 item-center">
+      <div className="flex flex-row gap-2 h-4 items-center">
         <DraftSave />
         {/* <Timeline /> */}
         <DraftChanges />
-        {drafts.id && (
-          <div className="text-xs h-full align-middle text-center">
-            Viewing - {drafts.name}
-          </div>
-        )}
+        <div>
+          {drafts.id && <div className="text-xs">Viewing - {drafts.name}</div>}
+        </div>
       </div>
       <Gameweek />
     </div>
