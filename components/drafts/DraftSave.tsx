@@ -15,6 +15,7 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { revalidateDrafts } from "@/app/actions/revalidateDrafts";
 
 export default function DraftSave() {
   const drafts = picksStore((state) => state.drafts);
@@ -81,6 +82,7 @@ export default function DraftSave() {
                 }),
               });
               setOpen(false);
+              revalidateDrafts();
             }}
           >
             Save changes
