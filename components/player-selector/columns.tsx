@@ -1,5 +1,6 @@
 "use client";
 
+import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 
 // This type is used to define the shape of our data.
@@ -45,5 +46,15 @@ export const columns: ColumnDef<PlayerData>[] = [
   {
     accessorKey: "minutes",
     header: "Minutes",
+  },
+  {
+    id: "player_add",
+    cell: ({ row }) => {
+      return (
+        <button onClick={() => console.log("Add")}>
+          <PlusCircledIcon />
+        </button>
+      );
+    },
   },
 ];
