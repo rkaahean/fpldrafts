@@ -2,7 +2,7 @@ import prisma from "../../lib/db";
 
 export async function getPlayerData(id: number, gameweek: number = 1) {
   // get from prisma
-  const players = await prisma.fPLPlayer.findMany({
+  const players = await prisma.fPLPlayer.findFirst({
     // Include the related FPLPlayer record
     select: {
       player_id: true,
@@ -126,6 +126,8 @@ export async function getGameweekPicksData(gameweek: number) {
 export type FPLGameweekPicksData = Awaited<
   ReturnType<typeof getGameweekPicksData>
 >;
+
+export type FPLPlayerData = Pick<FPLGameweekPicksData[number], "fpl_player">;
 
 export async function getAllPlayerData() {
   // sort by total_points

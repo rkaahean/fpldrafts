@@ -1,5 +1,6 @@
 "use client";
 
+import { picksStore } from "@/app/store/picks";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -50,9 +51,17 @@ export const columns: ColumnDef<PlayerData>[] = [
   {
     id: "player_add",
     cell: ({ row }) => {
+      const setSubstituteIn = picksStore((store) => store.setSubstituteIn);
+      const makeSubs = picksStore((store) => store.makeSubs);
+
       return (
-        <button onClick={() => console.log("Add")}>
-          <PlusCircledIcon />
+        <button
+          onClick={() => {
+            setSubstituteIn(row.original.player_id);
+            makeSubs();
+          }}
+        >
+          <PlusCircledIcon className="w-3 h-3" />
         </button>
       );
     },

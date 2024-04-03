@@ -39,7 +39,7 @@ export default function Player(props: {
               } else {
                 subOut(props.data.player_id);
               }
-              makeSubs(props.gameweek);
+              makeSubs();
             }}
           >
             <div className="flex flex-row justify-center">
