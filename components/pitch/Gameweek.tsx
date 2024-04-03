@@ -33,7 +33,7 @@ export default function Gameweek() {
       let base;
       if (data.data.length > 0) {
         // if the gameweek has valid data, that is the base
-        console.log("Setting base...");
+        // console.log("Setting base...");
         updatePicks(data.data);
         setBase(data.data);
         base = data.data;

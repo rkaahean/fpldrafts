@@ -94,24 +94,34 @@ export function swapPlayers(
     (player) => player.fpl_player.player_id === substitutedOut
   );
 
-  if (inPlayerIndex === -1 || outPlayerIndex === -1) {
-    // One or both players not found, return the original data
+  if (outPlayerIndex === -1) {
+    // if index of player substituted out not found, return
     return data;
+  } else if (inPlayerIndex == -1) {
+    // this means that the player being bought in is not in the team
+    const newPlayerData = fetch("/player", {
+      method: "POST",
+      body: JSON.stringify({
+        id: substitutedIn,
+      }),
+    }).then((res) => res.json());
+    return data;
+  } else {
+    // hapens when players being switched up within the team
+    const inPlayer = { ...data[inPlayerIndex] }; // Create a new object
+    const outPlayer = { ...data[outPlayerIndex] }; // Create a new object
+
+    // Swap the position attribute
+    const tempPosition = inPlayer.position;
+    inPlayer.position = outPlayer.position;
+    outPlayer.position = tempPosition;
+
+    const newData = [...data]; // Create a new array with the same elements as data
+
+    // Replace the modified elements in the new array
+    newData[inPlayerIndex] = inPlayer;
+    newData[outPlayerIndex] = outPlayer;
+
+    return newData;
   }
-
-  const inPlayer = { ...data[inPlayerIndex] }; // Create a new object
-  const outPlayer = { ...data[outPlayerIndex] }; // Create a new object
-
-  // Swap the position attribute
-  const tempPosition = inPlayer.position;
-  inPlayer.position = outPlayer.position;
-  outPlayer.position = tempPosition;
-
-  const newData = [...data]; // Create a new array with the same elements as data
-
-  // Replace the modified elements in the new array
-  newData[inPlayerIndex] = inPlayer;
-  newData[outPlayerIndex] = outPlayer;
-
-  return newData;
 }
