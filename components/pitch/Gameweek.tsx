@@ -1,6 +1,6 @@
 "use client";
 
-import ReactQueryProvider from "@/app/provider/ReactQuery";
+import ReactQueryProvider from "@/app/provider";
 import { picksStore, swapPlayers } from "@/app/store/picks";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
@@ -23,7 +23,7 @@ export default function Gameweek() {
     // drafts: whenever a draft is loaded
     queryKey: [currentGameweek, picksData, drafts],
     queryFn: async () => {
-      const response = await fetch("/gameweek", {
+      const response = await fetch("/api/gameweek", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

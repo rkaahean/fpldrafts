@@ -8,7 +8,7 @@ export const useDraftLoader = () => {
     name: string,
     description?: string
   ) => {
-    const drafts = await fetch("/drafts/get", {
+    const drafts = await fetch("/api/drafts/get", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

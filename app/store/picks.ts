@@ -114,7 +114,7 @@ export async function swapPlayers(
     return data;
   } else if (inPlayerIndex == -1) {
     // this means that the player being bought in is not in the team
-    const response = await fetch("/player", {
+    const response = await fetch("/api/player", {
       method: "POST",
       body: JSON.stringify({
         id: substitutedIn,

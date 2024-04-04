@@ -1,9 +1,9 @@
 import { NextRequest } from "next/server";
-import { getPlayerData } from "../api";
+import { createDraft } from "../..";
 
 export async function POST(req: NextRequest) {
   const request = await req.json();
-  const data = await getPlayerData(request.id);
+  const data = await createDraft(request);
 
   return Response.json({ data });
 }

@@ -1,9 +1,9 @@
 import { NextRequest } from "next/server";
-import { getGameweekPicksData } from "../api";
+import { getPlayerData } from "..";
 
 export async function POST(req: NextRequest) {
   const request = await req.json();
-  const data = await getGameweekPicksData(request.gameweek);
+  const data = await getPlayerData(request.id);
 
   return Response.json({ data });
 }

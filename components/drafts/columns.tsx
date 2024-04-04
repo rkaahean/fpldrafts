@@ -1,6 +1,6 @@
 "use client";
 
-import { useDraftLoader } from "@/app/hooks/draftLoader";
+import { useDraftLoader } from "@/app/hooks";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "../ui/button";
