@@ -111,7 +111,6 @@ export async function swapPlayers(
     // if index of player substituted out not found, return
     return data;
   } else if (inPlayerIndex == -1) {
-    console.log("True!");
     // this means that the player being bought in is not in the team
     const response = await fetch("/player", {
       method: "POST",
@@ -126,7 +125,7 @@ export async function swapPlayers(
   }
 
   const outPlayer = { ...data[outPlayerIndex] }; // Create a new object
-  console.log("In", inPlayer, "out", outPlayer);
+  // console.log("In", inPlayer, "out", outPlayer);
 
   if (inPlayer?.position) {
     // Swap the position attribute

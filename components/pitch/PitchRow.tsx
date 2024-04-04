@@ -13,6 +13,7 @@ export type PlayerData = {
     name: string;
     event: number;
   }[];
+  value: number;
 };
 
 export function filterData(
@@ -61,11 +62,15 @@ export function filterData(
           return a.event - b.event;
         });
 
+        const value =
+          player.fpl_player.fpl_gameweek_player_stats?.[0]?.value ?? 0;
+
         return {
           ...player.fpl_player,
           position: player.position,
           team_name: player.fpl_player.fpl_player_team.short_name,
           fixtures: fixtures,
+          value,
         };
       })
       // sort by position to display in order

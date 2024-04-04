@@ -116,7 +116,7 @@ function PlayerStatsTicker({ data }: { data: PlayerData }) {
   return (
     <div className="h-1/6 grid grid-cols-3 text-[9px] 2xl:text-xs w-full">
       <div className="flex flex-col text-center justify-center">
-        <div>6.5$</div>
+        <div>{`£${data.value / 10}`}</div>
       </div>
       <div className="flex flex-col text-center justify-center">
         <div>{`${data.total_points}`}</div>

@@ -48,6 +48,14 @@ export async function getPlayerData(id: number, gameweek: number = 1) {
           },
         },
       },
+      fpl_gameweek_player_stats: {
+        select: {
+          value: true,
+        },
+        where: {
+          gameweek,
+        },
+      },
     },
     where: {
       player_id: id,
@@ -112,6 +120,14 @@ export async function getGameweekPicksData(gameweek: number) {
                   },
                 },
               },
+            },
+          },
+          fpl_gameweek_player_stats: {
+            select: {
+              value: true,
+            },
+            where: {
+              gameweek,
             },
           },
         },
