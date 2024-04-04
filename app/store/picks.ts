@@ -55,7 +55,9 @@ export const picksStore = create<State>()((set, get) => ({
   },
   setDrafts: (drafts) => set({ drafts }),
   setCurrentGameweek: (gameweek: number) => {
-    set({ currentGameweek: gameweek });
+    if (gameweek <= 38) {
+      set({ currentGameweek: gameweek });
+    }
   },
   makeSubs: async () => {
     const {
