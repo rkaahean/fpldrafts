@@ -1,5 +1,5 @@
 import { FPLGameweekPicksData } from "@/app/api";
-import Player from "./Player";
+import Player from "./player";
 
 export type PlayerData = {
   player_id: number;

@@ -1,6 +1,6 @@
 "use client";
 
-import { picksStore } from "@/app/store/picks";
+import { picksStore } from "@/app/store";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 

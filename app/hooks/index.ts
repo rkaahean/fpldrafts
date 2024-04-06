@@ -1,4 +1,4 @@
-import { picksStore } from "../store/picks";
+import { picksStore } from "../store";
 
 export const useDraftLoader = () => {
   const setDrafts = picksStore((state) => state.setDrafts);

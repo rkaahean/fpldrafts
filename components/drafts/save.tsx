@@ -1,6 +1,7 @@
 "use client";
 
-import { picksStore } from "@/app/store/picks";
+import { revalidateDrafts } from "@/app/actions";
+import { picksStore } from "@/app/store";
 import { DownloadIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { Button } from "../ui/button";
@@ -15,7 +16,6 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { revalidateDrafts } from "@/app/actions";
 
 export default function DraftSave() {
   const drafts = picksStore((state) => state.drafts);

@@ -1,9 +1,9 @@
 "use client";
 
-import { picksStore } from "@/app/store/picks";
-import DraftChanges from "../drafts/DraftChanges";
-import DraftSave from "../drafts/DraftSave";
-import Gameweek from "./Gameweek";
+import { picksStore } from "@/app/store";
+import DraftChanges from "../drafts/changes";
+import DraftSave from "../drafts/save";
+import Gameweek from "./gameweek";
 
 export default function Team() {
   const drafts = picksStore((state) => state.drafts);

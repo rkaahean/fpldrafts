@@ -1,4 +1,4 @@
-import { picksStore } from "@/app/store/picks";
+import { picksStore } from "@/app/store";
 import { cn } from "@/lib/utils";
 import { DoubleArrowDownIcon } from "@radix-ui/react-icons";
 import Image from "next/image";

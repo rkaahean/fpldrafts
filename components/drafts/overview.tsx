@@ -14,22 +14,6 @@ const getData = unstable_cache(
   }
 );
 export default async function Drafts() {
-  // const { data, isFetching } = useQuery({
-  //   queryKey: ["drafts"],
-  //   queryFn: async () => {
-  //     const drafts = await fetch("/drafts/all", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     }).then((res) => res.json());
-  //     return drafts.data;
-  //   },
-  // });
-
-  // if (isFetching) {
-  //   return <div>Loading...</div>;
-  // }
   const drafts = await getData();
 
   return (
