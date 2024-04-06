@@ -19,7 +19,6 @@ interface State {
   substitutedOut?: number;
   drafts: DraftState;
   incrementPop: () => void;
-  setPicks: (picks: FPLGameweekPicksData) => void;
   setBase: (picks: FPLGameweekPicksData) => void;
   setSubstituteIn: (id: number) => void;
   setSubstituteOut: (id: number) => void;
@@ -30,7 +29,6 @@ interface State {
 
 export const picksStore = create<State>()((set, get) => ({
   drafts: {
-    base: [],
     changes: [],
   },
   currentGameweek: 28,
@@ -61,7 +59,6 @@ export const picksStore = create<State>()((set, get) => ({
   },
   makeSubs: async () => {
     const {
-      data,
       drafts,
       substitutedIn,
       substitutedOut,
@@ -69,15 +66,17 @@ export const picksStore = create<State>()((set, get) => ({
     } = get();
     // if both subs are set
     if (!!substitutedIn && !!substitutedOut) {
-      const newData = await swapPlayers(data!, substitutedIn, substitutedOut);
+      // await swapPlayers(data!, substitutedIn, substitutedOut);
+      let newDrafts;
       if (drafts && drafts.changes) {
-        drafts.changes.push({
+        newDrafts = [...drafts.changes];
+        newDrafts.push({
           in: substitutedIn,
           out: substitutedOut,
           gameweek,
         });
       } else {
-        drafts.changes = [
+        newDrafts = [
           {
             in: substitutedIn,
             out: substitutedOut,
@@ -87,10 +86,11 @@ export const picksStore = create<State>()((set, get) => ({
       }
       // Update the state with the modified data array
       set({
-        data: newData,
         substitutedIn: undefined,
         substitutedOut: undefined,
-        drafts,
+        drafts: {
+          changes: newDrafts,
+        },
       });
     }
   },
@@ -101,6 +101,7 @@ export async function swapPlayers(
   substitutedIn: number,
   substitutedOut: number
 ): Promise<FPLGameweekPicksData> {
+  console.log("Swapping player", substitutedIn, substitutedOut, data);
   const inPlayerIndex = data.findIndex(
     (player) => player.fpl_player.player_id === substitutedIn
   );
@@ -121,6 +122,7 @@ export async function swapPlayers(
       }),
     }).then((res) => res.json());
     inPlayer = { fpl_player: response.data };
+    console.log("New player data loading", inPlayer);
   } else {
     // hapens when players being switched up within the team
     inPlayer = { ...data[inPlayerIndex] }; // Create a new object

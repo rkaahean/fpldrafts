@@ -7,21 +7,20 @@ import { useQuery } from "@tanstack/react-query";
 import PitchRow, { filterData } from "./PitchRow";
 
 export default function Gameweek() {
-  const updatePicks = picksStore((state) => state.setPicks);
   const setBase = picksStore((state) => state.setBase);
   const setCurrentGameweek = picksStore((state) => state.setCurrentGameweek);
 
   const dbbase = picksStore((state) => state.base!);
 
   const drafts = picksStore((state) => state.drafts);
-  const picksData = picksStore((state) => state.data!);
+  // const picksData = picksStore((state) => state.data!);
   const currentGameweek = picksStore((state) => state.currentGameweek);
 
   const { data } = useQuery({
     // gameweek: whenever the gameweek state is changed
     // picksData: whenever a substitution is made
     // drafts: whenever a draft is loaded
-    queryKey: [currentGameweek, picksData, drafts],
+    queryKey: [currentGameweek, drafts.changes],
     queryFn: async () => {
       const response = await fetch("/api/gameweek", {
         method: "POST",
@@ -31,17 +30,14 @@ export default function Gameweek() {
         body: JSON.stringify({ gameweek: currentGameweek }),
       });
       const data = await response.json();
-      console.log("Data", data.data);
+
       let base;
       if (data.data.length > 0) {
         // if the gameweek has valid data, that is the base
-        // console.log("Setting base...");
-        updatePicks(data.data);
         setBase(data.data);
         base = data.data;
       } else {
         // else, if viewing a future gameweek, we need to use the base data
-        console.log("No DB data...");
         base = dbbase;
         console.log("Base data", base);
       }
@@ -55,7 +51,11 @@ export default function Gameweek() {
       let draftData = base;
       if (base && base.length > 0) {
         for (let draftChange of gameweekDraft) {
-          draftData = swapPlayers(draftData, draftChange.in, draftChange.out);
+          draftData = await swapPlayers(
+            draftData,
+            draftChange.in,
+            draftChange.out
+          );
         }
         return draftData;
       } else if (data.data.length > 0) {
