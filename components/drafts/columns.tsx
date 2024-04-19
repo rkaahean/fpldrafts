@@ -1,7 +1,8 @@
 "use client";
 
+import { revalidateDrafts } from "@/app/actions";
 import { useDraftLoader } from "@/app/hooks";
-import { ReloadIcon } from "@radix-ui/react-icons";
+import { DownloadIcon, TrashIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "../ui/button";
 
@@ -48,7 +49,35 @@ export const columns: ColumnDef<Draft>[] = [
               );
             }}
           >
-            <ReloadIcon className="w-3 h-3" />
+            <DownloadIcon className="w-3 h-3" />
+          </Button>
+        </div>
+      );
+    },
+  },
+  {
+    id: "delete",
+    cell: ({ row }) => {
+      return (
+        <div className="flex h-full items-center justify-center w-full">
+          <Button
+            size="table"
+            variant="ghost"
+            onClick={async () => {
+              // delete
+              await fetch("/api/drafts/delete", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  draftId: row.original.id,
+                }),
+              }).then((res) => res.json());
+              revalidateDrafts();
+            }}
+          >
+            <TrashIcon className="w-3 h-3" />
           </Button>
         </div>
       );

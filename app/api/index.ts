@@ -200,3 +200,11 @@ export async function getDraftTransfers(draftId: string) {
     },
   });
 }
+
+export async function deleteDraft(draftId: string) {
+  return await prisma.fPLDrafts.delete({
+    where: {
+      id: draftId,
+    },
+  });
+}

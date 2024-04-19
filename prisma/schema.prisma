@@ -138,5 +138,5 @@ model FPLDraftTransfers {
   player_in_id  Int
   player_out_id Int
   gameweek      Int
-  fpl_draft     FPLDrafts @relation(fields: [fpl_draft_id], references: [id])
+  fpl_draft     FPLDrafts @relation(fields: [fpl_draft_id], references: [id], onDelete: Cascade)
 }
