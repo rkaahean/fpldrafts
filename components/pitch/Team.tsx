@@ -11,7 +11,6 @@ export default function Team() {
     <div className="w-full min-h-full flex flex-col justify-start gap-5">
       <div className="flex flex-row gap-2 h-4 items-center">
         <DraftSave />
-        {/* <Timeline /> */}
         <DraftChanges />
         <div>
           {drafts.id && <div className="text-xs">Viewing - {drafts.name}</div>}
