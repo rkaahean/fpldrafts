@@ -68,7 +68,7 @@ export default function DraftSave() {
             className="h-8 w-24 text-xs"
             onClick={async () => {
               console.log("Saving draft...");
-              await fetch("/drafts/create", {
+              await fetch("/api/drafts/create", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
