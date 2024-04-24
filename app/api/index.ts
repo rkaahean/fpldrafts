@@ -71,6 +71,7 @@ export async function getPlayerStaticData(id: number) {
       fpl_player_team: {
         select: {
           code: true,
+          name: true,
         },
       },
     },

@@ -64,7 +64,6 @@ export const columns: ColumnDef<PlayerData>[] = [
               toast({
                 title: "Cannot make transfer",
                 description: reason,
-                variant: "destructive",
               });
             }
           }}

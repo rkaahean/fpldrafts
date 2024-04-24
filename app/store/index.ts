@@ -13,7 +13,7 @@ interface DraftState {
 }
 interface State {
   currentGameweek: number;
-  data?: FPLGameweekPicksData;
+  picks?: FPLGameweekPicksData;
   base?: FPLGameweekPicksData;
   substitutedIn?: number;
   substitutedOut?: number;
@@ -28,6 +28,7 @@ interface State {
     reason: string;
   }>;
   setDrafts: (drafts: DraftState) => void;
+  setPicks: (picks: FPLGameweekPicksData) => void;
 }
 
 export const picksStore = create<State>()((set, get) => ({
@@ -37,7 +38,7 @@ export const picksStore = create<State>()((set, get) => ({
   currentGameweek: 28,
   incrementPop: () => console.log,
   setPicks: (picks: FPLGameweekPicksData) => {
-    set({ data: picks });
+    set({ picks });
   },
   setBase: (picks: FPLGameweekPicksData) => {
     set({ base: picks });
@@ -63,6 +64,7 @@ export const picksStore = create<State>()((set, get) => ({
   makeSubs: async () => {
     const {
       drafts,
+      picks,
       substitutedIn,
       substitutedOut,
       currentGameweek: gameweek,
@@ -74,7 +76,7 @@ export const picksStore = create<State>()((set, get) => ({
       const { isValid, reason } = await fetch("/api/validate", {
         method: "POST",
         body: JSON.stringify({
-          data: drafts,
+          picks,
           substitutedIn,
           substitutedOut,
         }),
@@ -112,11 +114,6 @@ export const picksStore = create<State>()((set, get) => ({
           changes: newDrafts,
         },
       });
-
-      return {
-        isValid: true,
-        reason: "All good",
-      };
     }
 
     return {

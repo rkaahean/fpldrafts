@@ -10,13 +10,20 @@ export default function Gameweek() {
   const picksSelectors = picksStore((state) => ({
     setBase: state.setBase,
     setCurrentGameweek: state.setCurrentGameweek,
+    setPicks: state.setPicks,
     dbbase: state.base!,
     drafts: state.drafts,
     currentGameweek: state.currentGameweek,
   }));
 
-  const { setBase, setCurrentGameweek, dbbase, drafts, currentGameweek } =
-    picksSelectors;
+  const {
+    setBase,
+    setPicks,
+    setCurrentGameweek,
+    dbbase,
+    drafts,
+    currentGameweek,
+  } = picksSelectors;
 
   const { data } = useQuery({
     queryKey: [currentGameweek, drafts.changes],
@@ -55,8 +62,10 @@ export default function Gameweek() {
             draftChange.out
           );
         }
+        setPicks(draftData);
         return draftData;
       } else if (data.data.length > 0) {
+        setPicks(data.data);
         return data.data;
       }
     },
