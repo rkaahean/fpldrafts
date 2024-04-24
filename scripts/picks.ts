@@ -39,15 +39,17 @@ async function parsePicksData(
 
 try {
   const data = [];
-  for (let i = 1; i <= 28; i++) {
-    data.push(getData(44421, i));
+  for (let i = 36; i <= 38; i++) {
+    const gameweekData = getData(44421, i);
+    console.log(gameweekData);
+    data.push(gameweekData);
   }
 
-  Promise.all(data).then(async (res) => {
-    await prisma.fPLGameweekPicks.createMany({
-      data: res.flat(),
-    });
-  });
+  // Promise.all(data).then(async (res) => {
+  //   await prisma.fPLGameweekPicks.createMany({
+  //     data: res.flat(),
+  //   });
+  // });
 
   prisma.$disconnect();
 } catch (e) {
