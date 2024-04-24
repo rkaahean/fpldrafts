@@ -35,7 +35,7 @@ export const picksStore = create<State>()((set, get) => ({
   drafts: {
     changes: [],
   },
-  currentGameweek: 28,
+  currentGameweek: 34,
   incrementPop: () => console.log,
   setPicks: (picks: FPLGameweekPicksData) => {
     set({ picks });
