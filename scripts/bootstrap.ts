@@ -8,11 +8,26 @@ function getData() {
       return parseBoostrapData(data);
     })
     .then(async (data) => {
-      // await prisma.fPLPlayer.createMany({
-      //   data: data.players,
-      // });
-      await prisma.fPLPlayerTeam.createMany({
-        data: data.teams,
+      // upsert fpl player data
+      data.players.map(async (player) => {
+        return await prisma.fPLPlayer.upsert({
+          where: {
+            player_id: player.player_id,
+          },
+          update: player,
+          create: player,
+        });
+      });
+
+      // upsert player team data.
+      data.teams.map(async (team) => {
+        await prisma.fPLPlayerTeam.upsert({
+          where: {
+            code: team.code,
+          },
+          update: team,
+          create: team,
+        });
       });
     })
     .catch((error) => {

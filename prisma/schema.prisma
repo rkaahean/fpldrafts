@@ -16,7 +16,7 @@ datasource db {
 
 model FPLPlayer {
   id                                String             @id @default(uuid())
-  player_id                         Int // the player_id = element from the JSON
+  player_id                         Int @unique // the player_id = element from the JSON
   season_id                         String
   first_name                        String
   second_name                       String
