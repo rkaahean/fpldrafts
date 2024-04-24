@@ -87,6 +87,8 @@ model FPLGameweekPicks {
   // fpl team id is foreign key in FPL TEAM
   fpl_team        FPLTeam   @relation(fields: [fpl_team_id], references: [id])
   fpl_player      FPLPlayer @relation(fields: [fpl_player_id], references: [id])
+
+  @@unique([fpl_team_id, gameweek, position])
 }
 
 // store fpl player stats on a gameweek level that have 
