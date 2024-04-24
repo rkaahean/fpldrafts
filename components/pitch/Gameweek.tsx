@@ -7,21 +7,21 @@ import { useQuery } from "@tanstack/react-query";
 import PitchRow, { filterData } from "./pitchrow";
 
 export default function Gameweek() {
-  const setBase = picksStore((state) => state.setBase);
-  const setCurrentGameweek = picksStore((state) => state.setCurrentGameweek);
+  const picksSelectors = picksStore((state) => ({
+    setBase: state.setBase,
+    setCurrentGameweek: state.setCurrentGameweek,
+    dbbase: state.base!,
+    drafts: state.drafts,
+    currentGameweek: state.currentGameweek,
+  }));
 
-  const dbbase = picksStore((state) => state.base!);
-
-  const drafts = picksStore((state) => state.drafts);
-  // const picksData = picksStore((state) => state.data!);
-  const currentGameweek = picksStore((state) => state.currentGameweek);
+  const { setBase, setCurrentGameweek, dbbase, drafts, currentGameweek } =
+    picksSelectors;
 
   const { data } = useQuery({
-    // gameweek: whenever the gameweek state is changed
-    // picksData: whenever a substitution is made
-    // drafts: whenever a draft is loaded
     queryKey: [currentGameweek, drafts.changes],
     queryFn: async () => {
+      // first step is to hit the gameweek endpoint and try to fetch data
       const response = await fetch("/api/gameweek", {
         method: "POST",
         headers: {
@@ -39,15 +39,13 @@ export default function Gameweek() {
       } else {
         // else, if viewing a future gameweek, we need to use the base data
         base = dbbase;
-        console.log("Base data", base);
       }
-      // dealing with drafts into a future gameweek
-      // we need to apply the drafts to the base
+      // get all the draft changes relevant to that gameweek
       let gameweekDraft = drafts.changes.filter(
         (draft) => draft.gameweek <= currentGameweek
       );
 
-      // if there's a base, apply changes
+      // if there's a base, apply relevant draft changes
       let draftData = base;
       if (base && base.length > 0) {
         for (let draftChange of gameweekDraft) {
