@@ -59,7 +59,7 @@ model FPLPlayerTeam {
 model FPLFixtures {
   id                String  @id @default(uuid())
   season_id         String
-  code              Int
+  code              Int @unique
   fixture_id        Int
   finished          Boolean
   team_h_id         String

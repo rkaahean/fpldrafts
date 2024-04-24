@@ -45,9 +45,15 @@ async function parseFixtureData(data: any): Promise<JSONResponse> {
 }
 
 try {
-  getData().then(async (data) => {
-    await prisma.fPLFixtures.createMany({
-      data,
+  getData().then(async (fixtureData) => {
+    fixtureData.map(async (data) => {
+      await prisma.fPLFixtures.upsert({
+        where: {
+          code: data.code,
+        },
+        update: data,
+        create: data,
+      });
     });
   });
   prisma.$disconnect();
