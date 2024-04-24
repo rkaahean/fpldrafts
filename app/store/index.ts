@@ -23,7 +23,10 @@ interface State {
   setSubstituteIn: (id: number) => void;
   setSubstituteOut: (id: number) => void;
   setCurrentGameweek: (gameweek: number) => void;
-  makeSubs: () => void;
+  makeSubs: () => Promise<{
+    isValid: boolean;
+    reason: string;
+  }>;
   setDrafts: (drafts: DraftState) => void;
 }
 
@@ -64,9 +67,26 @@ export const picksStore = create<State>()((set, get) => ({
       substitutedOut,
       currentGameweek: gameweek,
     } = get();
+
     // if both subs are set
     if (!!substitutedIn && !!substitutedOut) {
-      // await swapPlayers(data!, substitutedIn, substitutedOut);
+      // validate that both substituted in and subtituted out are of same type
+      const { isValid, reason } = await fetch("/api/validate", {
+        method: "POST",
+        body: JSON.stringify({
+          data: drafts,
+          substitutedIn,
+          substitutedOut,
+        }),
+      }).then((res) => res.json());
+
+      if (!isValid) {
+        return {
+          isValid,
+          reason,
+        };
+      }
+
       let newDrafts;
       if (drafts && drafts.changes) {
         newDrafts = [...drafts.changes];
@@ -92,10 +112,27 @@ export const picksStore = create<State>()((set, get) => ({
           changes: newDrafts,
         },
       });
+
+      return {
+        isValid: true,
+        reason: "All good",
+      };
     }
+
+    return {
+      isValid: true,
+      reason: "OK",
+    };
   },
 }));
 
+/**
+ *
+ * @param data Current state of the draft
+ * @param substitutedIn Player ID to be substituted in
+ * @param substitutedOut Player ID to be substituted out
+ * @returns Modified gameweek picks data
+ */
 export async function swapPlayers(
   data: FPLGameweekPicksData,
   substitutedIn: number,
@@ -112,9 +149,10 @@ export async function swapPlayers(
   let inPlayer;
   if (outPlayerIndex === -1) {
     // if index of player substituted out not found, return
+    // this means tranferring out a player not in team. BAD!
     return data;
   } else if (inPlayerIndex == -1) {
-    // this means that the player being bought in is not in the team
+    // player being bought in is not in team, making a transfer
     const response = await fetch("/api/player", {
       method: "POST",
       body: JSON.stringify({
@@ -122,7 +160,7 @@ export async function swapPlayers(
       }),
     }).then((res) => res.json());
     inPlayer = { fpl_player: response.data };
-    console.log("New player data loading", inPlayer);
+    // console.log("New player data loading", inPlayer);
   } else {
     // hapens when players being switched up within the team
     inPlayer = { ...data[inPlayerIndex] }; // Create a new object

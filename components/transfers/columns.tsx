@@ -3,6 +3,7 @@
 import { picksStore } from "@/app/store";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
+import { toast } from "../ui/use-toast";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -56,9 +57,16 @@ export const columns: ColumnDef<PlayerData>[] = [
 
       return (
         <button
-          onClick={() => {
+          onClick={async () => {
             setSubstituteIn(row.original.player_id);
-            makeSubs();
+            const { isValid, reason } = await makeSubs();
+            if (!isValid) {
+              toast({
+                title: "Cannot make transfer",
+                description: reason,
+                variant: "destructive",
+              });
+            }
           }}
         >
           <PlusCircledIcon className="w-3 h-3" />

@@ -64,6 +64,22 @@ export async function getPlayerData(id: number, gameweek: number = 1) {
   return players;
 }
 
+export async function getPlayerStaticData(id: number) {
+  return await prisma.fPLPlayer.findFirst({
+    select: {
+      element_type: true,
+      fpl_player_team: {
+        select: {
+          code: true,
+        },
+      },
+    },
+    where: {
+      player_id: id,
+    },
+  });
+}
+
 export async function getGameweekData(gameweek: number) {
   const picks = await prisma.fPLGameweekPicks.findMany({
     where: {
