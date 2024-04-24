@@ -22,12 +22,15 @@ export async function POST(req: NextRequest) {
   }
 
   // Condition 2: No more than 3 players from any team
-  // use the picks state as it contains upto date changes
-  // get the team code of player being substituted in
   const data = picks.filter(
-    (player: any) => player.fpl_player.team_code == inData?.fpl_player_team.code
+    (player: any) =>
+      // get players in team who are from the player's team being substituted in
+      player.fpl_player.team_code == inData?.fpl_player_team.code &&
+      // exclude players in team who are from player's team being substituted out
+      player.fpl_player.team_code != outData?.fpl_player_team.code
   );
   if (data.length >= 3) {
+    // if number of players already 3
     return Response.json({
       isValid: false,
       reason: `More than 3 players from ${inData?.fpl_player_team.name}`,
