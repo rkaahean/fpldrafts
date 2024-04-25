@@ -78,7 +78,9 @@ export default function DraftSave() {
                   name: draftName,
                   team_id: "53ed0ea1-7298-4069-b609-f8108468c885",
                   description: draftDescription,
-                  gameweek: 27,
+                  gameweek: Math.min(
+                    ...drafts.changes.map((draft) => draft.gameweek)
+                  ),
                 }),
               });
               setOpen(false);

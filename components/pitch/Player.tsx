@@ -2,7 +2,7 @@ import { picksStore } from "@/app/store";
 import { cn } from "@/lib/utils";
 import { DoubleArrowDownIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { PlayerData } from "./PitchRow";
+import { PlayerData } from "./pitchrow";
 
 export default function Player(props: {
   data: PlayerData;
@@ -147,7 +147,7 @@ function PlayerDescription({
           className="w-auto h-auto"
         />
       </div>
-      <div className="text-xs h-1/6 font-semibold 2xl:text-sm">
+      <div className="text-xs h-1/6 font-semibold 2xl:text-sm truncate">
         {data.web_name}
       </div>
     </div>
