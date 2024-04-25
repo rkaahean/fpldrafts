@@ -74,13 +74,24 @@ export default function Gameweek() {
   if (data) {
     return (
       <ReactQueryProvider>
-        <div>
+        <div className="flex flex-col gap-1">
           <div className="flex flex-row justify-between">
-            <button onClick={() => setCurrentGameweek(currentGameweek - 1)}>
+            <button
+              onClick={() => setCurrentGameweek(currentGameweek - 1)}
+              title="Previous Gameweek"
+            >
               <ArrowLeftIcon />
             </button>
-            <div className="text-lg font-bold">{`Gameweek ${currentGameweek}`}</div>
-            <button onClick={() => setCurrentGameweek(currentGameweek + 1)}>
+            <div className="flex flex-row justify-around w-full">
+              <GameweekStat title="Gameweek" value={currentGameweek} />
+              <GameweekStat title="Transfers" value={"0 / 1"} />
+              <GameweekStat title="ITB" value="0.4" />
+              <GameweekStat title="Rank" value="882,240" />
+            </div>
+            <button
+              onClick={() => setCurrentGameweek(currentGameweek + 1)}
+              title="Next Gameweek"
+            >
               <ArrowRightIcon />
             </button>
           </div>
@@ -98,4 +109,19 @@ export default function Gameweek() {
       </ReactQueryProvider>
     );
   }
+}
+
+function GameweekStat({
+  title,
+  value,
+}: {
+  title: string;
+  value: number | string;
+}) {
+  return (
+    <div className="flex flex-col">
+      <div className="text-xs font-light">{title}</div>
+      <div className="text-sm font-medium">{value}</div>
+    </div>
+  );
 }

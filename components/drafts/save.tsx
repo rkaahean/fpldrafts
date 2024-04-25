@@ -27,7 +27,7 @@ export default function DraftSave() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="xs">
+        <Button variant="ghost" size="xs" title="Save Draft">
           <DownloadIcon />
         </Button>
       </DialogTrigger>
