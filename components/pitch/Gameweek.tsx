@@ -41,8 +41,8 @@ export default function Gameweek() {
       let base;
       if (data.data.length > 0) {
         // if the gameweek has valid data, that is the base
-        setBase(data.data);
-        base = data.data;
+        setBase(data);
+        base = data;
       } else {
         // else, if viewing a future gameweek, we need to use the base data
         base = dbbase;
@@ -54,10 +54,10 @@ export default function Gameweek() {
 
       // if there's a base, apply relevant draft changes
       let draftData = base;
-      if (base && base.length > 0) {
+      if (base.data && base.data.length > 0) {
         for (let draftChange of gameweekDraft) {
-          draftData = await swapPlayers(
-            draftData,
+          draftData.data = await swapPlayers(
+            draftData.data,
             draftChange.in,
             draftChange.out
           );
@@ -65,13 +65,13 @@ export default function Gameweek() {
         setPicks(draftData);
         return draftData;
       } else if (data.data.length > 0) {
-        setPicks(data.data);
-        return data.data;
+        setPicks(data);
+        return data;
       }
     },
   });
 
-  if (data) {
+  if (data && data.data) {
     return (
       <ReactQueryProvider>
         <div className="flex flex-col gap-1">
@@ -85,8 +85,11 @@ export default function Gameweek() {
             <div className="flex flex-row justify-around w-full">
               <GameweekStat title="Gameweek" value={currentGameweek} />
               <GameweekStat title="Transfers" value={"0 / 1"} />
-              <GameweekStat title="ITB" value={`${data.bank}`} />
-              <GameweekStat title="Rank" value="882,240" />
+              <GameweekStat title="ITB" value={`${data.overall.bank / 10}`} />
+              <GameweekStat
+                title="Rank"
+                value={`${data.overall.overall_rank}`}
+              />
             </div>
             <button
               onClick={() => setCurrentGameweek(currentGameweek + 1)}
@@ -100,7 +103,7 @@ export default function Gameweek() {
               <PitchRow
                 key={position}
                 position={position}
-                data={filterData(data, position)}
+                data={filterData(data.data, position)}
                 gameweek={currentGameweek}
               />
             ))}
