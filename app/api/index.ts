@@ -90,6 +90,24 @@ export async function getGameweekData(gameweek: number) {
   return picks;
 }
 
+/**
+ *
+ * @param gameweek Gameweek data to fetch
+ * @returns
+ */
+export async function getGameweekOverallData(gameweek: number) {
+  return await prisma.fPLGameweekOverallStats.findFirst({
+    where: {
+      gameweek,
+    },
+    select: {
+      value: true,
+      overall_rank: true,
+      bank: true,
+    },
+  });
+}
+
 export async function getGameweekPicksData(gameweek: number) {
   const result = await prisma.fPLGameweekPicks.findMany({
     include: {
