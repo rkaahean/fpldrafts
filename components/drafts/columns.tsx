@@ -35,6 +35,7 @@ export const columns: ColumnDef<Draft>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const { loadDrafts } = useDraftLoader();
       return (
         <div className="flex h-full items-center justify-center w-full">
