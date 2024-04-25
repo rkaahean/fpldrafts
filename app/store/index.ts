@@ -18,7 +18,6 @@ interface State {
   substitutedIn?: number;
   substitutedOut?: number;
   drafts: DraftState;
-  incrementPop: () => void;
   setBase: (picks: FPLGameweekPicksData) => void;
   setSubstituteIn: (id: number) => void;
   setSubstituteOut: (id: number) => void;
@@ -36,7 +35,6 @@ export const picksStore = create<State>()((set, get) => ({
     changes: [],
   },
   currentGameweek: 34,
-  incrementPop: () => console.log,
   setPicks: (picks: FPLGameweekPicksData) => {
     set({ picks });
   },
@@ -81,6 +79,7 @@ export const picksStore = create<State>()((set, get) => ({
           substitutedOut,
         }),
       }).then((res) => res.json());
+      console.log(isValid, substitutedIn, substitutedOut);
 
       if (!isValid) {
         return {

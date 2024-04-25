@@ -12,9 +12,16 @@ export async function POST(req: NextRequest) {
   const inData = await getPlayerStaticData(substitutedIn);
   const outData = await getPlayerStaticData(substitutedOut);
 
+  const inIdx = picks.findIndex(
+    (pick: any) => pick.fpl_player.player_id == substitutedIn
+  );
+  const outIdx = picks.findIndex(
+    (pick: any) => pick.fpl_player.player_id == substitutedOut
+  );
   // Condition 1: Both in and out players are of same type
   const isSameType = inData?.element_type == outData?.element_type;
-  if (!isSameType) {
+  const isInTeam = inIdx != -1 && outIdx != -1;
+  if (!isSameType && !isInTeam) {
     return Response.json({
       isValid: false,
       reason: "Unable to transfer players in different positions.",
@@ -29,7 +36,9 @@ export async function POST(req: NextRequest) {
       // exclude players in team who are from player's team being substituted out
       player.fpl_player.team_code != outData?.fpl_player_team.code
   );
-  if (data.length >= 3) {
+
+  const LIMIT = inIdx != -1 ? 4 : 3;
+  if (data.length >= LIMIT) {
     // if number of players already 3
     return Response.json({
       isValid: false,
