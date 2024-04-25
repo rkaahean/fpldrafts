@@ -8,7 +8,7 @@ import Gameweek from "./gameweek";
 export default function Team() {
   const drafts = picksStore((state) => state.drafts);
   return (
-    <div className="w-full min-h-full flex flex-col justify-start gap-5">
+    <div className="w-full min-h-full max-h-screen flex flex-col justify-start gap-5">
       <div className="flex flex-row gap-2 h-4 items-center">
         <DraftSave />
         <DraftChanges />

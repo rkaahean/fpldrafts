@@ -21,7 +21,7 @@ export default function Player(props: {
   return (
     <div
       className={cn(
-        "flex flex-row w-32 h-36 2xl:w-48 2xl:h-48 border rounded-md  p-2",
+        "flex flex-row w-32 h-32 2xl:w-48 2xl:h-48 border rounded-md p-2",
         player == props.data.player_id ? "bg-yellow-100" : ""
       )}
     >
@@ -138,16 +138,16 @@ function PlayerDescription({
 }) {
   return (
     <div className="flex flex-col h-5/6 items-center justify-around">
-      <div className="h-4/6">
+      <div>
         <Image
           src={`https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${data.team_code}-110.webp`}
           alt="Player"
-          width={40}
-          height={40}
+          width={33}
+          height={33}
           className="w-auto h-auto"
         />
       </div>
-      <div className="text-xs h-1/6 font-semibold 2xl:text-sm truncate">
+      <div className="text-xs h-fit font-semibold 2xl:text-sm truncate">
         {data.web_name}
       </div>
     </div>
