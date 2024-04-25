@@ -2,18 +2,16 @@ import Drafts from "@/components/drafts/overview";
 import Team from "@/components/pitch/team";
 import Selector from "@/components/transfers/table";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="text-white p-2 flex flex-row justify-end">
+      {/* <div className="text-white p-2 flex flex-row justify-end">
         <Avatar>
           <AvatarImage src="https://github.com/shadcn.png" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
-      </div>
-      <div className="grid grid-cols-4 min-h-full px-5 gap-5">
+      </div> */}
+      <div className="grid grid-cols-4 min-h-full px-5 gap-5 my-3">
         <div className="col-span-1 h-full">
           <Selector />
         </div>
