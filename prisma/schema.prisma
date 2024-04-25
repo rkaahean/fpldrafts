@@ -75,6 +75,23 @@ model FPLFixtures {
   fpl_team_a FPLPlayerTeam @relation("away_team", fields: [team_a_id], references: [id])
 }
 
+
+model FPLGameweekOverallStats {
+  id String @id @default(uuid())
+  fpl_team_id String
+  gameweek Int
+  bank Int
+  value Int
+  points Int
+  total_points Int
+  gameweek_rank BigInt
+  overall_rank BigInt
+  event_transfers Int
+  event_transfers_cost Int
+
+  @@unique([fpl_team_id, gameweek])
+}
+
 model FPLGameweekPicks {
   id              String    @id @default(uuid())
   fpl_team_id     String

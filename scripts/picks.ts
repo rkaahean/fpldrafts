@@ -8,7 +8,10 @@ function getData(teamId: number, gameweek: number) {
   )
     .then((res) => res.json())
     .then(async (data) => {
-      return await parsePicksData(data, gameweek);
+      return {
+        picks: await parsePicksData(data, gameweek),
+        history: await parseHistoryData(data, gameweek),
+      };
     });
 }
 
@@ -39,6 +42,25 @@ async function parsePicksData(
   }
 }
 
+async function parseHistoryData(data: any, gameweek: number) {
+  if (data["detail"] != "Not found.") {
+    let history = data["entry_history"];
+
+    return {
+      fpl_team_id: "53ed0ea1-7298-4069-b609-f8108468c885",
+      gameweek,
+      bank: history.bank,
+      value: history.value,
+      points: history.points,
+      total_points: history.total_points,
+      gameweek_rank: history.rank,
+      overall_rank: history.overall_rank,
+      event_transfers: history.event_transfers,
+      event_transfers_cost: history.event_transfers_cost,
+    };
+  }
+}
+
 try {
   const data = [];
   for (let i = 1; i <= 38; i++) {
@@ -46,24 +68,37 @@ try {
     data.push(gameweekData);
   }
 
-  Promise.all(data).then(async (res) => {
-    res.flat().map(async (data) => {
-      if (data) {
+  data.map(async (obj) => {
+    const { picks, history } = await obj;
+    if (picks) {
+      picks.map(async (pick: any) => {
         await prisma.fPLGameweekPicks.upsert({
           where: {
             fpl_team_id_gameweek_position: {
-              fpl_team_id: data.fpl_team_id,
-              gameweek: data.gameweek,
-              position: data.position,
+              fpl_team_id: pick.fpl_team_id,
+              gameweek: pick.gameweek,
+              position: pick.position,
             },
           },
-          update: data,
-          create: data,
+          update: pick,
+          create: pick,
+        });
+      });
+
+      if (history) {
+        await prisma.fPLGameweekOverallStats.upsert({
+          where: {
+            fpl_team_id_gameweek: {
+              fpl_team_id: "53ed0ea1-7298-4069-b609-f8108468c885",
+              gameweek: history.gameweek,
+            },
+          },
+          update: history,
+          create: history,
         });
       }
-    });
+    }
   });
-
   prisma.$disconnect();
 } catch (e) {
   console.error(e);
