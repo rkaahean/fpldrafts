@@ -25,12 +25,10 @@ export default function Player(props: {
         player == props.data.player_id ? "bg-yellow-100" : ""
       )}
     >
-      <div className="h-full">
-        <PlayerFixtureTicker
-          fixtures={props.data.fixtures}
-          gameweek={props.gameweek}
-        />
-      </div>
+      <PlayerFixtureTicker
+        fixtures={props.data.fixtures}
+        gameweek={props.gameweek}
+      />
 
       <div className="w-9/12 text-xs flex flex-col h-full items-end">
         <div className="h-1/12">
