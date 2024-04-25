@@ -1,5 +1,6 @@
 "use client";
 
+import { FPLGameweekPicksData } from "@/app/api";
 import ReactQueryProvider from "@/app/provider";
 import { picksStore, swapPlayers } from "@/app/store";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
@@ -38,7 +39,7 @@ export default function Gameweek() {
       });
       const data = await response.json();
 
-      let base;
+      let base: FPLGameweekPicksData;
       if (data.data.length > 0) {
         // if the gameweek has valid data, that is the base
         setBase(data);
