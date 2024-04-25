@@ -21,14 +21,17 @@ export default function Player(props: {
   return (
     <div
       className={cn(
-        "flex flex-row w-32 h-32 2xl:w-48 2xl:h-48 border rounded-md p-2",
+        "flex flex-row w-32 h-32 2xl:w-40 2xl:h-40 border rounded-md p-2",
         player == props.data.player_id ? "bg-yellow-100" : ""
       )}
     >
-      <PlayerFixtureTicker
-        fixtures={props.data.fixtures}
-        gameweek={props.gameweek}
-      />
+      <div className="h-full">
+        <PlayerFixtureTicker
+          fixtures={props.data.fixtures}
+          gameweek={props.gameweek}
+        />
+      </div>
+
       <div className="w-9/12 text-xs flex flex-col h-full items-end">
         <div className="h-1/12">
           <button

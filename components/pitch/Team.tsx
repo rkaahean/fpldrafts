@@ -3,7 +3,7 @@
 import { picksStore } from "@/app/store";
 import DraftChanges from "../drafts/changes";
 import DraftSave from "../drafts/save";
-import Gameweek from "./gameweek";
+import Gameweek from "./Gameweek";
 
 export default function Team() {
   const drafts = picksStore((state) => state.drafts);
