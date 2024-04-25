@@ -68,13 +68,14 @@ export const picksStore = create<State>()((set, get) => ({
       currentGameweek: gameweek,
     } = get();
 
+    const data = picks?.data;
     // if both subs are set
     if (!!substitutedIn && !!substitutedOut) {
       // validate that both substituted in and subtituted out are of same type
       const { isValid, reason } = await fetch("/api/validate", {
         method: "POST",
         body: JSON.stringify({
-          picks,
+          picks: data,
           substitutedIn,
           substitutedOut,
         }),
@@ -135,10 +136,10 @@ export async function swapPlayers(
   substitutedOut: number
 ): Promise<FPLGameweekPicksData> {
   console.log("Swapping player", substitutedIn, substitutedOut, data);
-  const inPlayerIndex = data.findIndex(
+  const inPlayerIndex = data.data.findIndex(
     (player) => player.fpl_player.player_id === substitutedIn
   );
-  const outPlayerIndex = data.findIndex(
+  const outPlayerIndex = data.data.findIndex(
     (player) => player.fpl_player.player_id === substitutedOut
   );
 
@@ -159,10 +160,10 @@ export async function swapPlayers(
     // console.log("New player data loading", inPlayer);
   } else {
     // hapens when players being switched up within the team
-    inPlayer = { ...data[inPlayerIndex] }; // Create a new object
+    inPlayer = { ...data.data[inPlayerIndex] }; // Create a new object
   }
 
-  const outPlayer = { ...data[outPlayerIndex] }; // Create a new object
+  const outPlayer = { ...data.data[outPlayerIndex] }; // Create a new object
   // console.log("In", inPlayer, "out", outPlayer);
 
   if (inPlayer?.position) {
@@ -171,19 +172,25 @@ export async function swapPlayers(
     inPlayer!.position = outPlayer.position;
     outPlayer.position = tempPosition;
 
-    const newData = [...data]; // Create a new array with the same elements as data
+    const newData = [...data.data]; // Create a new array with the same elements as data
 
     // Replace the modified elements in the new array
     newData[inPlayerIndex] = inPlayer!;
     newData[outPlayerIndex] = outPlayer;
 
-    return newData;
+    return {
+      data: newData,
+      overall: data.overall,
+    };
   } else {
-    const newData = [...data]; // Create a new array with the same elements as data
+    const newData = [...data.data]; // Create a new array with the same elements as data
 
     inPlayer!.position = outPlayer.position;
     newData[outPlayerIndex] = inPlayer!;
 
-    return newData;
+    return {
+      data: newData,
+      overall: data.overall,
+    };
   }
 }

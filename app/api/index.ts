@@ -174,11 +174,14 @@ export async function getGameweekPicksData(gameweek: number) {
   });
   return result;
 }
-export type FPLGameweekPicksData = Awaited<
-  ReturnType<typeof getGameweekPicksData>
+export type FPLGameweekPicksData = {
+  data: Awaited<ReturnType<typeof getGameweekPicksData>>;
+  overall: any;
+};
+export type FPLPlayerData = Pick<
+  FPLGameweekPicksData["data"][number],
+  "fpl_player"
 >;
-
-export type FPLPlayerData = Pick<FPLGameweekPicksData[number], "fpl_player">;
 
 export async function getAllPlayerData() {
   // sort by total_points

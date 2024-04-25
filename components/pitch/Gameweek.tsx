@@ -56,8 +56,8 @@ export default function Gameweek() {
       let draftData = base;
       if (base.data && base.data.length > 0) {
         for (let draftChange of gameweekDraft) {
-          draftData.data = await swapPlayers(
-            draftData.data,
+          draftData = await swapPlayers(
+            draftData,
             draftChange.in,
             draftChange.out
           );
