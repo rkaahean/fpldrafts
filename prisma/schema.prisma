@@ -96,6 +96,7 @@ model FPLGameweekPicks {
 model FPLGameweekPlayerStats {
   id               String    @id @default(uuid())
   fpl_player_id    String
+  fixture_id       Int
   gameweek         Int
   total_points     Int
   goals_scored     Int
@@ -104,6 +105,8 @@ model FPLGameweekPlayerStats {
   expected_assists Float
   value            Int
   fpl_player       FPLPlayer @relation(fields: [fpl_player_id], references: [id])
+
+  @@unique([fpl_player_id, fixture_id])
 }
 
 model FPLTeam {

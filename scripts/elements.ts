@@ -48,6 +48,7 @@ async function parseElementsData(data: any): Promise<JSONResponse> {
           expected_goals: parseFloat(element.expected_goals),
           expected_assists: parseFloat(element.expected_assists),
           value: element.value,
+          fixture_id: element.fixture,
         };
       })
     );
@@ -58,9 +59,18 @@ try {
   // get all players
   const data = getData();
   data.then(async (res) => {
-    Promise.all(res).then(async (data) => {
-      await prisma.fPLGameweekPlayerStats.createMany({
-        data: data.flat(),
+    Promise.all(res).then(async (playerData) => {
+      playerData.flat().map(async (data) => {
+        await prisma.fPLGameweekPlayerStats.upsert({
+          where: {
+            fpl_player_id_fixture_id: {
+              fpl_player_id: data.fpl_player_id,
+              fixture_id: data.fixture_id,
+            },
+          },
+          update: data,
+          create: data,
+        });
       });
     });
   });

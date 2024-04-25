@@ -8,17 +8,6 @@ function getData() {
       return parseBoostrapData(data);
     })
     .then(async (data) => {
-      // upsert fpl player data
-      data.players.map(async (player) => {
-        return await prisma.fPLPlayer.upsert({
-          where: {
-            player_id: player.player_id,
-          },
-          update: player,
-          create: player,
-        });
-      });
-
       // upsert player team data.
       data.teams.map(async (team) => {
         await prisma.fPLPlayerTeam.upsert({
@@ -27,6 +16,17 @@ function getData() {
           },
           update: team,
           create: team,
+        });
+      });
+
+      // upsert fpl player data
+      data.players.map(async (player) => {
+        return await prisma.fPLPlayer.upsert({
+          where: {
+            player_id: player.player_id,
+          },
+          update: player,
+          create: player,
         });
       });
     })
