@@ -86,10 +86,7 @@ export default function Gameweek() {
               <GameweekStat title="Gameweek" value={currentGameweek} />
               <GameweekStat title="Transfers" value={"0 / 1"} />
               <GameweekStat title="ITB" value={`${data.overall.bank / 10}`} />
-              <GameweekStat
-                title="Rank"
-                value={`${data.overall.overall_rank}`}
-              />
+              <GameweekStat title="Rank" value={data.overall.overall_rank} />
             </div>
             <button
               onClick={() => setCurrentGameweek(currentGameweek + 1)}
