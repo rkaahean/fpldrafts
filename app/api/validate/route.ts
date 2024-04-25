@@ -37,8 +37,10 @@ export async function POST(req: NextRequest) {
       player.fpl_player.team_code != outData?.fpl_player_team.code
   );
 
-  const LIMIT = inIdx != -1 ? 4 : 3;
-  if (data.length >= LIMIT) {
+  // if the player subbed in is already in the team, then upto 3 is fine
+  // if the player subbed in is outside the team, then max of 2
+  const LIMIT = inIdx != -1 ? 3 : 2;
+  if (data.length > LIMIT) {
     // if number of players already 3
     return Response.json({
       isValid: false,
