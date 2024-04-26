@@ -1,5 +1,6 @@
-import { FPLGameweekPicksData } from "@/app/api";
+import { FPLPlayerData } from "@/app/api";
 import Player from "./player";
+import player from "./player";
 
 export type PlayerData = {
   player_id: number;
@@ -14,10 +15,11 @@ export type PlayerData = {
     event: number;
   }[];
   value: number;
+  selling_price: number;
 };
 
 export function filterData(
-  data: FPLGameweekPicksData,
+  data: FPLPlayerData[],
   position: string
 ): PlayerData[] {
   return (
@@ -71,6 +73,7 @@ export function filterData(
           team_name: player.fpl_player.fpl_player_team.short_name,
           fixtures: fixtures,
           value,
+          selling_price: player.selling_price,
         };
       })
       // sort by position to display in order

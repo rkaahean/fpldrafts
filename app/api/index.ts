@@ -174,6 +174,36 @@ export async function getGameweekPicksData(gameweek: number) {
   });
   return result;
 }
+
+export async function getLastTransferValue(team_id: string, player_id: string) {
+  return await prisma.fPLGameweekTransfers.findFirst({
+    where: {
+      in_player_id: player_id,
+      fpl_team_id: team_id,
+    },
+    orderBy: {
+      time: "desc",
+    },
+    select: {
+      in_player_cost: true,
+    },
+  });
+}
+
+export async function getPlayerValueByGameweek(
+  player_id: string,
+  gameweek: number
+) {
+  return await prisma.fPLGameweekPlayerStats.findFirst({
+    where: {
+      fpl_player_id: player_id,
+      gameweek: gameweek,
+    },
+    select: {
+      value: true,
+    },
+  });
+}
 export type FPLGameweekPicksData = {
   data: Awaited<ReturnType<typeof getGameweekPicksData>>;
   overall: any;
@@ -181,7 +211,9 @@ export type FPLGameweekPicksData = {
 export type FPLPlayerData = Pick<
   FPLGameweekPicksData["data"][number],
   "fpl_player"
->;
+> & {
+  selling_price: number;
+};
 
 export async function getAllPlayerData() {
   // sort by total_points

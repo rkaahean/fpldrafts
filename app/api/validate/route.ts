@@ -9,8 +9,6 @@ export async function POST(req: NextRequest) {
   const request = await req.json();
   const { picks, substitutedIn, substitutedOut } = request;
 
-  console.log(picks);
-
   const inData = await getPlayerStaticData(substitutedIn);
   const outData = await getPlayerStaticData(substitutedOut);
 
