@@ -23,6 +23,7 @@ interface State {
   setSubstituteIn: (player_id: number, price: number) => void;
   setSubstituteOut: (player_id: number, price: number) => void;
   setCurrentGameweek: (gameweek: number) => void;
+  setBank: (bank: number) => void;
   makeSubs: () => Promise<{
     isValid: boolean;
     reason: string;
@@ -42,6 +43,9 @@ export const picksStore = create<State>()((set, get) => ({
   },
   setBase: (picks: FPLGameweekPicksData) => {
     set({ base: picks });
+  },
+  setBank: (bank: number) => {
+    set({ bank });
   },
   setSubstituteIn: (player_id: number, price: number) => {
     /**

@@ -12,6 +12,7 @@ export default function Gameweek() {
     setBase: state.setBase,
     setCurrentGameweek: state.setCurrentGameweek,
     setPicks: state.setPicks,
+    setBank: state.setBank,
     dbbase: state.base!,
     drafts: state.drafts,
     currentGameweek: state.currentGameweek,
@@ -23,6 +24,7 @@ export default function Gameweek() {
     setBase,
     setPicks,
     setCurrentGameweek,
+    setBank,
     dbbase,
     drafts,
     currentGameweek,
@@ -58,6 +60,7 @@ export default function Gameweek() {
 
       // if there's a base, apply relevant draft changes
       let draftData = base;
+      setBank(base.overall?.bank!);
       if (base.data && base.data.length > 0) {
         for (let draftChange of gameweekDraft) {
           draftData = await swapPlayers(
