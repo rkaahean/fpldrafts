@@ -181,7 +181,6 @@ export async function swapPlayers(
     }).then((res) => res.json());
     inPlayer = {
       fpl_player: response.data,
-      selling_price: -1,
     };
     // console.log("New player data loading", inPlayer);
   } else {

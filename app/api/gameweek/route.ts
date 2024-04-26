@@ -18,14 +18,13 @@ export async function POST(req: NextRequest) {
     // get transfer in price of player_id
     const transferInPrice = await getLastTransferValue(
       "53ed0ea1-7298-4069-b609-f8108468c885",
-      player.id
+      player.fpl_player.id
     );
     // current price
     const currentPrice = await getPlayerValueByGameweek(
-      player.id,
+      player.fpl_player.id,
       request.gameweek
     );
-
     const diff = currentPrice?.value! - transferInPrice?.in_player_cost!;
     // profit!
     if (diff > 0) {
