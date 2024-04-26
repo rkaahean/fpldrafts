@@ -16,7 +16,7 @@ datasource db {
 
 model FPLPlayer {
   id                                String             @id @default(uuid())
-  player_id                         Int @unique // the player_id = element from the JSON
+  player_id                         Int                @unique // the player_id = element from the JSON
   season_id                         String
   first_name                        String
   second_name                       String
@@ -39,6 +39,8 @@ model FPLPlayer {
   fpl_season                FPLSeason                @relation(fields: [season_id], references: [id])
   fpl_gameweek_player_stats FPLGameweekPlayerStats[]
   fpl_player_team           FPLPlayerTeam            @relation(fields: [team_code], references: [code])
+  in_fpl_transfers          FPLGameweekTransfers[]   @relation("in_player")
+  out_fpl_transfers         FPLGameweekTransfers[]   @relation("out_player")
 }
 
 model FPLPlayerTeam {
@@ -59,7 +61,7 @@ model FPLPlayerTeam {
 model FPLFixtures {
   id                String  @id @default(uuid())
   season_id         String
-  code              Int @unique
+  code              Int     @unique
   fixture_id        Int
   finished          Boolean
   team_h_id         String
@@ -75,18 +77,17 @@ model FPLFixtures {
   fpl_team_a FPLPlayerTeam @relation("away_team", fields: [team_a_id], references: [id])
 }
 
-
 model FPLGameweekOverallStats {
-  id String @id @default(uuid())
-  fpl_team_id String
-  gameweek Int
-  bank Int
-  value Int
-  points Int
-  total_points Int
-  gameweek_rank Int
-  overall_rank Int
-  event_transfers Int
+  id                   String @id @default(uuid())
+  fpl_team_id          String
+  gameweek             Int
+  bank                 Int
+  value                Int
+  points               Int
+  total_points         Int
+  gameweek_rank        Int
+  overall_rank         Int
+  event_transfers      Int
   event_transfers_cost Int
 
   @@unique([fpl_team_id, gameweek])
@@ -124,6 +125,20 @@ model FPLGameweekPlayerStats {
   fpl_player       FPLPlayer @relation(fields: [fpl_player_id], references: [id])
 
   @@unique([fpl_player_id, fixture_id])
+}
+
+model FPLGameweekTransfers {
+  id              String @id @default(uuid())
+  fpl_team_id     String
+  in_player_id    String
+  in_player_cost  Int
+  out_player_id   String
+  out_player_cost Int
+  gameweek        Int
+  time DateTime
+
+  in_fpl_player  FPLPlayer @relation("in_player", fields: [in_player_id], references: [id])
+  out_fpl_player FPLPlayer @relation("out_player", fields: [out_player_id], references: [id])
 }
 
 model FPLTeam {
