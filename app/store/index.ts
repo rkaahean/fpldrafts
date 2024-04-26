@@ -48,7 +48,6 @@ export const picksStore = create<State>()((set, get) => ({
      * selects player to be substituted IN, from subs
      */
     const { substitutedIn, bank } = get();
-    console.log("Price", player_id, price);
     // already set
     if (substitutedIn == player_id) {
       set({ substitutedIn: undefined });

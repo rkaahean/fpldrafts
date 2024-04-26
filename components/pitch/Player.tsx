@@ -114,6 +114,7 @@ function PlayerFixtureTicker({
 }
 
 function PlayerStatsTicker({ data }: { data: PlayerData }) {
+  console.log(data);
   return (
     <div className="h-1/6 grid grid-cols-3 text-[9px] 2xl:text-xs w-full">
       <div className="flex flex-col text-center justify-center">

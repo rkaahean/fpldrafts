@@ -59,7 +59,6 @@ export const columns: ColumnDef<PlayerData>[] = [
       return (
         <button
           onClick={async () => {
-            console.log(row.original);
             setSubstituteIn(row.original.player_id, row.original.now_value);
             const { isValid, reason } = await makeSubs();
             if (!isValid) {

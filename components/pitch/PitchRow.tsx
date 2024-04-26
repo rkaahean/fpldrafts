@@ -1,6 +1,5 @@
 import { FPLPlayerData } from "@/app/api";
 import Player from "./player";
-import player from "./player";
 
 export type PlayerData = {
   player_id: number;
@@ -72,8 +71,7 @@ export function filterData(
           position: player.position,
           team_name: player.fpl_player.fpl_player_team.short_name,
           fixtures: fixtures,
-          value,
-          selling_price: player.selling_price,
+          selling_price: player.selling_price ?? player.fpl_player.now_value,
         };
       })
       // sort by position to display in order
