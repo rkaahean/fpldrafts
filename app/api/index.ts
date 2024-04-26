@@ -111,7 +111,9 @@ export async function getGameweekOverallData(gameweek: number) {
 
 export async function getGameweekPicksData(gameweek: number) {
   const result = await prisma.fPLGameweekPicks.findMany({
-    include: {
+    select: {
+      id: true,
+      position: true,
       fpl_player: {
         // Include the related FPLPlayer record
         select: {
@@ -215,6 +217,7 @@ export type FPLPlayerData = Pick<
   "fpl_player"
 > & {
   selling_price: number;
+  position: number;
 };
 
 export async function getAllPlayerData() {
