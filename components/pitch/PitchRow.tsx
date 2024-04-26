@@ -1,6 +1,5 @@
 import { FPLPlayerData } from "@/app/api";
 import Player from "./player";
-import player from "./player";
 
 export type PlayerData = {
   player_id: number;
@@ -63,13 +62,12 @@ export function filterData(
         const fixtures = combined.sort((a: any, b: any) => {
           return a.event - b.event;
         });
-        console.log(player);
         return {
           ...player.fpl_player,
           position: player.position,
           team_name: player.fpl_player.fpl_player_team.short_name,
           fixtures: fixtures,
-          selling_price: player.selling_price,
+          selling_price: player.selling_price ?? player.fpl_player.now_value,
         };
       })
       // sort by position to display in order
