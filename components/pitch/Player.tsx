@@ -36,9 +36,9 @@ export default function Player(props: {
             className="text-xs w-4 h-4 rounded-sm"
             onClick={() => {
               if (props.isSubstitute) {
-                subIn(props.data.player_id);
+                subIn(props.data);
               } else {
-                subOut(props.data.player_id);
+                subOut(props.data);
               }
               makeSubs();
             }}
@@ -117,7 +117,7 @@ function PlayerStatsTicker({ data }: { data: PlayerData }) {
   return (
     <div className="h-1/6 grid grid-cols-3 text-[9px] 2xl:text-xs w-full">
       <div className="flex flex-col text-center justify-center">
-        <div>{`£${data.value / 10}`}</div>
+        <div>{`£${data.selling_price / 10}`}</div>
       </div>
       <div className="flex flex-col text-center justify-center">
         <div>{`${data.total_points}`}</div>

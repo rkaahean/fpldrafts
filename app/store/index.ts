@@ -1,5 +1,7 @@
+import { PlayerData } from "@/components/pitch/pitchrow";
 import { create } from "zustand";
 import { FPLGameweekPicksData } from "../api";
+import { get } from "http";
 
 interface DraftState {
   id?: string;
@@ -19,8 +21,8 @@ interface State {
   substitutedOut?: number;
   drafts: DraftState;
   setBase: (picks: FPLGameweekPicksData) => void;
-  setSubstituteIn: (id: number) => void;
-  setSubstituteOut: (id: number) => void;
+  setSubstituteIn: (player: PlayerData) => void;
+  setSubstituteOut: (player: PlayerData) => void;
   setCurrentGameweek: (gameweek: number) => void;
   makeSubs: () => Promise<{
     isValid: boolean;
@@ -41,17 +43,42 @@ export const picksStore = create<State>()((set, get) => ({
   setBase: (picks: FPLGameweekPicksData) => {
     set({ base: picks });
   },
-  setSubstituteIn: (player_id: number) => {
+  setSubstituteIn: (player: PlayerData) => {
     /**
      * selects player to be substituted IN, from subs
      */
-    set({ substitutedIn: player_id });
+    set({ substitutedIn: player.player_id });
   },
-  setSubstituteOut: (player_id: number) => {
+  setSubstituteOut: (player: PlayerData) => {
     /**
      * selects player to be substituted OUT, from starting 11
      */
-    set({ substitutedOut: player_id });
+    const { picks, substitutedOut } = get();
+
+    // already set
+    if (substitutedOut == player.player_id) {
+      set({ substitutedOut: undefined });
+      set({
+        picks: {
+          data: picks?.data!,
+          overall: {
+            ...picks?.overall!,
+            bank: picks?.overall?.bank! - player.selling_price,
+          },
+        },
+      });
+    } else {
+      set({ substitutedOut: player.player_id });
+      set({
+        picks: {
+          data: picks?.data!,
+          overall: {
+            ...picks?.overall!,
+            bank: picks?.overall?.bank! + player.selling_price,
+          },
+        },
+      });
+    }
   },
   setDrafts: (drafts) => set({ drafts }),
   setCurrentGameweek: (gameweek: number) => {

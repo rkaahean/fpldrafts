@@ -15,6 +15,7 @@ export default function Gameweek() {
     dbbase: state.base!,
     drafts: state.drafts,
     currentGameweek: state.currentGameweek,
+    picks: state.picks!,
   }));
 
   const {
@@ -24,6 +25,7 @@ export default function Gameweek() {
     dbbase,
     drafts,
     currentGameweek,
+    picks,
   } = picksSelectors;
 
   const { data } = useQuery({
@@ -72,7 +74,6 @@ export default function Gameweek() {
     },
   });
 
-  console.log(data);
   if (data && data.data) {
     return (
       <ReactQueryProvider>
@@ -87,7 +88,7 @@ export default function Gameweek() {
             <div className="flex flex-row justify-around w-full">
               <GameweekStat title="Gameweek" value={currentGameweek} />
               <GameweekStat title="Transfers" value={"0 / 1"} />
-              <GameweekStat title="ITB" value={`${data.overall.bank / 10}`} />
+              <GameweekStat title="ITB" value={`${picks.overall!.bank / 10}`} />
               <GameweekStat title="Rank" value={data.overall.overall_rank} />
             </div>
             <button
