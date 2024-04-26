@@ -12,9 +12,11 @@ export default function Player(props: {
   const subIn = picksStore((store) => store.setSubstituteIn);
   const subOut = picksStore((store) => store.setSubstituteOut);
   const makeSubs = picksStore((store) => store.makeSubs);
+  const setBank = picksStore((store) => store.setBank);
 
   const substitutedIn = picksStore((store) => store.substitutedIn);
   const substitutedOut = picksStore((store) => store.substitutedOut);
+  const bank = picksStore((store) => store.bank);
 
   const player = props.isSubstitute ? substitutedIn : substitutedOut;
 
@@ -22,7 +24,7 @@ export default function Player(props: {
     <div
       className={cn(
         "flex flex-row w-32 h-32 2xl:w-40 2xl:h-40 border rounded-md p-2",
-        player == props.data.player_id ? "bg-yellow-100" : ""
+        player?.player_id == props.data.player_id ? "bg-yellow-100" : ""
       )}
     >
       <PlayerFixtureTicker
@@ -36,9 +38,15 @@ export default function Player(props: {
             className="text-xs w-4 h-4 rounded-sm"
             onClick={() => {
               if (props.isSubstitute) {
-                subIn(props.data.player_id, props.data.selling_price);
+                subIn({
+                  player_id: props.data.player_id,
+                  value: props.data.selling_price,
+                });
               } else {
-                subOut(props.data.player_id, props.data.selling_price);
+                subOut({
+                  player_id: props.data.player_id,
+                  value: props.data.selling_price,
+                });
               }
               makeSubs();
             }}

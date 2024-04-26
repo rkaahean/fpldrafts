@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
   const outIdx = picks.findIndex(
     (pick: any) => pick.fpl_player.player_id == substitutedOut
   );
+  // console.log(inIdx, outIdx);
   // Condition 1: Both in and out players are of same type
   const isSameType = inData?.element_type == outData?.element_type;
   const isInTeam = inIdx != -1 && outIdx != -1;

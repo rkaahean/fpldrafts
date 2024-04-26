@@ -11,17 +11,22 @@ interface DraftState {
     gameweek: number;
   }[];
 }
+
+interface TransferProps {
+  player_id: number;
+  value: number;
+}
 interface State {
   bank: number;
   currentGameweek: number;
   picks?: FPLGameweekPicksData;
   base?: FPLGameweekPicksData;
-  substitutedIn?: number;
-  substitutedOut?: number;
+  substitutedIn?: TransferProps;
+  substitutedOut?: TransferProps;
   drafts: DraftState;
   setBase: (picks: FPLGameweekPicksData) => void;
-  setSubstituteIn: (player_id: number, price: number) => void;
-  setSubstituteOut: (player_id: number, price: number) => void;
+  setSubstituteIn: (player: TransferProps) => void;
+  setSubstituteOut: (player: TransferProps) => void;
   setCurrentGameweek: (gameweek: number) => void;
   setBank: (bank: number) => void;
   makeSubs: () => Promise<{
@@ -47,33 +52,33 @@ export const picksStore = create<State>()((set, get) => ({
   setBank: (bank: number) => {
     set({ bank });
   },
-  setSubstituteIn: (player_id: number, price: number) => {
+  setSubstituteIn: (player: TransferProps) => {
     /**
      * selects player to be substituted IN, from subs
      */
     const { substitutedIn, bank } = get();
     // already set
-    if (substitutedIn == player_id) {
+    if (substitutedIn == player) {
       set({ substitutedIn: undefined });
-      set({ bank: bank + price });
+      // set({ bank: bank + price });
     } else {
-      set({ substitutedIn: player_id });
-      set({ bank: bank - price });
+      set({ substitutedIn: player });
+      // set({ bank: bank - price });
     }
   },
-  setSubstituteOut: (player_id: number, price: number) => {
+  setSubstituteOut: (player: TransferProps) => {
     /**
      * selects player to be substituted OUT, from starting 11
      */
     const { substitutedOut, bank } = get();
 
     // already set
-    if (substitutedOut == player_id) {
+    if (substitutedOut == player) {
       set({ substitutedOut: undefined });
-      set({ bank: bank - price });
+      // set({ bank: bank - price });
     } else {
-      set({ substitutedOut: player_id });
-      set({ bank: bank + price });
+      set({ substitutedOut: player });
+      // set({ bank: bank + price });
     }
   },
   setDrafts: (drafts) => set({ drafts }),
@@ -99,8 +104,8 @@ export const picksStore = create<State>()((set, get) => ({
         method: "POST",
         body: JSON.stringify({
           picks: data,
-          substitutedIn,
-          substitutedOut,
+          substitutedIn: substitutedIn.player_id,
+          substitutedOut: substitutedOut.player_id,
         }),
       }).then((res) => res.json());
       console.log(isValid, substitutedIn, substitutedOut);
@@ -116,15 +121,15 @@ export const picksStore = create<State>()((set, get) => ({
       if (drafts && drafts.changes) {
         newDrafts = [...drafts.changes];
         newDrafts.push({
-          in: substitutedIn,
-          out: substitutedOut,
+          in: substitutedIn.player_id,
+          out: substitutedOut.player_id,
           gameweek,
         });
       } else {
         newDrafts = [
           {
-            in: substitutedIn,
-            out: substitutedOut,
+            in: substitutedIn.player_id,
+            out: substitutedOut.player_id,
             gameweek,
           },
         ];
