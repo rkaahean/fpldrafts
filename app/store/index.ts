@@ -182,16 +182,12 @@ export async function swapPlayers(
     inPlayer = {
       fpl_player: response.data,
       selling_price: -1,
-      position: -1,
-      id: "1",
     };
     // console.log("New player data loading", inPlayer);
   } else {
-    // hapens when players being switched up within the team
+    // happens when players being switched up within the team
     inPlayer = {
       ...data.data[inPlayerIndex],
-      selling_price: -1,
-      position: -1,
     }; // Create a new object
   }
 
