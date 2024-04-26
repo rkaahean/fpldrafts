@@ -68,43 +68,43 @@ async function parseHistoryData(data: any, gameweek: number) {
 }
 
 try {
-  // const data = [];
-  // for (let i = 1; i <= 38; i++) {
-  //   const gameweekData = getPicksData(44421, i);
-  //   data.push(gameweekData);
-  // }
+  const data = [];
+  for (let i = 1; i <= 38; i++) {
+    const gameweekData = getPicksData(44421, i);
+    data.push(gameweekData);
+  }
 
-  // data.map(async (obj) => {
-  //   const { picks, history } = await obj;
-  //   if (picks) {
-  //     picks.map(async (pick: any) => {
-  //       await prisma.fPLGameweekPicks.upsert({
-  //         where: {
-  //           fpl_team_id_gameweek_position: {
-  //             fpl_team_id: pick.fpl_team_id,
-  //             gameweek: pick.gameweek,
-  //             position: pick.position,
-  //           },
-  //         },
-  //         update: pick,
-  //         create: pick,
-  //       });
-  //     });
+  data.map(async (obj) => {
+    const { picks, history } = await obj;
+    if (picks) {
+      picks.map(async (pick: any) => {
+        await prisma.fPLGameweekPicks.upsert({
+          where: {
+            fpl_team_id_gameweek_position: {
+              fpl_team_id: pick.fpl_team_id,
+              gameweek: pick.gameweek,
+              position: pick.position,
+            },
+          },
+          update: pick,
+          create: pick,
+        });
+      });
 
-  //     if (history) {
-  //       await prisma.fPLGameweekOverallStats.upsert({
-  //         where: {
-  //           fpl_team_id_gameweek: {
-  //             fpl_team_id: "53ed0ea1-7298-4069-b609-f8108468c885",
-  //             gameweek: history.gameweek,
-  //           },
-  //         },
-  //         update: history,
-  //         create: history,
-  //       });
-  //     }
-  //   }
-  // });
+      if (history) {
+        await prisma.fPLGameweekOverallStats.upsert({
+          where: {
+            fpl_team_id_gameweek: {
+              fpl_team_id: "53ed0ea1-7298-4069-b609-f8108468c885",
+              gameweek: history.gameweek,
+            },
+          },
+          update: history,
+          create: history,
+        });
+      }
+    }
+  });
 
   getTransfersData(44421).then(async (data) => {
     const maxTime = await prisma.fPLGameweekTransfers.aggregate({
