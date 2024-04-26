@@ -75,7 +75,6 @@ export default function Gameweek() {
     },
   });
 
-  console.log("sa", data);
   if (data && data.data) {
     return (
       <ReactQueryProvider>

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { FPLGameweekPicksData } from "../api";
+import { FPLGameweekPicksData, FPLPlayerData } from "../api";
 
 interface DraftState {
   id?: string;
@@ -162,7 +162,7 @@ export async function swapPlayers(
     (player) => player.fpl_player.player_id === substitutedOut
   );
 
-  let inPlayer;
+  let inPlayer: FPLPlayerData;
   if (outPlayerIndex === -1) {
     // if index of player substituted out not found, return
     // this means tranferring out a player not in team. BAD!
@@ -175,11 +175,20 @@ export async function swapPlayers(
         id: substitutedIn,
       }),
     }).then((res) => res.json());
-    inPlayer = { fpl_player: response.data };
+    inPlayer = {
+      fpl_player: response.data,
+      selling_price: -1,
+      position: -1,
+      id: "1",
+    };
     // console.log("New player data loading", inPlayer);
   } else {
     // hapens when players being switched up within the team
-    inPlayer = { ...data.data[inPlayerIndex] }; // Create a new object
+    inPlayer = {
+      ...data.data[inPlayerIndex],
+      selling_price: -1,
+      position: -1,
+    }; // Create a new object
   }
 
   const outPlayer = { ...data.data[outPlayerIndex] }; // Create a new object

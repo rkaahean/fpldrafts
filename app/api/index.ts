@@ -218,6 +218,7 @@ export type FPLPlayerData = Pick<
 > & {
   selling_price: number;
   position: number;
+  id: string;
 };
 
 export async function getAllPlayerData() {
