@@ -16,6 +16,7 @@ export default function Gameweek() {
     drafts: state.drafts,
     currentGameweek: state.currentGameweek,
     picks: state.picks!,
+    bank: state.bank,
   }));
 
   const {
@@ -26,6 +27,7 @@ export default function Gameweek() {
     drafts,
     currentGameweek,
     picks,
+    bank,
   } = picksSelectors;
 
   const { data } = useQuery({
@@ -88,7 +90,7 @@ export default function Gameweek() {
             <div className="flex flex-row justify-around w-full">
               <GameweekStat title="Gameweek" value={currentGameweek} />
               <GameweekStat title="Transfers" value={"0 / 1"} />
-              <GameweekStat title="ITB" value={`${picks.overall!.bank / 10}`} />
+              <GameweekStat title="ITB" value={`${bank / 10}`} />
               <GameweekStat title="Rank" value={data.overall.overall_rank} />
             </div>
             <button

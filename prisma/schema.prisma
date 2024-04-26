@@ -34,6 +34,7 @@ model FPLPlayer {
   expected_assists_per_90           Float
   expected_goal_involvements_per_90 Float
   minutes                           Int
+  now_value                         Int
   FPLGameweekPicks                  FPLGameweekPicks[]
 
   fpl_season                FPLSeason                @relation(fields: [season_id], references: [id])
@@ -128,14 +129,14 @@ model FPLGameweekPlayerStats {
 }
 
 model FPLGameweekTransfers {
-  id              String @id @default(uuid())
+  id              String   @id @default(uuid())
   fpl_team_id     String
   in_player_id    String
   in_player_cost  Int
   out_player_id   String
   out_player_cost Int
   gameweek        Int
-  time DateTime
+  time            DateTime
 
   in_fpl_player  FPLPlayer @relation("in_player", fields: [in_player_id], references: [id])
   out_fpl_player FPLPlayer @relation("out_player", fields: [out_player_id], references: [id])

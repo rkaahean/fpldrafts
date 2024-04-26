@@ -65,6 +65,7 @@ function parseBoostrapData(data: any): {
       ),
       total_points: player.total_points,
       minutes: player.minutes,
+      now_value: player.now_cost,
     };
   });
 

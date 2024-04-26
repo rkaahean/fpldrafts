@@ -36,9 +36,9 @@ export default function Player(props: {
             className="text-xs w-4 h-4 rounded-sm"
             onClick={() => {
               if (props.isSubstitute) {
-                subIn(props.data);
+                subIn(props.data.player_id, props.data.selling_price);
               } else {
-                subOut(props.data);
+                subOut(props.data.player_id, props.data.selling_price);
               }
               makeSubs();
             }}

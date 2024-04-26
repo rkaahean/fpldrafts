@@ -1,7 +1,5 @@
-import { PlayerData } from "@/components/pitch/pitchrow";
 import { create } from "zustand";
 import { FPLGameweekPicksData } from "../api";
-import { get } from "http";
 
 interface DraftState {
   id?: string;
@@ -14,6 +12,7 @@ interface DraftState {
   }[];
 }
 interface State {
+  bank: number;
   currentGameweek: number;
   picks?: FPLGameweekPicksData;
   base?: FPLGameweekPicksData;
@@ -21,8 +20,8 @@ interface State {
   substitutedOut?: number;
   drafts: DraftState;
   setBase: (picks: FPLGameweekPicksData) => void;
-  setSubstituteIn: (player: PlayerData) => void;
-  setSubstituteOut: (player: PlayerData) => void;
+  setSubstituteIn: (player_id: number, price: number) => void;
+  setSubstituteOut: (player_id: number, price: number) => void;
   setCurrentGameweek: (gameweek: number) => void;
   makeSubs: () => Promise<{
     isValid: boolean;
@@ -33,6 +32,7 @@ interface State {
 }
 
 export const picksStore = create<State>()((set, get) => ({
+  bank: 0,
   drafts: {
     changes: [],
   },
@@ -43,41 +43,34 @@ export const picksStore = create<State>()((set, get) => ({
   setBase: (picks: FPLGameweekPicksData) => {
     set({ base: picks });
   },
-  setSubstituteIn: (player: PlayerData) => {
+  setSubstituteIn: (player_id: number, price: number) => {
     /**
      * selects player to be substituted IN, from subs
      */
-    set({ substitutedIn: player.player_id });
+    const { substitutedIn, bank } = get();
+    console.log("Price", player_id, price);
+    // already set
+    if (substitutedIn == player_id) {
+      set({ substitutedIn: undefined });
+      set({ bank: bank + price });
+    } else {
+      set({ substitutedIn: player_id });
+      set({ bank: bank - price });
+    }
   },
-  setSubstituteOut: (player: PlayerData) => {
+  setSubstituteOut: (player_id: number, price: number) => {
     /**
      * selects player to be substituted OUT, from starting 11
      */
-    const { picks, substitutedOut } = get();
+    const { substitutedOut, bank } = get();
 
     // already set
-    if (substitutedOut == player.player_id) {
+    if (substitutedOut == player_id) {
       set({ substitutedOut: undefined });
-      set({
-        picks: {
-          data: picks?.data!,
-          overall: {
-            ...picks?.overall!,
-            bank: picks?.overall?.bank! - player.selling_price,
-          },
-        },
-      });
+      set({ bank: bank - price });
     } else {
-      set({ substitutedOut: player.player_id });
-      set({
-        picks: {
-          data: picks?.data!,
-          overall: {
-            ...picks?.overall!,
-            bank: picks?.overall?.bank! + player.selling_price,
-          },
-        },
-      });
+      set({ substitutedOut: player_id });
+      set({ bank: bank + price });
     }
   },
   setDrafts: (drafts) => set({ drafts }),

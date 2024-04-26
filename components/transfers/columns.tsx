@@ -14,6 +14,7 @@ export type PlayerData = {
   expected_goal_involvements_per_90: number;
   goals_scored: number;
   assists: number;
+  now_value: number;
 };
 
 export const columns: ColumnDef<PlayerData>[] = [
@@ -58,7 +59,8 @@ export const columns: ColumnDef<PlayerData>[] = [
       return (
         <button
           onClick={async () => {
-            setSubstituteIn(row.original.player_id);
+            console.log(row.original);
+            setSubstituteIn(row.original.player_id, row.original.now_value);
             const { isValid, reason } = await makeSubs();
             if (!isValid) {
               toast({
