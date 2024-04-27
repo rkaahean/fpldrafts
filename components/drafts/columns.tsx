@@ -24,6 +24,13 @@ export const columns: ColumnDef<Draft>[] = [
     header: "Base",
   },
   {
+    id: "bank",
+    header: "Bank",
+    cell: ({ row }) => {
+      return <div>{row.original.bank / 10}</div>;
+    },
+  },
+  {
     id: "num_changes",
     header: "Changes",
     cell: ({ row }) => {

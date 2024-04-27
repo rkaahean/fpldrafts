@@ -19,6 +19,7 @@ import { Label } from "../ui/label";
 
 export default function DraftSave() {
   const drafts = picksStore((state) => state.drafts);
+  const picks = picksStore((state) => state.picks);
   const [open, setOpen] = useState(false);
   const [draftName, setDraftName] = useState("GW 27 draft");
   const [draftDescription, setDraftDescription] = useState(
@@ -81,6 +82,7 @@ export default function DraftSave() {
                   gameweek: Math.min(
                     ...drafts.changes.map((draft) => draft.gameweek)
                   ),
+                  bank: picks?.overall.bank,
                 }),
               });
               setOpen(false);

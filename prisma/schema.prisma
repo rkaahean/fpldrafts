@@ -167,6 +167,7 @@ model FPLDrafts {
   description       String?
   fpl_team_id       String
   base_gameweek     Int
+  bank              Int
   FPLDraftTransfers FPLDraftTransfers[]
 }
 

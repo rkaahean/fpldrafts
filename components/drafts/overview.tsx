@@ -12,6 +12,7 @@ const getData = unstable_cache(
         description: true,
         base_gameweek: true,
         FPLDraftTransfers: true,
+        bank: true,
       },
     });
     return data;
@@ -26,10 +27,9 @@ export type Draft = Awaited<ReturnType<typeof getData>>[number];
 
 export default async function Drafts() {
   const drafts = await getData();
-
   return (
     <div className="flex flex-col h-full">
-      <div className="text-md font-semibold">Drafts</div>
+      <div className="text-sm font-black">Drafts</div>
       <DataTable
         columns={columns}
         data={drafts!}

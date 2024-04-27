@@ -236,6 +236,7 @@ export async function createDraft(request: {
   team_id: string;
   gameweek: number;
   description: string;
+  bank: number;
   changes: DraftTransfer[];
 }) {
   const draft = await prisma.fPLDrafts.create({
@@ -244,6 +245,7 @@ export async function createDraft(request: {
       fpl_team_id: request.team_id,
       base_gameweek: request.gameweek,
       description: request.description,
+      bank: request.bank,
     },
   });
 
