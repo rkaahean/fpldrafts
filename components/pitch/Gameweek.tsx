@@ -29,6 +29,7 @@ export default function Gameweek() {
     drafts,
     currentGameweek,
     bank,
+    picks,
   } = picksSelectors;
 
   const { data } = useQuery({
@@ -58,9 +59,10 @@ export default function Gameweek() {
         (draft) => draft.gameweek <= currentGameweek
       );
 
+      console.log(base);
       // if there's a base, apply relevant draft changes
       let draftData = base;
-      setBank(base.overall?.bank!);
+      // setBank(base.overall?.bank!);
       if (base.data && base.data.length > 0) {
         for (let draftChange of gameweekDraft) {
           draftData = await swapPlayers(
@@ -92,7 +94,10 @@ export default function Gameweek() {
             <div className="flex flex-row justify-around w-full">
               <GameweekStat title="Gameweek" value={currentGameweek} />
               <GameweekStat title="Transfers" value={"0 / 1"} />
-              <GameweekStat title="ITB" value={`${bank / 10}`} />
+              <GameweekStat
+                title="ITB"
+                value={`${dbbase?.overall?.bank! / 10}`}
+              />
               <GameweekStat title="Rank" value={data.overall.overall_rank} />
             </div>
             <button

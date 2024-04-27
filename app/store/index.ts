@@ -17,7 +17,6 @@ interface TransferProps {
   value: number;
 }
 interface State {
-  bank: number;
   currentGameweek: number;
   picks?: FPLGameweekPicksData;
   base?: FPLGameweekPicksData;
@@ -38,7 +37,6 @@ interface State {
 }
 
 export const picksStore = create<State>()((set, get) => ({
-  bank: 0,
   drafts: {
     changes: [],
   },
@@ -56,30 +54,48 @@ export const picksStore = create<State>()((set, get) => ({
     /**
      * selects player to be substituted IN, from subs
      */
-    const { substitutedIn, bank } = get();
-    // already set
-    if (substitutedIn == player) {
-      set({ substitutedIn: undefined });
-      // set({ bank: bank + price });
-    } else {
-      set({ substitutedIn: player });
-      // set({ bank: bank - price });
-    }
+    const { substitutedIn: current, base } = get();
+    set({ substitutedIn: player });
+    // set({ bank: bank - player.value });
+    const new_value = base?.overall?.bank! - player.value;
+    console.log("VAL", base?.overall?.bank, player.value);
+    set({
+      base: {
+        data: base!.data,
+        overall: {
+          ...base!.overall!,
+          bank: new_value,
+        },
+      },
+    });
   },
   setSubstituteOut: (player: TransferProps) => {
     /**
      * selects player to be substituted OUT, from starting 11
      */
-    const { substitutedOut, bank } = get();
-
+    const { substitutedOut: current, base } = get();
+    let new_value = base?.overall?.bank!;
     // already set
-    if (substitutedOut == player) {
+    if (current?.player_id == player.player_id) {
       set({ substitutedOut: undefined });
-      // set({ bank: bank - price });
+      new_value = new_value - current.value;
+    } else if (current) {
+      set({ substitutedOut: player });
+      new_value = new_value - current.value + player.value;
     } else {
       set({ substitutedOut: player });
-      // set({ bank: bank + price });
+      new_value = new_value + player.value;
     }
+
+    set({
+      base: {
+        data: base!.data,
+        overall: {
+          ...base!.overall!,
+          bank: new_value,
+        },
+      },
+    });
   },
   setDrafts: (drafts) => set({ drafts }),
   setCurrentGameweek: (gameweek: number) => {
