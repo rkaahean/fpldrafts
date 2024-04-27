@@ -86,7 +86,7 @@ model FPLGameweekOverallStats {
   value                Int
   points               Int
   total_points         Int
-  gameweek_rank        Int
+  gameweek_rank        Int?
   overall_rank         Int
   event_transfers      Int
   event_transfers_cost Int
