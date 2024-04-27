@@ -54,19 +54,9 @@ export const picksStore = create<State>()((set, get) => ({
     /**
      * selects player to be substituted IN, from subs
      */
-    const { picks } = get();
     set({ substitutedIn: player });
-    const new_value = picks?.overall?.bank! - player.value;
-    console.log("VAL", picks?.overall?.bank, player.value);
-    set({
-      picks: {
-        data: picks!.data,
-        overall: {
-          ...picks!.overall!,
-          bank: new_value,
-        },
-      },
-    });
+    // console.log("VAL", picks?.overall?.bank, player.value);
+    // no need to update bank, as the it will be updated in react query
   },
   setSubstituteOut: (player: TransferProps) => {
     /**
@@ -186,9 +176,8 @@ export async function swapPlayers(
     out: substitutedOut,
     in_cost,
     out_cost,
-    gameweek,
   } = tranfser;
-  console.log("Swapping player", substitutedIn, substitutedOut, data);
+  // console.log("Swapping player", substitutedIn, substitutedOut, data);
   const inPlayerIndex = data.data.findIndex(
     (player) => player.fpl_player.player_id === substitutedIn
   );
@@ -245,7 +234,6 @@ export async function swapPlayers(
     inPlayer!.position = outPlayer.position;
     newData[outPlayerIndex] = inPlayer!;
 
-    console.log("SWAP COST", data.overall.bank, out_cost, in_cost);
     return {
       data: newData,
       overall: {
