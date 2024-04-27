@@ -1,4 +1,5 @@
 import prisma from "../../lib/db";
+import { DraftTransfer } from "../store";
 
 export async function getPlayerData(id: number, gameweek: number = 1) {
   // get from prisma
@@ -235,11 +236,7 @@ export async function createDraft(request: {
   team_id: string;
   gameweek: number;
   description: string;
-  changes: {
-    in: number;
-    out: number;
-    gameweek: number;
-  }[];
+  changes: DraftTransfer[];
 }) {
   const draft = await prisma.fPLDrafts.create({
     data: {
@@ -256,6 +253,8 @@ export async function createDraft(request: {
       player_out_id: change.out,
       gameweek: change.gameweek,
       fpl_draft_id: draft.id,
+      in_cost: change.in_cost,
+      out_cost: change.out_cost,
     };
   });
 

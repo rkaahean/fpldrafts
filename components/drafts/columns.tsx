@@ -5,21 +5,12 @@ import { useDraftLoader } from "@/app/hooks";
 import { DownloadIcon, TrashIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "../ui/button";
+import { Draft } from "./overview";
 
 // This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Draft = {
-  id: string;
-  name: string;
-  description: string | null;
-  base_gameweek: number;
-};
+// You can use a Zod schema here if you want.Draft
 
 export const columns: ColumnDef<Draft>[] = [
-  {
-    accessorKey: "id",
-    header: "ID",
-  },
   {
     accessorKey: "name",
     header: "Name",
@@ -31,6 +22,13 @@ export const columns: ColumnDef<Draft>[] = [
   {
     accessorKey: "base_gameweek",
     header: "Base",
+  },
+  {
+    id: "num_changes",
+    header: "Changes",
+    cell: ({ row }) => {
+      return <div>{row.original.FPLDraftTransfers.length}</div>;
+    },
   },
   {
     id: "actions",

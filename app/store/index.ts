@@ -8,7 +8,7 @@ interface DraftState {
   changes: DraftTransfer[];
 }
 
-interface DraftTransfer {
+export interface DraftTransfer {
   in: number;
   out: number;
   gameweek: number;
