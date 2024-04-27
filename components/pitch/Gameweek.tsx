@@ -12,23 +12,19 @@ export default function Gameweek() {
     setBase: state.setBase,
     setCurrentGameweek: state.setCurrentGameweek,
     setPicks: state.setPicks,
-    setBank: state.setBank,
     dbbase: state.base!,
     drafts: state.drafts,
     currentGameweek: state.currentGameweek,
     picks: state.picks!,
-    bank: state.bank,
   }));
 
   const {
     setBase,
     setPicks,
     setCurrentGameweek,
-    setBank,
     dbbase,
     drafts,
     currentGameweek,
-    bank,
     picks,
   } = picksSelectors;
 
@@ -43,7 +39,7 @@ export default function Gameweek() {
         },
         body: JSON.stringify({ gameweek: currentGameweek }),
       });
-      const data = await response.json();
+      const data: FPLGameweekPicksData = await response.json();
 
       let base: FPLGameweekPicksData;
       if (data.data.length > 0) {
@@ -59,17 +55,12 @@ export default function Gameweek() {
         (draft) => draft.gameweek <= currentGameweek
       );
 
-      console.log(base);
       // if there's a base, apply relevant draft changes
       let draftData = base;
-      // setBank(base.overall?.bank!);
       if (base.data && base.data.length > 0) {
         for (let draftChange of gameweekDraft) {
-          draftData = await swapPlayers(
-            draftData,
-            draftChange.in,
-            draftChange.out
-          );
+          // swap players in the team
+          draftData = await swapPlayers(draftData, draftChange);
         }
         setPicks(draftData);
         return draftData;
@@ -94,10 +85,7 @@ export default function Gameweek() {
             <div className="flex flex-row justify-around w-full">
               <GameweekStat title="Gameweek" value={currentGameweek} />
               <GameweekStat title="Transfers" value={"0 / 1"} />
-              <GameweekStat
-                title="ITB"
-                value={`${dbbase?.overall?.bank! / 10}`}
-              />
+              <GameweekStat title="ITB" value={`${picks.overall.bank! / 10}`} />
               <GameweekStat title="Rank" value={data.overall.overall_rank} />
             </div>
             <button

@@ -210,7 +210,7 @@ export async function getPlayerValueByGameweek(
 }
 export type FPLGameweekPicksData = {
   data: Awaited<ReturnType<typeof getGameweekPicksData>>;
-  overall: Awaited<ReturnType<typeof getGameweekOverallData>>;
+  overall: NonNullable<Awaited<ReturnType<typeof getGameweekOverallData>>>;
 };
 export type FPLPlayerData = Pick<
   FPLGameweekPicksData["data"][number],

@@ -5,11 +5,15 @@ interface DraftState {
   id?: string;
   name?: string;
   description?: string;
-  changes: {
-    in: number;
-    out: number;
-    gameweek: number;
-  }[];
+  changes: DraftTransfer[];
+}
+
+interface DraftTransfer {
+  in: number;
+  out: number;
+  gameweek: number;
+  in_cost: number;
+  out_cost: number;
 }
 
 interface TransferProps {
@@ -27,7 +31,6 @@ interface State {
   setSubstituteIn: (player: TransferProps) => void;
   setSubstituteOut: (player: TransferProps) => void;
   setCurrentGameweek: (gameweek: number) => void;
-  setBank: (bank: number) => void;
   makeSubs: () => Promise<{
     isValid: boolean;
     reason: string;
@@ -47,23 +50,19 @@ export const picksStore = create<State>()((set, get) => ({
   setBase: (picks: FPLGameweekPicksData) => {
     set({ base: picks });
   },
-  setBank: (bank: number) => {
-    set({ bank });
-  },
   setSubstituteIn: (player: TransferProps) => {
     /**
      * selects player to be substituted IN, from subs
      */
-    const { substitutedIn: current, base } = get();
+    const { picks } = get();
     set({ substitutedIn: player });
-    // set({ bank: bank - player.value });
-    const new_value = base?.overall?.bank! - player.value;
-    console.log("VAL", base?.overall?.bank, player.value);
+    const new_value = picks?.overall?.bank! - player.value;
+    console.log("VAL", picks?.overall?.bank, player.value);
     set({
-      base: {
-        data: base!.data,
+      picks: {
+        data: picks!.data,
         overall: {
-          ...base!.overall!,
+          ...picks!.overall!,
           bank: new_value,
         },
       },
@@ -73,8 +72,8 @@ export const picksStore = create<State>()((set, get) => ({
     /**
      * selects player to be substituted OUT, from starting 11
      */
-    const { substitutedOut: current, base } = get();
-    let new_value = base?.overall?.bank!;
+    const { substitutedOut: current, base, picks } = get();
+    let new_value = picks?.overall?.bank!;
     // already set
     if (current?.player_id == player.player_id) {
       set({ substitutedOut: undefined });
@@ -88,10 +87,10 @@ export const picksStore = create<State>()((set, get) => ({
     }
 
     set({
-      base: {
-        data: base!.data,
+      picks: {
+        data: picks!.data,
         overall: {
-          ...base!.overall!,
+          ...picks!.overall!,
           bank: new_value,
         },
       },
@@ -140,6 +139,8 @@ export const picksStore = create<State>()((set, get) => ({
           in: substitutedIn.player_id,
           out: substitutedOut.player_id,
           gameweek,
+          in_cost: substitutedIn.value,
+          out_cost: substitutedOut.value,
         });
       } else {
         newDrafts = [
@@ -147,6 +148,8 @@ export const picksStore = create<State>()((set, get) => ({
             in: substitutedIn.player_id,
             out: substitutedOut.player_id,
             gameweek,
+            in_cost: substitutedIn.value,
+            out_cost: substitutedOut.value,
           },
         ];
       }
@@ -176,9 +179,15 @@ export const picksStore = create<State>()((set, get) => ({
  */
 export async function swapPlayers(
   data: FPLGameweekPicksData,
-  substitutedIn: number,
-  substitutedOut: number
+  tranfser: DraftTransfer
 ): Promise<FPLGameweekPicksData> {
+  const {
+    in: substitutedIn,
+    out: substitutedOut,
+    in_cost,
+    out_cost,
+    gameweek,
+  } = tranfser;
   console.log("Swapping player", substitutedIn, substitutedOut, data);
   const inPlayerIndex = data.data.findIndex(
     (player) => player.fpl_player.player_id === substitutedIn
@@ -236,9 +245,13 @@ export async function swapPlayers(
     inPlayer!.position = outPlayer.position;
     newData[outPlayerIndex] = inPlayer!;
 
+    console.log("SWAP COST", data.overall.bank, out_cost, in_cost);
     return {
       data: newData,
-      overall: data.overall,
+      overall: {
+        ...data.overall,
+        bank: data.overall.bank + out_cost - in_cost,
+      },
     };
   }
 }
