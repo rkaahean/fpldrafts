@@ -305,3 +305,11 @@ export async function getAllFixtures() {
     },
   });
 }
+
+export async function getLatestGameweek() {
+  return prisma.fPLGameweekPicks.aggregate({
+    _max: {
+      gameweek: true,
+    },
+  });
+}

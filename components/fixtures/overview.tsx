@@ -1,10 +1,11 @@
-import { getAllFixtures } from "@/app/api";
+import { getAllFixtures, getLatestGameweek } from "@/app/api";
 
 export default async function Fixtures() {
   const data = await getAllFixtures();
+  const max_gameweek = await getLatestGameweek();
 
   const groupByHomeTeam = data.reduce<{
-    [key: number]: { home: string; away: string }[];
+    [key: number]: { home: string; away: string; code: number }[];
   }>((acc, curr) => {
     const { event, team_h_id, team_a_id, ...rest } = curr;
 
@@ -14,15 +15,20 @@ export default async function Fixtures() {
     acc[event].push({
       home: rest.fpl_team_h.short_name,
       away: rest.fpl_team_a.short_name,
+      code: rest.code,
     });
     return acc;
   }, {});
-  console.log(groupByHomeTeam);
+
   return (
     <div>
       <div className="text-sm font-black">Fixtures</div>
-      {data.map((fixuture) => {
-        return <div key={fixuture.code}>{fixuture.code}</div>;
+      {groupByHomeTeam[max_gameweek._max.gameweek!].map((fixture) => {
+        return (
+          <div key={fixture.code}>
+            {fixture.home} - {fixture.away}
+          </div>
+        );
       })}
     </div>
   );

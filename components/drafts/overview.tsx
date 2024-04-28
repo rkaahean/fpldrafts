@@ -28,7 +28,7 @@ export type Draft = Awaited<ReturnType<typeof getData>>[number];
 export default async function Drafts() {
   const drafts = await getData();
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col">
       <div className="text-sm font-black">Drafts</div>
       <DataTable
         columns={columns}
