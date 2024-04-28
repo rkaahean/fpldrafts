@@ -119,9 +119,9 @@ function GameweekStat({
   value: number | string;
 }) {
   return (
-    <div className="flex flex-col w-10">
-      <div className="text-xs font-light">{title}</div>
-      <div className="text-sm font-semibold">{value}</div>
+    <div className="text-xs flex flex-col w-10">
+      <div className="font-light">{title}</div>
+      <div className="font-black">{value}</div>
     </div>
   );
 }

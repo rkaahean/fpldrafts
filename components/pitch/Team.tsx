@@ -16,7 +16,7 @@ export default function Team() {
           {drafts.id && (
             <div className="flex flex-col justify-end">
               <div className="text-xs italic font-light">{drafts.name}</div>
-              <div className="text-sm font-medium">{drafts.description}</div>
+              <div className="text-xs font-black">{drafts.description}</div>
             </div>
           )}
         </div>

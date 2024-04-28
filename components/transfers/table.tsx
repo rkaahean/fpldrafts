@@ -6,7 +6,7 @@ export default async function Selector() {
   const data = await getAllPlayerData();
   return (
     <div className="h-3">
-      <div className="text-lg font-semibold">Players</div>
+      <div className="text-sm font-black">Players</div>
       <DataTable
         columns={columns}
         data={data}

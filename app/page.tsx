@@ -14,7 +14,7 @@ export default function Home() {
             <div className="min-h-64">
               <Drafts />
             </div>
-            <div className="text-md font-semibold">Fixtures</div>
+            <div className="font-black">Fixtures</div>
           </div>
         </div>
         <div className="col-span-2">
