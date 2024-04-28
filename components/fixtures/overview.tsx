@@ -2,7 +2,7 @@ import { getAllFixtures, getLatestGameweek } from "@/app/api";
 
 export default async function Fixtures() {
   const data = await getAllFixtures();
-  const max_gameweek = await getLatestGameweek();
+  const max_gameweek = (await getLatestGameweek()!)._max.gameweek;
 
   const groupByHomeTeam = data.reduce<{
     [key: number]: { home: string; away: string; code: number }[];
@@ -20,10 +20,12 @@ export default async function Fixtures() {
     return acc;
   }, {});
 
+  for (let i = max_gameweek!; i <= max_gameweek! + 4; i++) {}
+
   return (
     <div>
       <div className="text-sm font-black">Fixtures</div>
-      {groupByHomeTeam[max_gameweek._max.gameweek!].map((fixture) => {
+      {groupByHomeTeam[max_gameweek!].map((fixture) => {
         return (
           <div key={fixture.code}>
             {fixture.home} - {fixture.away}
