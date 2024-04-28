@@ -67,7 +67,7 @@ model FPLFixtures {
   finished          Boolean
   team_h_id         String
   team_a_id         String
-  event             Int?
+  event             Int
   team_h_score      Int?
   team_a_score      Int?
   team_h_difficulty Int

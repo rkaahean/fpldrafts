@@ -284,3 +284,24 @@ export async function deleteDraft(draftId: string) {
     },
   });
 }
+
+export async function getAllFixtures() {
+  return await prisma.fPLFixtures.findMany({
+    select: {
+      code: true,
+      event: true,
+      team_h_id: true,
+      team_a_id: true,
+      fpl_team_h: {
+        select: {
+          short_name: true,
+        },
+      },
+      fpl_team_a: {
+        select: {
+          short_name: true,
+        },
+      },
+    },
+  });
+}

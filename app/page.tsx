@@ -1,4 +1,5 @@
 import Drafts from "@/components/drafts/overview";
+import Fixtures from "@/components/fixtures/overview";
 import Team from "@/components/pitch/team";
 import Selector from "@/components/transfers/table";
 
@@ -14,7 +15,7 @@ export default function Home() {
             <div className="min-h-64">
               <Drafts />
             </div>
-            <div className="font-black">Fixtures</div>
+            <Fixtures />
           </div>
         </div>
         <div className="col-span-2">
