@@ -1,4 +1,12 @@
 import { getAllFixtures, getLatestGameweek } from "@/app/api";
+import { Table } from "lucide-react";
+import {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
 
 export default async function Fixtures() {
   const data = await getAllFixtures();
@@ -25,13 +33,39 @@ export default async function Fixtures() {
   return (
     <div>
       <div className="text-sm font-black">Fixtures</div>
-      {groupByHomeTeam[max_gameweek!].map((fixture) => {
+      {/* <tr className="w-full grid grid-cols-10">
+        <th className="col-span-4">Gameweek</th>
+        <th>33</th>
+        <th>34</th>
+        <th>35</th>
+        <th>36</th>
+        <th>37</th>
+      </tr> */}
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-10">Gameweek</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Method</TableHead>
+            <TableHead className="text-right">Amount</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell className="font-medium">INV001</TableCell>
+            <TableCell>Paid</TableCell>
+            <TableCell>Credit Card</TableCell>
+            <TableCell className="text-right">$250.00</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+      {/* {groupByHomeTeam[max_gameweek!].map((fixture) => {
         return (
           <div key={fixture.code}>
             {fixture.home} - {fixture.away}
           </div>
         );
-      })}
+      })} */}
     </div>
   );
 }
