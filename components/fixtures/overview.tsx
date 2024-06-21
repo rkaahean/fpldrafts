@@ -65,7 +65,9 @@ export default async function Fixtures() {
       });
     });
 
-    return Object.values(teams);
+    return Object.values(teams).sort((a, b) =>
+      a.short_name > b.short_name ? 1 : -1
+    );
   }
 
   const formattedData = transformData(data);
@@ -74,7 +76,7 @@ export default async function Fixtures() {
       <div className="text-sm font-black">Fixtures</div>
       <Table>
         <TableHeader>
-          <TableRow className="grid grid-cols-7 h-6 items-center">
+          <TableRow className="grid grid-cols-7 h-6">
             <TableHead className="col-span-2"></TableHead>
             <TableHead>GW34</TableHead>
             <TableHead>GW35</TableHead>
