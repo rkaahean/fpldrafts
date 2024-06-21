@@ -303,9 +303,18 @@ export async function getAllFixtures() {
         },
       },
     },
+    where: {
+      event: {
+        gte: 34,
+      },
+    },
+    orderBy: {
+      event: "asc",
+    },
   });
 }
 
+export type FPLFixtures = Awaited<ReturnType<typeof getAllFixtures>>[number];
 export async function getLatestGameweek() {
   return prisma.fPLGameweekPicks.aggregate({
     _max: {

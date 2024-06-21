@@ -1,6 +1,6 @@
-import { getAllFixtures, getLatestGameweek } from "@/app/api";
-import { Table } from "lucide-react";
+import { FPLFixtures, getAllFixtures } from "@/app/api";
 import {
+  Table,
   TableBody,
   TableCell,
   TableHead,
@@ -10,62 +10,98 @@ import {
 
 export default async function Fixtures() {
   const data = await getAllFixtures();
-  const max_gameweek = (await getLatestGameweek()!)._max.gameweek;
 
-  const groupByHomeTeam = data.reduce<{
-    [key: number]: { home: string; away: string; code: number }[];
-  }>((acc, curr) => {
-    const { event, team_h_id, team_a_id, ...rest } = curr;
+  type TransformedFixture = {
+    event: number;
+    team_id: string;
+    short_name: string;
+    is_home: boolean;
+  };
 
-    if (!acc[event]) {
-      acc[event] = [];
-    }
-    acc[event].push({
-      home: rest.fpl_team_h.short_name,
-      away: rest.fpl_team_a.short_name,
-      code: rest.code,
+  type Team = {
+    team_id: string;
+    short_name: string;
+    fixtures: TransformedFixture[];
+  };
+
+  function transformData(fixtures: FPLFixtures[]): Team[] {
+    const teams: { [key: string]: Team } = {};
+
+    fixtures.forEach((fixture) => {
+      const homeTeamId = fixture.team_h_id;
+      const awayTeamId = fixture.team_a_id;
+      const event = fixture.event;
+      const homeShortName = fixture.fpl_team_h.short_name;
+      const awayShortName = fixture.fpl_team_a.short_name;
+
+      // Add the fixture to the home team
+      if (!teams[homeTeamId]) {
+        teams[homeTeamId] = {
+          team_id: homeTeamId,
+          short_name: homeShortName,
+          fixtures: [],
+        };
+      }
+      teams[homeTeamId].fixtures.push({
+        event,
+        team_id: awayTeamId,
+        short_name: awayShortName,
+        is_home: true,
+      });
+
+      // Add the fixture to the away team
+      if (!teams[awayTeamId]) {
+        teams[awayTeamId] = {
+          team_id: awayTeamId,
+          short_name: awayShortName,
+          fixtures: [],
+        };
+      }
+      teams[awayTeamId].fixtures.push({
+        event,
+        team_id: homeTeamId,
+        short_name: homeShortName,
+        is_home: false,
+      });
     });
-    return acc;
-  }, {});
 
-  for (let i = max_gameweek!; i <= max_gameweek! + 4; i++) {}
+    return Object.values(teams);
+  }
 
+  const formattedData = transformData(data);
   return (
     <div>
       <div className="text-sm font-black">Fixtures</div>
-      {/* <tr className="w-full grid grid-cols-10">
-        <th className="col-span-4">Gameweek</th>
-        <th>33</th>
-        <th>34</th>
-        <th>35</th>
-        <th>36</th>
-        <th>37</th>
-      </tr> */}
       <Table>
         <TableHeader>
-          <TableRow>
-            <TableHead className="w-10">Gameweek</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+          <TableRow className="grid grid-cols-7 h-6 items-center">
+            <TableHead className="col-span-2"></TableHead>
+            <TableHead>GW34</TableHead>
+            <TableHead>GW35</TableHead>
+            <TableHead>GW36</TableHead>
+            <TableHead>GW37</TableHead>
+            <TableHead>GW38</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">INV001</TableCell>
-            <TableCell>Paid</TableCell>
-            <TableCell>Credit Card</TableCell>
-            <TableCell className="text-right">$250.00</TableCell>
-          </TableRow>
+          {formattedData.map((data, row) => {
+            return (
+              <TableRow className="grid grid-cols-7" key={row}>
+                <TableCell className="col-span-2">{data.short_name}</TableCell>
+                {data.fixtures.slice(0, 5).map((fixture, row) => {
+                  return (
+                    <TableCell key={row}>
+                      {fixture.is_home
+                        ? fixture.short_name
+                        : fixture.short_name.toLowerCase()}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
-      {/* {groupByHomeTeam[max_gameweek!].map((fixture) => {
-        return (
-          <div key={fixture.code}>
-            {fixture.home} - {fixture.away}
-          </div>
-        );
-      })} */}
     </div>
   );
 }
