@@ -12,11 +12,9 @@ export default function Player(props: {
   const subIn = picksStore((store) => store.setSubstituteIn);
   const subOut = picksStore((store) => store.setSubstituteOut);
   const makeSubs = picksStore((store) => store.makeSubs);
-  const setBank = picksStore((store) => store.setBank);
 
   const substitutedIn = picksStore((store) => store.substitutedIn);
   const substitutedOut = picksStore((store) => store.substitutedOut);
-  const bank = picksStore((store) => store.bank);
 
   const player = props.isSubstitute ? substitutedIn : substitutedOut;
 
