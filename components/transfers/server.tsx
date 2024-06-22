@@ -1,19 +1,12 @@
 import { getAllPlayerData } from "@/app/api";
-import { DataTable } from "../ui/data-table";
-import { columns } from "./columns";
+import ClientTable from "./client";
 
 export default async function Selector() {
   const data = await getAllPlayerData();
   return (
     <div className="h-3">
       <div className="text-sm font-black">Players</div>
-      <DataTable
-        columns={columns}
-        data={data}
-        name="players"
-        isFilterable
-        isPaginated
-      />
+      <ClientTable data={data} />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import Drafts from "@/components/drafts/overview";
 import Fixtures from "@/components/fixtures/overview";
 import Team from "@/components/pitch/team";
-import Selector from "@/components/transfers/table";
+import Selector from "@/components/transfers/server";
 
 export default function Home() {
   return (
