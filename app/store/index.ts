@@ -28,8 +28,8 @@ interface State {
   substitutedOut?: TransferProps;
   drafts: DraftState;
   setBase: (picks: FPLGameweekPicksData) => void;
-  setSubstituteIn: (player: TransferProps) => void;
-  setSubstituteOut: (player: TransferProps) => void;
+  setSubstituteIn: (player: TransferProps | null) => void;
+  setSubstituteOut: (player: TransferProps | null) => void;
   setCurrentGameweek: (gameweek: number) => void;
   makeSubs: () => Promise<{
     isValid: boolean;

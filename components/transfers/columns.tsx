@@ -54,6 +54,8 @@ export const columns: ColumnDef<PlayerData>[] = [
     id: "player_add",
     cell: ({ row }) => {
       const setSubstituteIn = picksStore((store) => store.setSubstituteIn);
+      const setSubstituteOut = picksStore((store) => store.setSubstituteOut);
+
       const makeSubs = picksStore((store) => store.makeSubs);
 
       return (
@@ -69,6 +71,9 @@ export const columns: ColumnDef<PlayerData>[] = [
                 title: "Cannot make transfer",
                 description: reason,
               });
+
+              // reset substitute states
+              setSubstituteIn(null);
             }
           }}
         >
