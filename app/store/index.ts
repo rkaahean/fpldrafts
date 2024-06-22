@@ -28,8 +28,8 @@ interface State {
   substitutedOut?: TransferProps;
   drafts: DraftState;
   setBase: (picks: FPLGameweekPicksData) => void;
-  setSubstituteIn: (player: TransferProps | null) => void;
-  setSubstituteOut: (player: TransferProps | null) => void;
+  setSubstituteIn: (player: TransferProps) => void;
+  setSubstituteOut: (player: TransferProps) => void;
   setCurrentGameweek: (gameweek: number) => void;
   makeSubs: () => Promise<{
     isValid: boolean;
@@ -54,6 +54,7 @@ export const picksStore = create<State>()((set, get) => ({
     /**
      * selects player to be substituted IN, from subs
      */
+
     set({ substitutedIn: player });
     // console.log("VAL", picks?.overall?.bank, player.value);
     // no need to update bank, as the it will be updated in react query
@@ -62,7 +63,7 @@ export const picksStore = create<State>()((set, get) => ({
     /**
      * selects player to be substituted OUT, from starting 11
      */
-    const { substitutedOut: current, base, picks } = get();
+    const { substitutedOut: current, picks } = get();
     let new_value = picks?.overall?.bank!;
     // already set
     if (current?.player_id == player.player_id) {

@@ -11,8 +11,6 @@ export default function ClientTable(props: any) {
 
   const { picks } = picksSelectors;
 
-  console.log(picks);
-
   let filteredData;
   if (picks) {
     filteredData = props.data.filter(
