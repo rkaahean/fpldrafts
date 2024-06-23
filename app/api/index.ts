@@ -6,6 +6,7 @@ export async function getPlayerData(id: number, gameweek: number = 1) {
   const players = await prisma.fPLPlayer.findFirst({
     // Include the related FPLPlayer record
     select: {
+      id: true,
       player_id: true,
       web_name: true,
       team_code: true,

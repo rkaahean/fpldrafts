@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { FPLGameweekPicksData, FPLPlayerData } from "../api";
+import { FPLGameweekPicksData, FPLPlayerData, getPlayerData } from "../api";
 
 interface DraftState {
   id?: string;
@@ -30,8 +30,8 @@ interface State {
   transfersIn: TransferProps[];
   transfersOut: TransferProps[];
   setBase: (picks: FPLGameweekPicksData) => void;
-  setSubstituteIn: (player: TransferProps | undefined) => void;
-  setSubstituteOut: (player: TransferProps | undefined) => void;
+  setSubstituteIn: (player: TransferProps) => void;
+  setSubstituteOut: (player: TransferProps) => void;
   setCurrentGameweek: (gameweek: number) => void;
   makeSubs: () => Promise<{
     isValid: boolean;
@@ -63,7 +63,7 @@ export const picksStore = create<State>()((set, get) => ({
       substitutedOut: undefined,
     });
   },
-  setSubstituteIn: (player: TransferProps | undefined) => {
+  setSubstituteIn: (player: TransferProps) => {
     /**
      * selects player to be substituted IN, from subs
      */
@@ -72,7 +72,7 @@ export const picksStore = create<State>()((set, get) => ({
     // console.log("VAL", picks?.overall?.bank, player.value);
     // no need to update bank, as the it will be updated in react query
   },
-  setSubstituteOut: (player: TransferProps | undefined) => {
+  setSubstituteOut: (player: TransferProps) => {
     /**
      * selects player to be substituted OUT, from starting 11
      */
@@ -209,7 +209,9 @@ export async function swapPlayers(
     return data;
   } else if (inPlayerIndex == -1) {
     // player being bought in is not in team, making a transfer
-    const response = await fetch("/api/player", {
+    const response: {
+      data: NonNullable<Awaited<ReturnType<typeof getPlayerData>>>;
+    } = await fetch("/api/player", {
       method: "POST",
       body: JSON.stringify({
         id: substitutedIn,
