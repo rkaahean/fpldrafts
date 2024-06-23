@@ -27,9 +27,11 @@ interface State {
   substitutedIn?: TransferProps;
   substitutedOut?: TransferProps;
   drafts: DraftState;
+  transfersIn: TransferProps[];
+  transfersOut: TransferProps[];
   setBase: (picks: FPLGameweekPicksData) => void;
-  setSubstituteIn: (player: TransferProps) => void;
-  setSubstituteOut: (player: TransferProps) => void;
+  setSubstituteIn: (player: TransferProps | undefined) => void;
+  setSubstituteOut: (player: TransferProps | undefined) => void;
   setCurrentGameweek: (gameweek: number) => void;
   makeSubs: () => Promise<{
     isValid: boolean;
@@ -37,6 +39,9 @@ interface State {
   }>;
   setDrafts: (drafts: DraftState) => void;
   setPicks: (picks: FPLGameweekPicksData) => void;
+  setTransferIn: (players: TransferProps[]) => void;
+  setTransferOut: (players: TransferProps[]) => void;
+  resetSubs: () => void;
 }
 
 export const picksStore = create<State>()((set, get) => ({
@@ -44,13 +49,21 @@ export const picksStore = create<State>()((set, get) => ({
     changes: [],
   },
   currentGameweek: 36,
+  transfersIn: [],
+  transfersOut: [],
   setPicks: (picks: FPLGameweekPicksData) => {
     set({ picks });
   },
   setBase: (picks: FPLGameweekPicksData) => {
     set({ base: picks });
   },
-  setSubstituteIn: (player: TransferProps) => {
+  resetSubs: () => {
+    set({
+      substitutedIn: undefined,
+      substitutedOut: undefined,
+    });
+  },
+  setSubstituteIn: (player: TransferProps | undefined) => {
     /**
      * selects player to be substituted IN, from subs
      */
@@ -59,10 +72,11 @@ export const picksStore = create<State>()((set, get) => ({
     // console.log("VAL", picks?.overall?.bank, player.value);
     // no need to update bank, as the it will be updated in react query
   },
-  setSubstituteOut: (player: TransferProps) => {
+  setSubstituteOut: (player: TransferProps | undefined) => {
     /**
      * selects player to be substituted OUT, from starting 11
      */
+
     const { substitutedOut: current, picks } = get();
     let new_value = picks?.overall?.bank!;
     // already set
@@ -87,6 +101,8 @@ export const picksStore = create<State>()((set, get) => ({
       },
     });
   },
+  setTransferIn: (players) => set({ transfersIn: players }),
+  setTransferOut: (players) => set({ transfersOut: players }),
   setDrafts: (drafts) => set({ drafts }),
   setCurrentGameweek: (gameweek: number) => {
     if (gameweek <= 38) {

@@ -88,7 +88,6 @@ export default function PitchRow(props: {
           key={player.player_id}
           data={player}
           gameweek={props.gameweek}
-          isSubstitute={true}
         />
       ))}
     </div>
@@ -99,7 +98,6 @@ export default function PitchRow(props: {
           key={player.player_id}
           data={player}
           gameweek={props.gameweek}
-          isSubstitute={false}
         />
       ))}
     </div>

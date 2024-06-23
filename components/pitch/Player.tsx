@@ -1,28 +1,38 @@
 import { picksStore } from "@/app/store";
 import { cn } from "@/lib/utils";
-import { DoubleArrowDownIcon } from "@radix-ui/react-icons";
+import { Cross2Icon, DoubleArrowDownIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import { PlayerData } from "./pitchrow";
 
-export default function Player(props: {
-  data: PlayerData;
-  gameweek: number;
-  isSubstitute: boolean;
-}) {
+export default function Player(props: { data: PlayerData; gameweek: number }) {
   const subIn = picksStore((store) => store.setSubstituteIn);
   const subOut = picksStore((store) => store.setSubstituteOut);
   const makeSubs = picksStore((store) => store.makeSubs);
+  const resetSubs = picksStore((store) => store.resetSubs);
 
   const substitutedIn = picksStore((store) => store.substitutedIn);
   const substitutedOut = picksStore((store) => store.substitutedOut);
 
-  const player = props.isSubstitute ? substitutedIn : substitutedOut;
+  const transfersIn = picksStore((store) => store.transfersIn);
+  const transfersOut = picksStore((store) => store.transfersOut);
 
+  const setTrasferIn = picksStore((store) => store.setTransferIn);
+  const setTransferOut = picksStore((store) => store.setTransferOut);
+
+  const isSubstitute = props.data.position > 11;
+  const isSelectedForTransfer =
+    transfersOut.filter(
+      (transfer) => transfer.player_id == props.data.player_id
+    ).length > 0;
+  const player = isSubstitute ? substitutedIn : substitutedOut;
+
+  console.log(transfersOut);
   return (
     <div
       className={cn(
         "flex flex-row w-32 h-32 2xl:w-40 2xl:h-40 border rounded-md p-2",
-        player?.player_id == props.data.player_id ? "bg-yellow-100" : ""
+        player?.player_id == props.data.player_id ? "bg-yellow-100" : "",
+        isSelectedForTransfer ? "bg-red-100" : ""
       )}
     >
       <PlayerFixtureTicker
@@ -35,7 +45,7 @@ export default function Player(props: {
           <button
             className="text-xs w-4 h-4 rounded-sm"
             onClick={() => {
-              if (props.isSubstitute) {
+              if (isSubstitute) {
                 subIn({
                   player_id: props.data.player_id,
                   value: props.data.selling_price,
@@ -51,6 +61,34 @@ export default function Player(props: {
           >
             <div className="flex flex-row justify-center">
               <DoubleArrowDownIcon className="w-3 h-3" />
+            </div>
+          </button>
+          <button
+            className="text-xs w-4 h-4 rounded-sm"
+            onClick={() => {
+              let newTransfers;
+              // if not already selected, push into state
+              if (!isSelectedForTransfer) {
+                transfersOut.push({
+                  player_id: props.data.player_id,
+                  value: props.data.selling_price,
+                });
+                newTransfers = transfersOut;
+              }
+              // if already selected, remove from state
+              else {
+                newTransfers = transfersOut.filter(
+                  (transfer) => transfer.player_id != props.data.player_id
+                );
+              }
+
+              // because transferrring in, reset subs
+              resetSubs();
+              setTransferOut(newTransfers);
+            }}
+          >
+            <div className="flex flex-row justify-center">
+              <Cross2Icon className="w-3 h-3" />
             </div>
           </button>
         </div>
