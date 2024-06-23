@@ -21,12 +21,11 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
 
   const isSubstitute = props.data.position > 11;
   const isSelectedForTransfer =
-    transfersOut.filter(
+    transfersOut[props.data.element_type].filter(
       (transfer) => transfer.player_id == props.data.player_id
     ).length > 0;
   const player = isSubstitute ? substitutedIn : substitutedOut;
 
-  console.log(transfersOut);
   return (
     <div
       className={cn(
@@ -69,22 +68,23 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
               let newTransfers;
               // if not already selected, push into state
               if (!isSelectedForTransfer) {
-                transfersOut.push({
+                transfersOut[props.data.element_type].push({
                   player_id: props.data.player_id,
                   value: props.data.selling_price,
                 });
-                newTransfers = transfersOut;
               }
               // if already selected, remove from state
               else {
-                newTransfers = transfersOut.filter(
+                transfersOut[props.data.element_type] = transfersOut[
+                  props.data.element_type
+                ].filter(
                   (transfer) => transfer.player_id != props.data.player_id
                 );
               }
 
               // because transferrring in, reset subs
               resetSubs();
-              setTransferOut(newTransfers);
+              setTransferOut(transfersOut);
             }}
           >
             <div className="flex flex-row justify-center">

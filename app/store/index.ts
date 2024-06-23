@@ -27,8 +27,8 @@ interface State {
   substitutedIn?: TransferProps;
   substitutedOut?: TransferProps;
   drafts: DraftState;
-  transfersIn: TransferProps[];
-  transfersOut: TransferProps[];
+  transfersIn: { [key: number]: TransferProps[] };
+  transfersOut: { [key: number]: TransferProps[] };
   setBase: (picks: FPLGameweekPicksData) => void;
   setSubstituteIn: (player: TransferProps) => void;
   setSubstituteOut: (player: TransferProps) => void;
@@ -37,10 +37,14 @@ interface State {
     isValid: boolean;
     reason: string;
   }>;
+  makeTransfers: () => Promise<{
+    isValid: boolean;
+    reason: string;
+  }>;
   setDrafts: (drafts: DraftState) => void;
   setPicks: (picks: FPLGameweekPicksData) => void;
-  setTransferIn: (players: TransferProps[]) => void;
-  setTransferOut: (players: TransferProps[]) => void;
+  setTransferIn: (players: { [key: number]: TransferProps[] }) => void;
+  setTransferOut: (players: { [key: number]: TransferProps[] }) => void;
   resetSubs: () => void;
 }
 
@@ -49,8 +53,8 @@ export const picksStore = create<State>()((set, get) => ({
     changes: [],
   },
   currentGameweek: 36,
-  transfersIn: [],
-  transfersOut: [],
+  transfersIn: { 1: [], 2: [], 3: [], 4: [] },
+  transfersOut: { 1: [], 2: [], 3: [], 4: [] },
   setPicks: (picks: FPLGameweekPicksData) => {
     set({ picks });
   },
@@ -122,7 +126,7 @@ export const picksStore = create<State>()((set, get) => ({
     // if both subs are set
     if (!!substitutedIn && !!substitutedOut) {
       // validate that both substituted in and subtituted out are of same type
-      const { isValid, reason } = await fetch("/api/validate", {
+      const { isValid, reason } = await fetch("/api/validate/substitute", {
         method: "POST",
         body: JSON.stringify({
           picks: data,
@@ -139,7 +143,7 @@ export const picksStore = create<State>()((set, get) => ({
         };
       }
 
-      let newDrafts;
+      let newDrafts: DraftTransfer[] = [];
       if (drafts && drafts.changes) {
         newDrafts = [...drafts.changes];
         newDrafts.push({
@@ -149,16 +153,6 @@ export const picksStore = create<State>()((set, get) => ({
           in_cost: substitutedIn.value,
           out_cost: substitutedOut.value,
         });
-      } else {
-        newDrafts = [
-          {
-            in: substitutedIn.player_id,
-            out: substitutedOut.player_id,
-            gameweek,
-            in_cost: substitutedIn.value,
-            out_cost: substitutedOut.value,
-          },
-        ];
       }
       // Update the state with the modified data array
       set({
@@ -169,6 +163,52 @@ export const picksStore = create<State>()((set, get) => ({
         },
       });
     }
+
+    return {
+      isValid: true,
+      reason: "OK",
+    };
+  },
+  makeTransfers: async () => {
+    const {
+      drafts,
+      picks,
+      transfersIn,
+      transfersOut,
+      currentGameweek: gameweek,
+    } = get();
+
+    const data = picks?.data;
+    // if there is atleast one transfer in and out
+    Object.keys(transfersIn).forEach((element_type) => {
+      const e_type = parseInt(element_type);
+
+      // console.log("Parsing", e_type);
+      let newDrafts: DraftTransfer[] = drafts.changes;
+      // console.log("Drafts", newDrafts);
+      while (
+        transfersIn[e_type].length &&
+        transfersIn[e_type].length <= transfersOut[e_type].length
+      ) {
+        const in_transfer = transfersIn[e_type].pop()!;
+        const out_transfer = transfersOut[e_type].pop()!;
+        // console.log("Popping", in_transfer, out_transfer);
+        newDrafts.push({
+          in: in_transfer.player_id,
+          out: out_transfer.player_id,
+          gameweek,
+          in_cost: in_transfer.value,
+          out_cost: out_transfer.value,
+        });
+        // console.log("State", transfersIn, transfersOut);
+      }
+      // otherwise keep transferring elements
+      set({
+        drafts: {
+          changes: newDrafts,
+        },
+      });
+    });
 
     return {
       isValid: true,

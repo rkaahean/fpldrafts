@@ -8,6 +8,7 @@ export type PlayerData = {
   web_name: string;
   expected_goal_involvements_per_90: number;
   total_points: number;
+  element_type: number;
   fixtures: {
     id: string;
     name: string;
@@ -68,6 +69,7 @@ export function filterData(
           team_name: player.fpl_player.fpl_player_team.short_name,
           fixtures: fixtures,
           selling_price: player.selling_price ?? player.fpl_player.now_value,
+          element_type: player.fpl_player.element_type,
         };
       })
       // sort by position to display in order

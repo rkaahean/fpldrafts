@@ -3,7 +3,6 @@
 import { picksStore } from "@/app/store";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
-import { toast } from "../ui/use-toast";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -15,6 +14,7 @@ export type PlayerData = {
   goals_scored: number;
   assists: number;
   now_value: number;
+  element_type: number;
 };
 
 export const columns: ColumnDef<PlayerData>[] = [
@@ -53,28 +53,46 @@ export const columns: ColumnDef<PlayerData>[] = [
   {
     id: "player_add",
     cell: ({ row }) => {
-      const setSubstituteIn = picksStore((store) => store.setSubstituteIn);
-      const setSubstituteOut = picksStore((store) => store.setSubstituteOut);
+      const transfersIn = picksStore((store) => store.transfersIn);
+      const makeTransfers = picksStore((store) => store.makeTransfers);
 
-      const makeSubs = picksStore((store) => store.makeSubs);
+      const isSelectedForTransfer =
+        transfersIn[row.original.element_type].filter(
+          (transfer) => transfer.player_id == row.original.player_id
+        ).length > 0;
 
       return (
         <button
           onClick={async () => {
-            setSubstituteIn({
-              player_id: row.original.player_id,
-              value: row.original.now_value,
-            });
-            const { isValid, reason } = await makeSubs();
-            if (!isValid) {
-              toast({
-                title: "Cannot make transfer",
-                description: reason,
+            // setSubstituteIn({
+            //   player_id: row.original.player_id,
+            //   value: row.original.now_value,
+            // });
+            // const { isValid, reason } = await makeSubs();
+            // if (!isValid) {
+            //   toast({
+            //     title: "Cannot make transfer",
+            //     description: reason,
+            //   });
+            //   // reset substitute states
+            //   setSubstituteIn(undefined);
+            // }
+            // if not already selected, push into state
+            if (!isSelectedForTransfer) {
+              transfersIn[row.original.element_type].push({
+                player_id: row.original.player_id,
+                value: row.original.now_value,
               });
-
-              // reset substitute states
-              setSubstituteIn(null);
             }
+            // if already selected, remove from state
+            else {
+              transfersIn[row.original.element_type] = transfersIn[
+                row.original.element_type
+              ].filter(
+                (transfer) => transfer.player_id != row.original.player_id
+              );
+            }
+            makeTransfers();
           }}
         >
           <PlusCircledIcon className="w-3 h-3" />

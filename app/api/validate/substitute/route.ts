@@ -1,9 +1,9 @@
 import { NextRequest } from "next/server";
-import { getPlayerStaticData } from "..";
+import { getPlayerStaticData } from "../..";
 
 export async function POST(req: NextRequest) {
   /**
-   * This endpoint is responsible for telling the client if a transfer
+   * This endpoint is responsible for telling the client if a substitutes
    * can be made or not. There are multiple restrictions that are placed.
    */
   const request = await req.json();
