@@ -18,6 +18,8 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
 
   const setTrasferIn = picksStore((store) => store.setTransferIn);
   const setTransferOut = picksStore((store) => store.setTransferOut);
+  const addToBank = picksStore((store) => store.addToBank);
+  const removeFromBank = picksStore((store) => store.removeFromBank);
 
   const isSubstitute = props.data.position > 11;
   const isSelectedForTransfer =
@@ -65,16 +67,18 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
           <button
             className="text-xs w-4 h-4 rounded-sm"
             onClick={() => {
-              let newTransfers;
               // if not already selected, push into state
               if (!isSelectedForTransfer) {
                 transfersOut[props.data.element_type].push({
                   player_id: props.data.player_id,
                   value: props.data.selling_price,
                 });
+                addToBank(props.data.selling_price);
               }
               // if already selected, remove from state
               else {
+                // since transfer out is being removed, player is being added back
+                removeFromBank(props.data.selling_price);
                 transfersOut[props.data.element_type] = transfersOut[
                   props.data.element_type
                 ].filter(
