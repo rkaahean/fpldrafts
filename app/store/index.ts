@@ -1,37 +1,20 @@
+import { PlayerData } from "@/components/pitch/pitchrow";
 import { create } from "zustand";
 import { FPLGameweekPicksData, FPLPlayerData, getPlayerData } from "../api";
+import { DraftState, DraftTransfer, TransferProps } from "./utils";
 
-interface DraftState {
-  id?: string;
-  name?: string;
-  description?: string;
-  changes: DraftTransfer[];
-}
-
-export interface DraftTransfer {
-  in: number;
-  out: number;
-  gameweek: number;
-  in_cost: number;
-  out_cost: number;
-}
-
-interface TransferProps {
-  player_id: number;
-  value: number;
-}
 interface State {
   currentGameweek: number;
   picks?: FPLGameweekPicksData;
   base?: FPLGameweekPicksData;
-  substitutedIn?: TransferProps;
-  substitutedOut?: TransferProps;
+  substitutedIn?: PlayerData;
+  substitutedOut?: PlayerData;
   drafts: DraftState;
   transfersIn: { [key: number]: TransferProps[] };
   transfersOut: { [key: number]: TransferProps[] };
   setBase: (picks: FPLGameweekPicksData) => void;
-  setSubstituteIn: (player: TransferProps) => void;
-  setSubstituteOut: (player: TransferProps) => void;
+  setSubstituteIn: (player: PlayerData) => void;
+  setSubstituteOut: (player: PlayerData) => void;
   setCurrentGameweek: (gameweek: number) => void;
   makeSubs: () => Promise<{
     isValid: boolean;
@@ -50,13 +33,15 @@ interface State {
   removeFromBank(value: number): void;
 }
 
+const TRANSFER_INIT_VALUE = { 1: [], 2: [], 3: [], 4: [] };
+
 export const picksStore = create<State>()((set, get) => ({
   drafts: {
     changes: [],
   },
   currentGameweek: 36,
-  transfersIn: { 1: [], 2: [], 3: [], 4: [] },
-  transfersOut: { 1: [], 2: [], 3: [], 4: [] },
+  transfersIn: structuredClone(TRANSFER_INIT_VALUE),
+  transfersOut: structuredClone(TRANSFER_INIT_VALUE),
   setPicks: (picks: FPLGameweekPicksData) => {
     set({ picks });
   },
@@ -93,39 +78,8 @@ export const picksStore = create<State>()((set, get) => ({
       },
     });
   },
-  setSubstituteIn: (player: TransferProps) => set({ substitutedIn: player }),
-  setSubstituteOut: (player: TransferProps) => {
-    /**
-     * selects player to be substituted OUT, from starting 11
-     */
-
-    // const { substitutedOut: current, picks } = get();
-    // let new_value = picks?.overall?.bank!;
-    // // already set
-    // if (current?.player_id == player.player_id) {
-    //   set({ substitutedOut: undefined });
-    //   new_value = new_value - current.value;
-    // } else if (current) {
-    //   set({ substitutedOut: player });
-    //   new_value = new_value - current.value + player.value;
-    // } else {
-    //   set({ substitutedOut: player });
-    //   new_value = new_value + player.value;
-    // }
-
-    // set({
-    //   picks: {
-    //     data: picks!.data,
-    //     overall: {
-    //       ...picks!.overall!,
-    //       bank: new_value,
-    //     },
-    //   },
-    // });
-    set({
-      substitutedOut: player,
-    });
-  },
+  setSubstituteIn: (player: PlayerData) => set({ substitutedIn: player }),
+  setSubstituteOut: (player: PlayerData) => set({ substitutedOut: player }),
   setTransferIn: (players) => set({ transfersIn: players }),
   setTransferOut: (players) => set({ transfersOut: players }),
   setDrafts: (drafts) => set({ drafts }),
@@ -170,12 +124,15 @@ export const picksStore = create<State>()((set, get) => ({
           in: substitutedIn.player_id,
           out: substitutedOut.player_id,
           gameweek,
+          // cost is 0 for substitutes
           in_cost: 0,
           out_cost: 0,
         });
       }
 
       // remove from transfers list if present for both
+      // removeTransfer(transfersOut, substitutedIn, addToBank, removeFromBank);
+      // removeTransfer(transfersOut, substitutedOut, addToBank, removeFromBank);
 
       // Update the state with the modified data array
       set({
@@ -184,6 +141,8 @@ export const picksStore = create<State>()((set, get) => ({
         drafts: {
           changes: newDrafts,
         },
+        transfersIn: structuredClone(TRANSFER_INIT_VALUE),
+        transfersOut: structuredClone(TRANSFER_INIT_VALUE),
       });
     }
 

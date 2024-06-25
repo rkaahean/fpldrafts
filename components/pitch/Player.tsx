@@ -1,4 +1,5 @@
 import { picksStore } from "@/app/store";
+import { updateTransfer } from "@/app/store/utils";
 import { cn } from "@/lib/utils";
 import { Cross2Icon, DoubleArrowDownIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
@@ -47,15 +48,9 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
             className="text-xs w-4 h-4 rounded-sm"
             onClick={() => {
               if (isSubstitute) {
-                subIn({
-                  player_id: props.data.player_id,
-                  value: props.data.selling_price,
-                });
+                subIn(props.data);
               } else {
-                subOut({
-                  player_id: props.data.player_id,
-                  value: props.data.selling_price,
-                });
+                subOut(props.data);
               }
               makeSubs();
             }}
@@ -68,24 +63,12 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
             className="text-xs w-4 h-4 rounded-sm"
             onClick={() => {
               // if not already selected, push into state
-              if (!isSelectedForTransfer) {
-                transfersOut[props.data.element_type].push({
-                  player_id: props.data.player_id,
-                  value: props.data.selling_price,
-                });
-                addToBank(props.data.selling_price);
-              }
-              // if already selected, remove from state
-              else {
-                // since transfer out is being removed, player is being added back
-                removeFromBank(props.data.selling_price);
-                transfersOut[props.data.element_type] = transfersOut[
-                  props.data.element_type
-                ].filter(
-                  (transfer) => transfer.player_id != props.data.player_id
-                );
-              }
-
+              updateTransfer(
+                transfersOut,
+                props.data,
+                addToBank,
+                removeFromBank
+              );
               // because transferrring in, reset subs
               resetSubs();
               setTransferOut(transfersOut);
