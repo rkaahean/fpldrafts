@@ -1,11 +1,25 @@
-import { PlayerData } from "@/components/pitch/pitchrow";
-
 export interface DraftState {
   id?: string;
   name?: string;
   description?: string;
   changes: DraftTransfer[];
 }
+
+export type PlayerData = {
+  player_id: number;
+  position: number;
+  team_code: number;
+  web_name: string;
+  expected_goal_involvements_per_90: number;
+  total_points: number;
+  element_type: number;
+  fixtures: {
+    id: string;
+    name: string;
+    event: number;
+  }[];
+  selling_price: number;
+};
 
 export interface DraftTransfer {
   in: number;

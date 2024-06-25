@@ -1,21 +1,6 @@
 import { FPLPlayerData } from "@/app/api";
+import { PlayerData } from "@/app/store/utils";
 import Player from "./Player";
-
-export type PlayerData = {
-  player_id: number;
-  position: number;
-  team_code: number;
-  web_name: string;
-  expected_goal_involvements_per_90: number;
-  total_points: number;
-  element_type: number;
-  fixtures: {
-    id: string;
-    name: string;
-    event: number;
-  }[];
-  selling_price: number;
-};
 
 export function filterData(
   data: FPLPlayerData[],

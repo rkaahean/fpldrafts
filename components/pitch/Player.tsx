@@ -1,9 +1,8 @@
 import { picksStore } from "@/app/store";
-import { updateTransfer } from "@/app/store/utils";
+import { PlayerData, updateTransfer } from "@/app/store/utils";
 import { cn } from "@/lib/utils";
 import { Cross2Icon, DoubleArrowDownIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { PlayerData } from "./pitchrow";
 
 export default function Player(props: { data: PlayerData; gameweek: number }) {
   const subIn = picksStore((store) => store.setSubstituteIn);

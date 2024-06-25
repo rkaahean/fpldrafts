@@ -5,7 +5,7 @@ import ReactQueryProvider from "@/app/provider";
 import { picksStore, swapPlayers } from "@/app/store";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
-import PitchRow, { filterData } from "./pitchrow";
+import PitchRow, { filterData } from "./PitchRow";
 
 export default function Gameweek() {
   const picksSelectors = picksStore((state) => ({

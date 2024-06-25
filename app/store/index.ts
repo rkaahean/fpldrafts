@@ -1,7 +1,6 @@
-import { PlayerData } from "@/components/pitch/pitchrow";
 import { create } from "zustand";
 import { FPLGameweekPicksData, FPLPlayerData, getPlayerData } from "../api";
-import { DraftState, DraftTransfer, TransferProps } from "./utils";
+import { DraftState, DraftTransfer, PlayerData, TransferProps } from "./utils";
 
 interface State {
   currentGameweek: number;
