@@ -211,7 +211,9 @@ export async function getPlayerValueByGameweek(
   });
 }
 export type FPLGameweekPicksData = {
-  data: Awaited<ReturnType<typeof getGameweekPicksData>>;
+  data: (Awaited<ReturnType<typeof getGameweekPicksData>>[number] & {
+    selling_price: number;
+  })[];
   overall: NonNullable<Awaited<ReturnType<typeof getGameweekOverallData>>>;
 };
 export type FPLPlayerData = Pick<

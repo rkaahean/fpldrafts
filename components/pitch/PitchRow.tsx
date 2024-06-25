@@ -1,5 +1,5 @@
 import { FPLPlayerData } from "@/app/api";
-import Player from "./player";
+import Player from "./Player";
 
 export type PlayerData = {
   player_id: number;
