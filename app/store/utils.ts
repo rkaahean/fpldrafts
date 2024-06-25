@@ -18,11 +18,15 @@ export interface DraftTransfer {
 export interface TransferProps {
   player_id: number;
   value: number;
+  name: string;
 }
 
 export function updateTransfer(
   transfers: { [key: number]: TransferProps[] },
-  data: PlayerData,
+  data: Pick<
+    PlayerData,
+    "player_id" | "element_type" | "selling_price" | "web_name"
+  >,
   addToBank: (amount: number) => void,
   removeFromBank: (amount: number) => void
 ) {
@@ -39,6 +43,7 @@ export function updateTransfer(
     transfers[data.element_type].push({
       player_id: data.player_id,
       value: data.selling_price,
+      name: data.web_name,
     });
 
     addToBank(data.selling_price);
@@ -55,9 +60,9 @@ export function updateTransfer(
 
 export function removeTransfer(
   transfers: { [key: number]: TransferProps[] },
-  data: PlayerData,
-  addToBank: (amount: number) => void,
-  removeFromBank: (amount: number) => void
+  data: Pick<PlayerData, "player_id" | "element_type" | "selling_price">,
+  addToBank?: (amount: number) => void,
+  removeFromBank?: (amount: number) => void
 ) {
   /**
    * A function to handle adding a transfer and related side effects.
@@ -68,7 +73,7 @@ export function removeTransfer(
       (transfer) => transfer.player_id == data.player_id
     ).length > 0;
 
-  if (isAlreadyTransferred) {
+  if (isAlreadyTransferred && removeFromBank) {
     // since transfer out is being removed, player is being added back
     removeFromBank(data.selling_price);
     transfers[data.element_type] = transfers[data.element_type].filter(

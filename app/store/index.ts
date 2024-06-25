@@ -21,7 +21,7 @@ interface State {
     reason: string;
   }>;
   makeTransfers: () => Promise<{
-    isValid: boolean;
+    isvalid: boolean;
     reason: string;
   }>;
   setDrafts: (drafts: DraftState) => void;
@@ -130,10 +130,6 @@ export const picksStore = create<State>()((set, get) => ({
         });
       }
 
-      // remove from transfers list if present for both
-      // removeTransfer(transfersOut, substitutedIn, addToBank, removeFromBank);
-      // removeTransfer(transfersOut, substitutedOut, addToBank, removeFromBank);
-
       // Update the state with the modified data array
       set({
         substitutedIn: undefined,
@@ -161,9 +157,19 @@ export const picksStore = create<State>()((set, get) => ({
     } = get();
 
     const data = picks?.data;
+
+    let isvalid = true;
+    let reason = "OK";
     // if there is atleast one transfer in and out
-    Object.keys(transfersIn).forEach((element_type) => {
-      const e_type = parseInt(element_type);
+    for (let i = 0; i < Object.keys(transfersIn).length; i++) {
+      const e_type = parseInt(Object.keys(transfersIn)[i]);
+
+      // if there are transfers of in type, but no transfers of out type
+      if (transfersIn[e_type].length > 0 && transfersOut[e_type].length == 0) {
+        isvalid = false;
+        reason = `Please transfer out a player of ${transfersIn[e_type][0].name}'s type`;
+        break;
+      }
 
       // console.log("Parsing", e_type);
       let newDrafts: DraftTransfer[] = drafts.changes;
@@ -190,11 +196,11 @@ export const picksStore = create<State>()((set, get) => ({
           changes: newDrafts,
         },
       });
-    });
+    }
 
     return {
-      isValid: true,
-      reason: "OK",
+      isvalid,
+      reason,
     };
   },
 }));

@@ -1,8 +1,10 @@
 "use client";
 
 import { picksStore } from "@/app/store";
+import { removeTransfer } from "@/app/store/utils";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
+import { toast } from "../ui/use-toast";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -60,6 +62,8 @@ export const columns: ColumnDef<PlayerData>[] = [
     cell: ({ row }) => {
       const transfersIn = picksStore((store) => store.transfersIn);
       const makeTransfers = picksStore((store) => store.makeTransfers);
+      const addToBank = picksStore((store) => store.addToBank);
+      const removeFromBank = picksStore((store) => store.removeFromBank);
 
       const isSelectedForTransfer =
         transfersIn[row.original.element_type].filter(
@@ -74,6 +78,7 @@ export const columns: ColumnDef<PlayerData>[] = [
               transfersIn[row.original.element_type].push({
                 player_id: row.original.player_id,
                 value: row.original.now_value,
+                name: row.original.web_name,
               });
             }
             // if already selected, remove from state
@@ -84,7 +89,19 @@ export const columns: ColumnDef<PlayerData>[] = [
                 (transfer) => transfer.player_id != row.original.player_id
               );
             }
-            makeTransfers();
+            const { isvalid, reason } = await makeTransfers();
+            if (!isvalid) {
+              // remove the transfer in as it is invalid
+              removeTransfer(transfersIn, {
+                player_id: row.original.player_id,
+                element_type: row.original.element_type,
+                selling_price: row.original.now_value,
+              });
+              toast({
+                title: "Cannot make transfer",
+                description: reason,
+              });
+            }
           }}
         >
           <PlusCircledIcon className="w-3 h-3" />
