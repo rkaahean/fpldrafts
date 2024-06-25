@@ -1,3 +1,4 @@
+import PlayerComparison from "@/components/charts/player";
 import Drafts from "@/components/drafts/overview";
 import Fixtures from "@/components/fixtures/overview";
 import Team from "@/components/pitch/team";
@@ -7,8 +8,11 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       <div className="grid grid-cols-4 min-h-full px-5 gap-5">
-        <div className="col-span-1 h-full">
-          <Selector />
+        <div className="flex flex-col col-span-1 h-full gap-10">
+          <div className="relative overflow-scroll">
+            <Selector />
+          </div>
+          <PlayerComparison />
         </div>
         <div className="col-span-1 h-full">
           <div className="flex flex-col h-full gap-2">

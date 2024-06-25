@@ -10,7 +10,7 @@ import Gameweek from "./Gameweek";
 export default function Team() {
   const drafts = picksStore((state) => state.drafts);
   return (
-    <div className="w-full min-h-full max-h-screen flex flex-row justify-start gap-5">
+    <div className="w-full min-h-full max-h-screen flex flex-row justify-start gap-1">
       <nav className="flex flex-col justify-center gap-4">
         <div>
           <Button variant="ghost" size="xs" title="Save Draft">
