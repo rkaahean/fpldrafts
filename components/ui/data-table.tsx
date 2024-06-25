@@ -49,7 +49,7 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 25,
+        pageSize: 15,
       },
     },
   });
@@ -121,7 +121,7 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       {isPaginated && (
-        <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex items-center justify-center space-x-2 py-4">
           <Button
             variant="outline"
             size="xs"
