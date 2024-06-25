@@ -4,6 +4,7 @@ import { picksStore } from "@/app/store";
 import { CubeIcon, ResetIcon } from "@radix-ui/react-icons";
 import DraftChanges from "../drafts/changes";
 import DraftSave from "../drafts/save";
+import { Button } from "../ui/button";
 import Gameweek from "./Gameweek";
 
 export default function Team() {
@@ -12,16 +13,24 @@ export default function Team() {
     <div className="w-full min-h-full max-h-screen flex flex-row justify-start gap-5">
       <nav className="flex flex-col justify-center gap-4">
         <div>
-          <ResetIcon />
+          <Button variant="ghost" size="xs" title="Save Draft">
+            <ResetIcon />
+          </Button>
         </div>
         <div>
-          <CubeIcon />
+          <Button variant="ghost" size="xs" title="Save Draft">
+            <CubeIcon />
+          </Button>
+        </div>
+        <div>
+          <DraftSave />
+        </div>
+        <div>
+          <DraftChanges />
         </div>
       </nav>
       <div className="flex flex-col flex-grow">
         <div className="flex flex-row gap-1">
-          <DraftSave />
-          <DraftChanges />
           <div className="mt-4">
             {drafts.id && (
               <div className="flex flex-col justify-end">

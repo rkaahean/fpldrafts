@@ -14,7 +14,6 @@ export type PlayerData = {
     name: string;
     event: number;
   }[];
-
   selling_price: number;
 };
 

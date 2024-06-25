@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     // if no profit, sell at current price
     return {
       ...player,
-      selling_price: currentPrice?.value,
+      selling_price: currentPrice?.value!,
     };
   });
 

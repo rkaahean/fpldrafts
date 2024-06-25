@@ -1,5 +1,5 @@
 import prisma from "../../lib/db";
-import { DraftTransfer } from "../store";
+import { DraftTransfer } from "../store/utils";
 
 export async function getPlayerData(id: number, gameweek: number = 1) {
   // get from prisma
