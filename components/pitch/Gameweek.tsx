@@ -55,6 +55,7 @@ export default function Gameweek() {
         (draft) => draft.gameweek <= currentGameweek
       );
 
+      console.log("Drafts", drafts);
       // if there's a base, apply relevant draft changes
       let draftData = base;
       if (base.data && base.data.length > 0) {
@@ -62,7 +63,18 @@ export default function Gameweek() {
           // swap players in the team
           draftData = await swapPlayers(draftData, draftChange);
         }
-        setPicks(draftData);
+        // if loading a draft from DB
+        if (drafts.id) {
+          setPicks({
+            data: draftData.data,
+            overall: {
+              ...draftData.overall,
+              bank: drafts.bank!,
+            },
+          });
+        } else {
+          setPicks(draftData);
+        }
         return draftData;
       } else if (data.data.length > 0) {
         setPicks(data);
@@ -71,6 +83,9 @@ export default function Gameweek() {
     },
   });
 
+  if (data) {
+    // console.log("Data", data?.data);
+  }
   if (data && data.data) {
     return (
       <ReactQueryProvider>

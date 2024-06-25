@@ -2,6 +2,7 @@ export interface DraftState {
   id?: string;
   name?: string;
   description?: string;
+  bank?: number;
   changes: DraftTransfer[];
 }
 

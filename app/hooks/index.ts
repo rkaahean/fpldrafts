@@ -6,7 +6,8 @@ export const useDraftLoader = () => {
   const loadDrafts = async (
     draftId: string,
     name: string,
-    description?: string
+    description: string,
+    bank: number
   ) => {
     const drafts = await fetch("/api/drafts/get", {
       method: "POST",
@@ -26,7 +27,13 @@ export const useDraftLoader = () => {
       };
     });
 
-    setDrafts({ id: draftId, name, description, changes: formattedDrafts });
+    setDrafts({
+      id: draftId,
+      name,
+      description,
+      changes: formattedDrafts,
+      bank,
+    });
   };
 
   return { loadDrafts };

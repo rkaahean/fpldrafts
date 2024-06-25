@@ -51,7 +51,8 @@ export const columns: ColumnDef<Draft>[] = [
               loadDrafts(
                 row.original.id,
                 row.original.name,
-                row.original.description || ""
+                row.original.description || "",
+                row.original.bank
               );
             }}
           >
