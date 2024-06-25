@@ -23,6 +23,11 @@ export const columns: ColumnDef<PlayerData>[] = [
     header: "Name",
   },
   {
+    accessorKey: "now_value",
+    header: "£",
+    cell: ({ row }) => row.original.now_value / 10,
+  },
+  {
     accessorKey: "total_points",
     header: "Points",
   },

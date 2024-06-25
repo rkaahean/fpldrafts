@@ -69,15 +69,6 @@ export const picksStore = create<State>()((set, get) => ({
       substitutedOut: undefined,
     });
   },
-  setSubstituteIn: (player: TransferProps) => {
-    /**
-     * selects player to be substituted IN, from subs
-     */
-
-    set({ substitutedIn: player });
-    // console.log("VAL", picks?.overall?.bank, player.value);
-    // no need to update bank, as the it will be updated in react query
-  },
   addToBank: (value: number) => {
     const { picks } = get();
     set({
@@ -102,61 +93,41 @@ export const picksStore = create<State>()((set, get) => ({
       },
     });
   },
+  setSubstituteIn: (player: TransferProps) => set({ substitutedIn: player }),
   setSubstituteOut: (player: TransferProps) => {
     /**
      * selects player to be substituted OUT, from starting 11
      */
 
-    const { substitutedOut: current, picks } = get();
-    let new_value = picks?.overall?.bank!;
-    // already set
-    if (current?.player_id == player.player_id) {
-      set({ substitutedOut: undefined });
-      new_value = new_value - current.value;
-    } else if (current) {
-      set({ substitutedOut: player });
-      new_value = new_value - current.value + player.value;
-    } else {
-      set({ substitutedOut: player });
-      new_value = new_value + player.value;
-    }
+    // const { substitutedOut: current, picks } = get();
+    // let new_value = picks?.overall?.bank!;
+    // // already set
+    // if (current?.player_id == player.player_id) {
+    //   set({ substitutedOut: undefined });
+    //   new_value = new_value - current.value;
+    // } else if (current) {
+    //   set({ substitutedOut: player });
+    //   new_value = new_value - current.value + player.value;
+    // } else {
+    //   set({ substitutedOut: player });
+    //   new_value = new_value + player.value;
+    // }
 
+    // set({
+    //   picks: {
+    //     data: picks!.data,
+    //     overall: {
+    //       ...picks!.overall!,
+    //       bank: new_value,
+    //     },
+    //   },
+    // });
     set({
-      picks: {
-        data: picks!.data,
-        overall: {
-          ...picks!.overall!,
-          bank: new_value,
-        },
-      },
+      substitutedOut: player,
     });
   },
   setTransferIn: (players) => set({ transfersIn: players }),
-  setTransferOut: (players) => {
-    // adjust value in the bank
-    // const { picks } = get();
-    // let current_bank = picks!.overall.bank;
-
-    // const total_transfer_value = Object.values(players)
-    //   .map((transfers) => {
-    //     const sm = transfers
-    //       .map((transfer) => transfer.value)
-    //       .reduce((a, b) => a + b, 0);
-    //     return sm;
-    //   })
-    //   .reduce((a, b) => a + b);
-    // set transfers out
-    set({
-      transfersOut: players,
-      // picks: {
-      //   data: picks!.data,
-      //   overall: {
-      //     ...picks!.overall!,
-      //     bank: current_bank + total_transfer_value,
-      //   },
-      // },
-    });
-  },
+  setTransferOut: (players) => set({ transfersOut: players }),
   setDrafts: (drafts) => set({ drafts }),
   setCurrentGameweek: (gameweek: number) => {
     if (gameweek <= 38) {
