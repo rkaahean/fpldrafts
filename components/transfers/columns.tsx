@@ -62,8 +62,6 @@ export const columns: ColumnDef<PlayerData>[] = [
     cell: ({ row }) => {
       const transfersIn = picksStore((store) => store.transfersIn);
       const makeTransfers = picksStore((store) => store.makeTransfers);
-      const addToBank = picksStore((store) => store.addToBank);
-      const removeFromBank = picksStore((store) => store.removeFromBank);
 
       const isSelectedForTransfer =
         transfersIn[row.original.element_type].filter(
@@ -108,5 +106,10 @@ export const columns: ColumnDef<PlayerData>[] = [
         </button>
       );
     },
+  },
+  {
+    accessorKey: "element_type",
+    header: "element_type",
+    filterFn: "equalsString",
   },
 ];

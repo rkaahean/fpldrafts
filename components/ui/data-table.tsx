@@ -21,6 +21,7 @@ import {
 import { useState } from "react";
 import { Button } from "./button";
 import { Input } from "./input";
+import { ToggleGroup, ToggleGroupItem } from "./toggle-group";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -51,13 +52,16 @@ export function DataTable<TData, TValue>({
       pagination: {
         pageSize: 15,
       },
+      columnVisibility: {
+        element_type: false,
+      },
     },
   });
 
   return (
     <div>
       {isFilterable && (
-        <div className="flex items-center pb-1">
+        <div className="flex items-center pb-1 gap-2">
           <Input
             placeholder={`Filter ${name}...`}
             value={
@@ -68,6 +72,22 @@ export function DataTable<TData, TValue>({
             }
             className="w-1/2 max-w-sm"
           />
+          <ToggleGroup
+            type="single"
+            onValueChange={(value) => {
+              const column = table.getColumn("element_type")!;
+              column.setFilterValue(null);
+
+              if (value) {
+                column.setFilterValue(value);
+              }
+            }}
+          >
+            <ToggleGroupItem value="1">GK</ToggleGroupItem>
+            <ToggleGroupItem value="2">DEF</ToggleGroupItem>
+            <ToggleGroupItem value="3">MID</ToggleGroupItem>
+            <ToggleGroupItem value="4">FWD</ToggleGroupItem>
+          </ToggleGroup>
         </div>
       )}
       <div className="rounded-sm border">
