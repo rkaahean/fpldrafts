@@ -69,19 +69,6 @@ export const columns: ColumnDef<PlayerData>[] = [
       return (
         <button
           onClick={async () => {
-            // setSubstituteIn({
-            //   player_id: row.original.player_id,
-            //   value: row.original.now_value,
-            // });
-            // const { isValid, reason } = await makeSubs();
-            // if (!isValid) {
-            //   toast({
-            //     title: "Cannot make transfer",
-            //     description: reason,
-            //   });
-            //   // reset substitute states
-            //   setSubstituteIn(undefined);
-            // }
             // if not already selected, push into state
             if (!isSelectedForTransfer) {
               transfersIn[row.original.element_type].push({

@@ -170,10 +170,13 @@ export const picksStore = create<State>()((set, get) => ({
           in: substitutedIn.player_id,
           out: substitutedOut.player_id,
           gameweek,
-          in_cost: substitutedIn.value,
-          out_cost: substitutedOut.value,
+          in_cost: 0,
+          out_cost: 0,
         });
       }
+
+      // remove from transfers list if present for both
+
       // Update the state with the modified data array
       set({
         substitutedIn: undefined,
