@@ -23,26 +23,6 @@ ChartJS.register(
   Legend
 );
 
-export const tempdata = {
-  labels: ["Thing 1", "Thing 2", "Thing 3", "Thing 4", "Thing 5", "Thing 6"],
-  datasets: [
-    {
-      label: "# of Votes",
-      data: [2, 9, 3, 5, 2, 3],
-      backgroundColor: "rgba(255, 99, 132, 0.2)",
-      borderColor: "rgba(255, 99, 132, 1)",
-      borderWidth: 1,
-    },
-    {
-      label: "# of Votes",
-      data: [9, 1, 9, 5, 2, 3],
-      backgroundColor: "rgba(10, 99, 132, 0.2)",
-      borderColor: "rgba(10, 99, 132, 1)",
-      borderWidth: 1,
-    },
-  ],
-};
-
 export default function PlayerComparison() {
   const player1 = chartsStore((store) => store.player1);
   const player2 = chartsStore((store) => store.player2);
@@ -114,8 +94,8 @@ export default function PlayerComparison() {
             data[0].expected_goals_per_90,
             data[0].expected_goal_involvements_per_90,
           ],
-          backgroundColor: "rgba(255, 99, 132, 0.2)",
-          borderColor: "rgba(255, 99, 132, 1)",
+          backgroundColor: "rgba(59, 130, 246, 0.2)",
+          borderColor: "rgba(59, 130, 246, 1)",
           borderWidth: 1,
         },
         {
@@ -125,8 +105,8 @@ export default function PlayerComparison() {
             data[1].expected_goals_per_90,
             data[1].expected_goal_involvements_per_90,
           ],
-          backgroundColor: "rgba(10, 99, 132, 0.2)",
-          borderColor: "rgba(10, 99, 132, 1)",
+          backgroundColor: "rgba(239, 68, 68, 0.2)",
+          borderColor: "rgba(239, 68, 68, 1)",
           borderWidth: 1,
         },
       ],
