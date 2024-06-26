@@ -3,6 +3,7 @@
 import {
   ColumnDef,
   ColumnFiltersState,
+  RowSelectionState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -18,6 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Updater } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "./button";
 import { Input } from "./input";
@@ -41,26 +43,48 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
 
+  const handleRowSelectionChange = (
+    updaterOrValue: Updater<RowSelectionState, RowSelectionState>
+  ) => {
+    // Calculate new selection state
+    const newRowSelection =
+      typeof updaterOrValue === "function"
+        ? updaterOrValue(rowSelection)
+        : updaterOrValue;
+    const newSelectedRowIds = Object.keys(newRowSelection);
+
+    if (newSelectedRowIds.length > 2) {
+      // If more than 2 rows are selected, remove the first added row
+      const oldestSelectedId = newSelectedRowIds[0];
+      const updatedSelection = { ...newRowSelection };
+      delete updatedSelection[oldestSelectedId];
+      setRowSelection(updatedSelection);
+    } else {
+      setRowSelection(newRowSelection);
+    }
+  };
+
+  console.log("Rows", rowSelection);
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onRowSelectionChange: handleRowSelectionChange,
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     state: { columnFilters, rowSelection },
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 12,
+        pageSize: 11,
       },
       columnVisibility: {
         element_type: false,
       },
     },
-    onRowSelectionChange: setRowSelection,
   });
 
-  console.log("ROWS", rowSelection);
   return (
     <div>
       {isFilterable && (
