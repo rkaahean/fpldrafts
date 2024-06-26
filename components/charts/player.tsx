@@ -30,13 +30,40 @@ export const data = {
       borderColor: "rgba(255, 99, 132, 1)",
       borderWidth: 1,
     },
+    {
+      label: "# of Votes",
+      data: [9, 1, 9, 5, 2, 3],
+      backgroundColor: "rgba(10, 99, 132, 0.2)",
+      borderColor: "rgba(10, 99, 132, 1)",
+      borderWidth: 1,
+    },
   ],
 };
 
 export default function PlayerComparison() {
+  const options = {
+    scales: {
+      r: {
+        pointLabels: {
+          display: true, // Show point labels
+        },
+        grid: {
+          display: true, // Show grid lines
+        },
+        angleLines: {
+          display: true, // Hide the lines connecting points
+        },
+      },
+    },
+    elements: {
+      line: {
+        borderWidth: 1, // Hide the border lines of the radar chart
+      },
+    },
+  };
   return (
     <div>
-      <Radar data={data} />
+      <Radar data={data} options={options} />
     </div>
   );
 }
