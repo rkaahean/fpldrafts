@@ -6,10 +6,10 @@ import Selector from "@/components/transfers/server";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="grid grid-cols-4 min-h-full px-5 gap-5">
-        <div className="flex flex-col col-span-1 h-full gap-10">
-          <div className="relative overflow-scroll">
+    <div className="flex flex-col min-h-screen max-h-screen">
+      <div className="grid grid-cols-4 px-5 gap-5">
+        <div className="flex flex-col col-span-1 max-h-screen gap-5">
+          <div className="h-1/2 relative overflow-scroll">
             <Selector />
           </div>
           <PlayerComparison />
