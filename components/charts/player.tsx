@@ -63,6 +63,12 @@ export default function PlayerComparison() {
   };
   return (
     <div>
+      <div className="flex gap-3 justify-center">
+        <div className="font-black text-blue-500">Watkins</div>
+        <span className="font-thin">vs.</span>
+        <div className="font-black text-red-500">Haaland</div>
+      </div>
+
       <Radar data={data} options={options} />
     </div>
   );

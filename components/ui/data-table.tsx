@@ -39,6 +39,7 @@ export function DataTable<TData, TValue>({
   isPaginated = false,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
@@ -46,18 +47,20 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    state: { columnFilters },
+    state: { columnFilters, rowSelection },
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 10,
+        pageSize: 12,
       },
       columnVisibility: {
         element_type: false,
       },
     },
+    onRowSelectionChange: setRowSelection,
   });
 
+  console.log("ROWS", rowSelection);
   return (
     <div>
       {isFilterable && (
@@ -116,6 +119,10 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  onClick={() => {
+                    const isSelected = row.getIsSelected();
+                    row.toggleSelected(!isSelected);
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -139,6 +146,10 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
+      </div>
+      <div className="flex-1 text-sm text-muted-foreground">
+        {table.getFilteredSelectedRowModel().rows.length} of{" "}
+        {table.getFilteredRowModel().rows.length} row(s) selected.
       </div>
       {isPaginated && (
         <div className="flex items-center justify-center space-x-2 py-4">
