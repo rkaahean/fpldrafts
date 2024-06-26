@@ -3,7 +3,6 @@
 import {
   ColumnDef,
   ColumnFiltersState,
-  RowSelectionState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -19,11 +18,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Updater } from "@tanstack/react-query";
 import { useState } from "react";
-import { Button } from "./button";
-import { Input } from "./input";
-import { ToggleGroup, ToggleGroupItem } from "./toggle-group";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -41,54 +39,14 @@ export function DataTable<TData, TValue>({
   isPaginated = false,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({
-    "0": true,
-    "1": true,
-  });
-
-  const [selectionOrder, setSelectionOrder] = useState<string[]>(["0", "1"]);
-
-  // Custom row selection change handler to enforce max of 2 selected rows
-  const handleRowSelectionChange = (
-    updaterOrValue: Updater<RowSelectionState, RowSelectionState>
-  ) => {
-    // Calculate new selection state
-    const newRowSelection =
-      typeof updaterOrValue === "function"
-        ? updaterOrValue(rowSelection)
-        : updaterOrValue;
-    const newSelectedRowIds = Object.keys(newRowSelection);
-
-    if (newSelectedRowIds.length > 2) {
-      // Maintain selection order to remove the oldest selected row
-      const newSelectionOrder = [
-        ...selectionOrder,
-        ...newSelectedRowIds.filter((id) => !selectionOrder.includes(id)),
-      ];
-      const oldestSelectedId = newSelectionOrder.shift(); // Remove the oldest selected row ID
-      const updatedSelection = { ...newRowSelection };
-      delete updatedSelection[oldestSelectedId!];
-
-      // Update state
-      setRowSelection(updatedSelection);
-      setSelectionOrder(newSelectionOrder);
-    } else {
-      setRowSelection(newRowSelection);
-      setSelectionOrder((prevOrder) => [
-        ...prevOrder,
-        ...newSelectedRowIds.filter((id) => !prevOrder.includes(id)),
-      ]);
-    }
-  };
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    onRowSelectionChange: handleRowSelectionChange,
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    state: { columnFilters, rowSelection },
+    state: { columnFilters },
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {

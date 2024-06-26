@@ -1,7 +1,8 @@
 import prisma from "@/lib/db";
 import { unstable_cache } from "next/cache";
-import { DataTable } from "../ui/data-table";
+
 import { columns } from "./columns";
+import { DataTable } from "./table";
 
 const getData = unstable_cache(
   async () => {

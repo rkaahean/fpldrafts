@@ -1,8 +1,9 @@
 "use client";
 
 import { picksStore } from "@/app/store";
-import { DataTable } from "../ui/data-table";
+
 import { columns } from "./columns";
+import { DataTable } from "./table";
 
 export default function ClientTable(props: any) {
   const picksSelectors = picksStore((state) => ({

@@ -21,9 +21,9 @@ import {
 } from "@/components/ui/table";
 import { Updater } from "@tanstack/react-query";
 import { useState } from "react";
-import { Button } from "./button";
-import { Input } from "./input";
-import { ToggleGroup, ToggleGroupItem } from "./toggle-group";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
