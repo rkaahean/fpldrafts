@@ -12,6 +12,11 @@ export async function getPlayerData(id: number, gameweek: number = 1) {
       team_code: true,
       element_type: true,
       total_points: true,
+      expected_assists: true,
+      expected_assists_per_90: true,
+      expected_goals: true,
+      expected_goals_per_90: true,
+      expected_goal_involvements: true,
       expected_goal_involvements_per_90: true,
       now_value: true,
       fpl_player_team: {

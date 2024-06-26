@@ -11,6 +11,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
+import { chartsStore } from "@/app/store/charts";
 import {
   Table,
   TableBody,
@@ -20,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Updater } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
@@ -47,7 +48,6 @@ export function DataTable<TData, TValue>({
   });
 
   const [selectionOrder, setSelectionOrder] = useState<string[]>(["0", "1"]);
-
   // Custom row selection change handler to enforce max of 2 selected rows
   const handleRowSelectionChange = (
     updaterOrValue: Updater<RowSelectionState, RowSelectionState>
@@ -80,6 +80,13 @@ export function DataTable<TData, TValue>({
       ]);
     }
   };
+
+  const setPlayer1 = chartsStore((store) => store.setPlayer1);
+  const setPlayer2 = chartsStore((store) => store.setPlayer2);
+  useEffect(() => {
+    setPlayer1(data[parseInt(selectionOrder[0])].player_id);
+    setPlayer2(data[parseInt(selectionOrder[1])].player_id);
+  }, [data, selectionOrder, setPlayer1, setPlayer2]);
 
   const table = useReactTable({
     data,
