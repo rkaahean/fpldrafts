@@ -43,6 +43,9 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
 
+  const [selectionOrder, setSelectionOrder] = useState<string[]>([]);
+
+  // Custom row selection change handler to enforce max of 2 selected rows
   const handleRowSelectionChange = (
     updaterOrValue: Updater<RowSelectionState, RowSelectionState>
   ) => {
@@ -54,17 +57,26 @@ export function DataTable<TData, TValue>({
     const newSelectedRowIds = Object.keys(newRowSelection);
 
     if (newSelectedRowIds.length > 2) {
-      // If more than 2 rows are selected, remove the first added row
-      const oldestSelectedId = newSelectedRowIds[0];
+      // Maintain selection order to remove the oldest selected row
+      const newSelectionOrder = [
+        ...selectionOrder,
+        ...newSelectedRowIds.filter((id) => !selectionOrder.includes(id)),
+      ];
+      const oldestSelectedId = newSelectionOrder.shift(); // Remove the oldest selected row ID
       const updatedSelection = { ...newRowSelection };
-      delete updatedSelection[oldestSelectedId];
+      delete updatedSelection[oldestSelectedId!];
+
+      // Update state
       setRowSelection(updatedSelection);
+      setSelectionOrder(newSelectionOrder);
     } else {
       setRowSelection(newRowSelection);
+      setSelectionOrder((prevOrder) => [
+        ...prevOrder,
+        ...newSelectedRowIds.filter((id) => !prevOrder.includes(id)),
+      ]);
     }
   };
-
-  console.log("Rows", rowSelection);
 
   const table = useReactTable({
     data,
@@ -77,7 +89,7 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 11,
+        pageSize: 10,
       },
       columnVisibility: {
         element_type: false,
