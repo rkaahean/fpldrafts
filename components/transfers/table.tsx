@@ -25,6 +25,7 @@ import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import { PlayerData } from "./columns";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -59,6 +60,8 @@ export function DataTable<TData, TValue>({
         : updaterOrValue;
     const newSelectedRowIds = Object.keys(newRowSelection);
 
+    console.log("New order", newSelectedRowIds);
+
     if (newSelectedRowIds.length > 2) {
       // Maintain selection order to remove the oldest selected row
       const newSelectionOrder = [
@@ -74,18 +77,19 @@ export function DataTable<TData, TValue>({
       setSelectionOrder(newSelectionOrder);
     } else {
       setRowSelection(newRowSelection);
-      setSelectionOrder((prevOrder) => [
-        ...prevOrder,
-        ...newSelectedRowIds.filter((id) => !prevOrder.includes(id)),
-      ]);
+      setSelectionOrder(newSelectedRowIds);
     }
   };
 
   const setPlayer1 = chartsStore((store) => store.setPlayer1);
   const setPlayer2 = chartsStore((store) => store.setPlayer2);
   useEffect(() => {
-    setPlayer1(data[parseInt(selectionOrder[0])].player_id);
-    setPlayer2(data[parseInt(selectionOrder[1])].player_id);
+    if (selectionOrder.length == 2) {
+      setPlayer1((data[parseInt(selectionOrder[0])] as PlayerData).player_id);
+      setPlayer2((data[parseInt(selectionOrder[1])] as PlayerData).player_id);
+    } else if (selectionOrder.length == 1) {
+      setPlayer1((data[parseInt(selectionOrder[0])] as PlayerData).player_id);
+    }
   }, [data, selectionOrder, setPlayer1, setPlayer2]);
 
   const table = useReactTable({
