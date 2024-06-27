@@ -30,16 +30,6 @@ export default function Team() {
         </div>
       </nav>
       <div className="flex flex-col flex-grow">
-        <div className="flex flex-row gap-1">
-          <div className="mt-4">
-            {drafts.id && (
-              <div className="flex flex-col justify-end">
-                <div className="text-xs italic font-light">{drafts.name}</div>
-                <div className="text-xs font-black">{drafts.description}</div>
-              </div>
-            )}
-          </div>
-        </div>
         <Gameweek />
       </div>
     </div>

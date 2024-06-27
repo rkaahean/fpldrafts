@@ -56,7 +56,9 @@ function DraftCard(props: { data: DraftTransfer }) {
         <div className="text-sm">{props.data.out.data.web_name}</div>
       </div>
       <div className="italic text-xs px-6 py-3">
-        {`${props.data.out.price - props.data.in.price} made from Transfer`}
+        {`£${
+          (props.data.out.price - props.data.in.price) / 10
+        } made from Transfer`}
       </div>
     </Card>
   );
