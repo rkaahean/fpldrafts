@@ -1,10 +1,10 @@
 import { picksStore } from "@/app/store";
+import { DraftTransfer } from "@/app/store/utils";
 import { LoopIcon } from "@radix-ui/react-icons";
 import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -32,8 +32,10 @@ export default function DraftChanges() {
         <SheetHeader>
           <SheetTitle>Draft Changes</SheetTitle>
           <SheetDescription>Scenario 1 - GW 27 Draft changes</SheetDescription>
-          {drafts.changes.map((tranfer) => {
-            return <div key={tranfer.in}>{tranfer.in}</div>;
+          {drafts.changes.map((transfer) => {
+            return (
+              <DraftCard key={transfer.in.data.player_id} data={transfer} />
+            );
           })}
         </SheetHeader>
       </SheetContent>
@@ -41,18 +43,16 @@ export default function DraftChanges() {
   );
 }
 
-function DraftCard() {
+function DraftCard(props: { data: DraftTransfer }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Card Title</CardTitle>
-        <CardDescription>Card Description</CardDescription>
+        <CardTitle>{`Gameweek ${props.data.gameweek} Transfer`}</CardTitle>
       </CardHeader>
-      <CardContent>
-        <p>Card Content</p>
-      </CardContent>
+      <CardContent>{props.data.in.data.web_name}</CardContent>
+      <CardContent>{props.data.out.data.web_name}</CardContent>
       <CardFooter>
-        <p>Card Footer</p>
+        {`${props.data.out.price - props.data.in.price} made from Transfer`}
       </CardFooter>
     </Card>
   );

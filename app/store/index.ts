@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { FPLGameweekPicksData, FPLPlayerData, getPlayerData } from "../api";
-import { DraftState, DraftTransfer, PlayerData, TransferProps } from "./utils";
+import { DraftState, DraftTransfer, PlayerData } from "./utils";
 
 interface State {
   currentGameweek: number;
@@ -9,8 +9,8 @@ interface State {
   substitutedIn?: PlayerData;
   substitutedOut?: PlayerData;
   drafts: DraftState;
-  transfersIn: { [key: number]: TransferProps[] };
-  transfersOut: { [key: number]: TransferProps[] };
+  transfersIn: { [key: number]: PlayerData[] };
+  transfersOut: { [key: number]: PlayerData[] };
   setBase: (picks: FPLGameweekPicksData) => void;
   setSubstituteIn: (player: PlayerData) => void;
   setSubstituteOut: (player: PlayerData) => void;
@@ -25,8 +25,8 @@ interface State {
   }>;
   setDrafts: (drafts: DraftState) => void;
   setPicks: (picks: FPLGameweekPicksData) => void;
-  setTransferIn: (players: { [key: number]: TransferProps[] }) => void;
-  setTransferOut: (players: { [key: number]: TransferProps[] }) => void;
+  setTransferIn: (players: { [key: number]: PlayerData[] }) => void;
+  setTransferOut: (players: { [key: number]: PlayerData[] }) => void;
   resetSubs: () => void;
   addToBank(value: number): void;
   removeFromBank(value: number): void;
@@ -120,12 +120,15 @@ export const picksStore = create<State>()((set, get) => ({
       if (drafts && drafts.changes) {
         newDrafts = [...drafts.changes];
         newDrafts.push({
-          in: substitutedIn.player_id,
-          out: substitutedOut.player_id,
+          in: {
+            data: substitutedIn,
+            price: 0,
+          },
+          out: {
+            data: substitutedOut,
+            price: 0,
+          },
           gameweek,
-          // cost is 0 for substitutes
-          in_cost: 0,
-          out_cost: 0,
         });
       }
 
@@ -166,7 +169,7 @@ export const picksStore = create<State>()((set, get) => ({
       // if there are transfers of in type, but no transfers of out type
       if (transfersIn[e_type].length > 0 && transfersOut[e_type].length == 0) {
         isvalid = false;
-        reason = `Please transfer out a player of ${transfersIn[e_type][0].name}'s type`;
+        reason = `Please transfer out a player of ${transfersIn[e_type][0].web_name}'s type`;
         break;
       }
 
@@ -181,11 +184,15 @@ export const picksStore = create<State>()((set, get) => ({
         const out_transfer = transfersOut[e_type].pop()!;
         // console.log("Popping", in_transfer, out_transfer);
         newDrafts.push({
-          in: in_transfer.player_id,
-          out: out_transfer.player_id,
+          in: {
+            data: in_transfer,
+            price: in_transfer.selling_price,
+          },
+          out: {
+            data: out_transfer,
+            price: out_transfer.selling_price,
+          },
           gameweek,
-          in_cost: in_transfer.value,
-          out_cost: out_transfer.value,
         });
       }
       // otherwise keep transferring elements
@@ -214,18 +221,13 @@ export async function swapPlayers(
   data: FPLGameweekPicksData,
   transfer: DraftTransfer
 ): Promise<FPLGameweekPicksData> {
-  const {
-    in: substitutedIn,
-    out: substitutedOut,
-    in_cost,
-    out_cost,
-  } = transfer;
+  const { in: substitutedIn, out: substitutedOut } = transfer;
 
   const inPlayerIndex = data.data.findIndex(
-    (player) => player.fpl_player.player_id === substitutedIn
+    (player) => player.fpl_player.player_id === substitutedIn.data.player_id
   );
   const outPlayerIndex = data.data.findIndex(
-    (player) => player.fpl_player.player_id === substitutedOut
+    (player) => player.fpl_player.player_id === substitutedOut.data.player_id
   );
 
   if (outPlayerIndex === -1) {
@@ -242,7 +244,7 @@ export async function swapPlayers(
     } = await fetch("/api/player", {
       method: "POST",
       body: JSON.stringify({
-        id: substitutedIn,
+        id: substitutedIn.data.player_id,
       }),
     }).then((res) => res.json());
 
@@ -283,7 +285,7 @@ export async function swapPlayers(
     data: newData,
     overall: {
       ...data.overall,
-      bank: data.overall.bank + out_cost - in_cost,
+      bank: data.overall.bank + substitutedOut.price - substitutedIn.price,
     },
   };
 }

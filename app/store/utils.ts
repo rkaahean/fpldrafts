@@ -23,25 +23,20 @@ export type PlayerData = {
 };
 
 export interface DraftTransfer {
-  in: number;
-  out: number;
+  in: {
+    data: PlayerData;
+    price: number;
+  };
+  out: {
+    data: PlayerData;
+    price: number;
+  };
   gameweek: number;
-  in_cost: number;
-  out_cost: number;
-}
-
-export interface TransferProps {
-  player_id: number;
-  value: number;
-  name: string;
 }
 
 export function updateTransfer(
-  transfers: { [key: number]: TransferProps[] },
-  data: Pick<
-    PlayerData,
-    "player_id" | "element_type" | "selling_price" | "web_name"
-  >,
+  transfers: { [key: number]: PlayerData[] },
+  data: PlayerData,
   addToBank: (amount: number) => void,
   removeFromBank: (amount: number) => void
 ) {
@@ -55,11 +50,7 @@ export function updateTransfer(
     ).length > 0;
 
   if (!isAlreadyTransferred) {
-    transfers[data.element_type].push({
-      player_id: data.player_id,
-      value: data.selling_price,
-      name: data.web_name,
-    });
+    transfers[data.element_type].push(data);
 
     addToBank(data.selling_price);
   }
@@ -74,7 +65,7 @@ export function updateTransfer(
 }
 
 export function removeTransfer(
-  transfers: { [key: number]: TransferProps[] },
+  transfers: { [key: number]: PlayerData[] },
   data: Pick<PlayerData, "player_id" | "element_type" | "selling_price">,
   addToBank?: (amount: number) => void,
   removeFromBank?: (amount: number) => void

@@ -13,10 +13,8 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
   const substitutedIn = picksStore((store) => store.substitutedIn);
   const substitutedOut = picksStore((store) => store.substitutedOut);
 
-  const transfersIn = picksStore((store) => store.transfersIn);
   const transfersOut = picksStore((store) => store.transfersOut);
 
-  const setTrasferIn = picksStore((store) => store.setTransferIn);
   const setTransferOut = picksStore((store) => store.setTransferOut);
   const addToBank = picksStore((store) => store.addToBank);
   const removeFromBank = picksStore((store) => store.removeFromBank);

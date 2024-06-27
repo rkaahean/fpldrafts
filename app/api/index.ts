@@ -259,12 +259,12 @@ export async function createDraft(request: {
 
   const data = request.changes.map((change) => {
     return {
-      player_in_id: change.in,
-      player_out_id: change.out,
+      player_in_id: change.in.data.player_id,
+      player_out_id: change.out.data.player_id,
       gameweek: change.gameweek,
       fpl_draft_id: draft.id,
-      in_cost: change.in_cost,
-      out_cost: change.out_cost,
+      in_cost: change.in.price,
+      out_cost: change.out.price,
     };
   });
 

@@ -8,7 +8,7 @@ import { toast } from "../ui/use-toast";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type PlayerData = {
+export type TransferColumnData = {
   player_id: number;
   web_name: string;
   total_points: number;
@@ -19,7 +19,7 @@ export type PlayerData = {
   element_type: number;
 };
 
-export const columns: ColumnDef<PlayerData>[] = [
+export const columns: ColumnDef<TransferColumnData>[] = [
   {
     accessorKey: "web_name",
     header: "Name",
@@ -75,8 +75,8 @@ export const columns: ColumnDef<PlayerData>[] = [
             if (!isSelectedForTransfer) {
               transfersIn[row.original.element_type].push({
                 player_id: row.original.player_id,
-                value: row.original.now_value,
-                name: row.original.web_name,
+                selling_price: row.original.now_value,
+                web_name: row.original.web_name,
               });
             }
             // if already selected, remove from state
