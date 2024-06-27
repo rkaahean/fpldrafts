@@ -115,7 +115,7 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  // data-state={row.getIsSelected() && "selected"}
                   onClick={() => {
                     const isSelected = row.getIsSelected();
                     row.toggleSelected(!isSelected);
