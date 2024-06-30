@@ -77,7 +77,6 @@ export default function PlayerComparison() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  console.log(data);
 
   function formatData(
     data: NonNullable<Awaited<ReturnType<typeof getPlayerData>>>[]

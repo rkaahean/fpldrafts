@@ -293,7 +293,7 @@ export async function deleteDraft(draftId: string) {
   });
 }
 
-export async function getAllFixtures() {
+export async function getAllFixtures(gameweek: number, count: number) {
   return await prisma.fPLFixtures.findMany({
     select: {
       code: true,
@@ -313,7 +313,8 @@ export async function getAllFixtures() {
     },
     where: {
       event: {
-        gte: 34,
+        gte: gameweek,
+        lte: gameweek + count,
       },
     },
     orderBy: {

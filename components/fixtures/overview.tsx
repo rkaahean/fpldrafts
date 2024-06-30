@@ -1,4 +1,8 @@
+"use client";
+
 import { FPLFixtures, getAllFixtures } from "@/app/api";
+import { picksStore } from "@/app/store";
+import { useQuery } from "@tanstack/react-query";
 import {
   Table,
   TableBody,
@@ -8,8 +12,24 @@ import {
   TableRow,
 } from "../ui/table";
 
-export default async function Fixtures() {
-  const data = await getAllFixtures();
+export default function Fixtures() {
+  const gameweek = picksStore((state) => state.currentGameweek);
+  const { data, isLoading } = useQuery({
+    queryKey: [gameweek],
+    queryFn: async () => {
+      const response: {
+        data: NonNullable<Awaited<ReturnType<typeof getAllFixtures>>>;
+      } = await fetch("/api/fixtures", {
+        method: "POST",
+        body: JSON.stringify({
+          gameweek,
+          count: 5,
+        }),
+      }).then((res) => res.json());
+
+      return response;
+    },
+  });
 
   type TransformedFixture = {
     event: number;
@@ -70,7 +90,10 @@ export default async function Fixtures() {
     );
   }
 
-  const formattedData = transformData(data);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  const formattedData = transformData(data?.data!);
   return (
     <div>
       <div className="text-sm font-black">Fixtures</div>
@@ -78,11 +101,11 @@ export default async function Fixtures() {
         <TableHeader>
           <TableRow className="grid grid-cols-7 h-6">
             <TableHead className="col-span-2"></TableHead>
-            <TableHead>GW34</TableHead>
-            <TableHead>GW35</TableHead>
-            <TableHead>GW36</TableHead>
-            <TableHead>GW37</TableHead>
-            <TableHead>GW38</TableHead>
+            {[0, 1, 2, 3, 4].map((number) => {
+              return (
+                <TableHead key={number}>{`GW${gameweek + number}`}</TableHead>
+              );
+            })}
           </TableRow>
         </TableHeader>
         <TableBody>
