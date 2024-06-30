@@ -40,32 +40,10 @@ export default function Team() {
           </Button>
         </div>
         <div>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <DraftSave />
-              </TooltipTrigger>
-              <TooltipContent>
-                <div className="text-xs text-muted-foreground">
-                  Saves the drafts with all the changes so far.
-                </div>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <DraftSave />
         </div>
         <div>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <DraftChanges />
-              </TooltipTrigger>
-              <TooltipContent>
-                <div className="text-xs text-muted-foreground">
-                  Preview all the draft changes.
-                </div>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <DraftChanges />
         </div>
       </nav>
       <div className="flex flex-col flex-grow">
