@@ -15,6 +15,8 @@ import Gameweek from "./Gameweek";
 
 export default function Team() {
   const drafts = picksStore((state) => state.drafts);
+  const gameweek = picksStore((state) => state.currentGameweek);
+
   const setDrafts = picksStore((state) => state.setDrafts);
 
   return (
@@ -47,9 +49,32 @@ export default function Team() {
           </TooltipProvider>
         </div>
         <div>
-          <Button variant="ghost" size="xs" title="Save Draft">
-            <CubeIcon />
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  title="Reset changes this gameweek."
+                  onClick={() =>
+                    setDrafts({
+                      ...drafts,
+                      changes: drafts.changes.filter(
+                        (transfer) => transfer.gameweek != gameweek
+                      ),
+                    })
+                  }
+                >
+                  <CubeIcon />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <div className="text-xs text-muted-foreground">
+                  Resets all changes in this gameweek.
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
         <div>
           <DraftSave />
