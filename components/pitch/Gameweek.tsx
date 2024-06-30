@@ -99,7 +99,14 @@ export default function Gameweek() {
             </button>
             <div className="flex flex-row justify-around w-full">
               <GameweekStat title="Gameweek" value={currentGameweek} />
-              <GameweekStat title="Transfers" value={"0 / 1"} />
+              <GameweekStat
+                title="Transfers"
+                value={`${
+                  drafts.changes.filter(
+                    (transfer) => transfer.gameweek == currentGameweek
+                  ).length
+                } / 1`}
+              />
               <GameweekStat title="ITB" value={`${picks.overall.bank! / 10}`} />
               <GameweekStat title="Rank" value={data.overall.overall_rank} />
             </div>
