@@ -15,6 +15,8 @@ import Gameweek from "./Gameweek";
 
 export default function Team() {
   const drafts = picksStore((state) => state.drafts);
+  const setDrafts = picksStore((state) => state.setDrafts);
+
   return (
     <div className="w-full min-h-full max-h-screen flex flex-row justify-start gap-1">
       <nav className="flex flex-col justify-center gap-4">
@@ -22,7 +24,17 @@ export default function Team() {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="xs" title="Save Draft">
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  title="Save Draft"
+                  onClick={() =>
+                    setDrafts({
+                      ...drafts,
+                      changes: [],
+                    })
+                  }
+                >
                   <ResetIcon />
                 </Button>
               </TooltipTrigger>
