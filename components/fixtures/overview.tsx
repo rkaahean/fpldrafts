@@ -99,7 +99,6 @@ export default function Fixtures() {
     return <div>Loading...</div>;
   }
 
-  console.log(gameweeks);
   const formattedData = transformData(data?.data!);
 
   return (

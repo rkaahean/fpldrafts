@@ -60,8 +60,6 @@ export function DataTable<TData, TValue>({
         : updaterOrValue;
     const newSelectedRowIds = Object.keys(newRowSelection);
 
-    console.log("New order", newSelectedRowIds);
-
     if (newSelectedRowIds.length > 2) {
       // Maintain selection order to remove the oldest selected row
       const newSelectionOrder = [
