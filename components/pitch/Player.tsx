@@ -2,6 +2,7 @@ import { picksStore } from "@/app/store";
 import { PlayerData, updateTransfer } from "@/app/store/utils";
 import { cn } from "@/lib/utils";
 import { Cross2Icon, DoubleArrowDownIcon } from "@radix-ui/react-icons";
+import { motion } from "framer-motion";
 import Image from "next/image";
 
 export default function Player(props: { data: PlayerData; gameweek: number }) {
@@ -27,12 +28,15 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
   const player = isSubstitute ? substitutedIn : substitutedOut;
 
   return (
-    <div
+    <motion.div
       className={cn(
         "flex flex-row w-32 h-32 2xl:w-40 2xl:h-40 border rounded-md p-2",
         player?.player_id == props.data.player_id ? "bg-secondary" : "",
         isSelectedForTransfer ? "bg-destructive" : ""
       )}
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.2 }}
     >
       <PlayerFixtureTicker
         fixtures={props.data.fixtures}
@@ -81,7 +85,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
           <PlayerStatsTicker data={props.data} />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
