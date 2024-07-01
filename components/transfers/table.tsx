@@ -12,6 +12,7 @@ import {
 } from "@tanstack/react-table";
 
 import { chartsStore } from "@/app/store/charts";
+import { PlayerData } from "@/app/store/utils";
 import {
   Table,
   TableBody,
@@ -25,7 +26,6 @@ import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
-import { PlayerData } from "./columns";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -88,6 +88,7 @@ export function DataTable<TData, TValue>({
     } else if (selectionOrder.length == 1) {
       setPlayer1((data[parseInt(selectionOrder[0])] as PlayerData).player_id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectionOrder, setPlayer1, setPlayer2]);
 
   const table = useReactTable({

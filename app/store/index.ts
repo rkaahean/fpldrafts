@@ -28,6 +28,7 @@ interface State {
   setTransferIn: (players: { [key: number]: PlayerData[] }) => void;
   setTransferOut: (players: { [key: number]: PlayerData[] }) => void;
   resetSubs: () => void;
+  resetTransfers: () => void;
   addToBank(value: number): void;
   removeFromBank(value: number): void;
 }
@@ -51,6 +52,12 @@ export const picksStore = create<State>()((set, get) => ({
     set({
       substitutedIn: undefined,
       substitutedOut: undefined,
+    });
+  },
+  resetTransfers: () => {
+    set({
+      transfersIn: structuredClone(TRANSFER_INIT_VALUE),
+      transfersOut: structuredClone(TRANSFER_INIT_VALUE),
     });
   },
   addToBank: (value: number) => {

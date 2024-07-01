@@ -18,6 +18,7 @@ export default function Team() {
   const gameweek = picksStore((state) => state.currentGameweek);
 
   const setDrafts = picksStore((state) => state.setDrafts);
+  const resetTransfers = picksStore((state) => state.resetTransfers);
 
   return (
     <div className="w-full min-h-full max-h-screen flex flex-row justify-start gap-1">
@@ -29,13 +30,13 @@ export default function Team() {
                 <Button
                   variant="ghost"
                   size="xs"
-                  title="Save Draft"
-                  onClick={() =>
+                  onClick={() => {
                     setDrafts({
                       ...drafts,
                       changes: [],
-                    })
-                  }
+                    });
+                    resetTransfers();
+                  }}
                 >
                   <ResetIcon />
                 </Button>
@@ -55,15 +56,15 @@ export default function Team() {
                 <Button
                   variant="ghost"
                   size="xs"
-                  title="Reset changes this gameweek."
-                  onClick={() =>
+                  onClick={() => {
                     setDrafts({
                       ...drafts,
                       changes: drafts.changes.filter(
                         (transfer) => transfer.gameweek != gameweek
                       ),
-                    })
-                  }
+                    });
+                    resetTransfers();
+                  }}
                 >
                   <CubeIcon />
                 </Button>
