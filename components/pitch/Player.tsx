@@ -30,8 +30,8 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
     <div
       className={cn(
         "flex flex-row w-32 h-32 2xl:w-40 2xl:h-40 border rounded-md p-2",
-        player?.player_id == props.data.player_id ? "bg-yellow-100" : "",
-        isSelectedForTransfer ? "bg-red-100" : ""
+        player?.player_id == props.data.player_id ? "bg-secondary" : "",
+        isSelectedForTransfer ? "bg-destructive" : ""
       )}
     >
       <PlayerFixtureTicker

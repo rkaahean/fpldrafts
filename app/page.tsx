@@ -20,7 +20,7 @@ export default function Home() {
             <Fixtures />
           </div>
         </div>
-        <div className="col-span-2 bg-stone-50 py-2">
+        <div className="col-span-2 py-2">
           <Team />
         </div>
       </div>

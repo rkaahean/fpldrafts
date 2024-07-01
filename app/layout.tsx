@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <ReactQueryProvider>
-      <html lang="en">
+      <html lang="en" className="dark">
         <body className={inter.className}>
           <main>{children}</main>
           <Toaster />
