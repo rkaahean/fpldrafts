@@ -4,7 +4,8 @@ import { FPLGameweekPicksData } from "@/app/api";
 import ReactQueryProvider from "@/app/provider";
 import { picksStore, swapPlayers } from "@/app/store";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+
 import PitchRow, { filterData } from "./PitchRow";
 
 export default function Gameweek() {
@@ -30,6 +31,7 @@ export default function Gameweek() {
 
   const { data } = useQuery({
     queryKey: [currentGameweek, drafts.changes],
+    placeholderData: keepPreviousData,
     queryFn: async () => {
       // first step is to hit the gameweek endpoint and try to fetch data
       const response = await fetch("/api/gameweek", {
@@ -86,6 +88,7 @@ export default function Gameweek() {
   if (data) {
     // console.log("Data", data?.data);
   }
+
   if (data && data.data) {
     return (
       <ReactQueryProvider>
