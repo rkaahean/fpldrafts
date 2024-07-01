@@ -2,7 +2,7 @@
 
 import { getPlayerData } from "@/app/api";
 import { chartsStore } from "@/app/store/charts";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
   Chart as ChartJS,
   Filler,
@@ -29,6 +29,7 @@ export default function PlayerComparison() {
 
   const { data, isLoading } = useQuery({
     queryKey: [player1, player2],
+    placeholderData: keepPreviousData,
     queryFn: async () => {
       const response1: {
         data: NonNullable<Awaited<ReturnType<typeof getPlayerData>>>;

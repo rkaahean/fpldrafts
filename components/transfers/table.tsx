@@ -90,7 +90,7 @@ export function DataTable<TData, TValue>({
     } else if (selectionOrder.length == 1) {
       setPlayer1((data[parseInt(selectionOrder[0])] as PlayerData).player_id);
     }
-  }, [data, selectionOrder, setPlayer1, setPlayer2]);
+  }, [selectionOrder, setPlayer1, setPlayer2]);
 
   const table = useReactTable({
     data,

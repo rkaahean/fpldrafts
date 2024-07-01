@@ -114,7 +114,7 @@ function PlayerFixtureTicker({
         if (Array.isArray(fixture)) {
           return (
             <div
-              className="grid grid-rows-2 text-[8px] tracking-tighter text-center border-[1px] rounded-sm border-stone-700"
+              className="grid grid-rows-2 text-[8px] tracking-tighter text-center border-[1px] rounded-sm border-stone-700 bg-highlight"
               key={idx}
             >
               {fixture.map((double_fixture) => {
