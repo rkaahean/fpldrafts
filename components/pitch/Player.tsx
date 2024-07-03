@@ -97,7 +97,7 @@ function PlayerFixtureTicker({
   gameweek: number;
 }) {
   const formattedFixtures = [];
-  for (let idx = gameweek; idx < gameweek + 5; idx++) {
+  for (let idx = gameweek; idx < gameweek + 4; idx++) {
     const fixture = fixtures.filter((fixture) => fixture.event == idx);
     if (fixture.length === 0) {
       formattedFixtures.push({
@@ -113,12 +113,12 @@ function PlayerFixtureTicker({
   }
 
   return (
-    <div className="w-3/12 grid grid-rows-5 text-[10px] tracking-tighter">
+    <div className="w-3/12 grid grid-rows-4 text-xs tracking-tighter">
       {formattedFixtures.map((fixture, idx) => {
         if (Array.isArray(fixture)) {
           return (
             <div
-              className="grid grid-rows-2 text-[8px] tracking-tighter text-center border-[1px] rounded-sm border-stone-700 bg-highlight"
+              className="grid grid-rows-2 text-xs tracking-tighter text-center border-[1px] rounded-sm border-stone-700 bg-highlight pb-1"
               key={idx}
             >
               {fixture.map((double_fixture) => {
@@ -147,7 +147,7 @@ function PlayerFixtureTicker({
 
 function PlayerStatsTicker({ data }: { data: PlayerData }) {
   return (
-    <div className="h-1/6 grid grid-cols-3 text-[9px] 2xl:text-xs w-full">
+    <div className="h-1/6 grid grid-cols-3 text-[10px] 2xl:text-xs w-full">
       <div className="flex flex-col text-center justify-center">
         <div>{`£${data.selling_price / 10}`}</div>
       </div>
@@ -180,7 +180,7 @@ function PlayerDescription({
           className="w-auto h-auto"
         />
       </div>
-      <div className="text-xs h-fit font-semibold 2xl:text-sm truncate">
+      <div className="text-sm h-fit font-semibold 2xl:text-sm truncate">
         {data.web_name}
       </div>
     </div>
