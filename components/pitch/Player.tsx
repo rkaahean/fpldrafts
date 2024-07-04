@@ -180,7 +180,7 @@ function PlayerDescription({
           className="w-auto h-auto"
         />
       </div>
-      <div className="text-sm h-fit font-semibold 2xl:text-sm truncate">
+      <div className="text-xs h-fit font-semibold 2xl:text-sm truncate">
         {data.web_name}
       </div>
     </div>
