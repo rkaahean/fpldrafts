@@ -34,6 +34,7 @@ async function parsePicksData(
         pick.element,
         "133e854c-8817-47a9-888e-d07bd2cd76b6"
       );
+      console.log(pick.element, player);
       return {
         fpl_team_id: "53ed0ea1-7298-4069-b609-f8108468c885",
         fpl_player_id: player!.id,

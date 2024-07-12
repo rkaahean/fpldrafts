@@ -8,27 +8,62 @@ function getData() {
       return parseBoostrapData(data);
     })
     .then(async (data) => {
+      const { players, teams } = data;
       // upsert player team data.
-      data.teams.map(async (team) => {
-        await prisma.fPLPlayerTeam.upsert({
-          where: {
-            code: team.code,
-          },
-          update: team,
-          create: team,
-        });
-      });
+      // data.teams.map(async (team) => {
+      //   await prisma.fPLPlayerTeam.upsert({
+      //     where: {
+      //       code: team.code,
+      //     },
+      //     update: team,
+      //     create: team,
+      //   });
+      // });
 
       // upsert fpl player data
-      data.players.map(async (player) => {
-        return await prisma.fPLPlayer.upsert({
-          where: {
-            player_id: player.player_id,
-          },
-          update: player,
-          create: player,
-        });
+      // Step 1: Fetch existing player IDs
+      const existingPlayers = await prisma.fPLPlayer.findMany({
+        select: { player_id: true },
       });
+      const existingPlayerIds = new Set(
+        existingPlayers.map((p) => p.player_id)
+      );
+
+      // Step 2: Separate players to create and update
+      const playersToCreate = [];
+      const playersToUpdate = [];
+
+      for (const player of data.players) {
+        if (existingPlayerIds.has(player.player_id)) {
+          playersToUpdate.push(player);
+        } else {
+          playersToCreate.push(player);
+        }
+      }
+
+      // Step 3: Bulk create new players
+      if (playersToCreate.length > 0) {
+        await prisma.fPLPlayer.createMany({
+          data: playersToCreate,
+        });
+      }
+
+      // Step 4: Bulk update existing players
+
+      await prisma.$transaction(
+        async (tx) => {
+          for (const player of players) {
+            await tx.fPLPlayer.upsert({
+              where: { player_id: player.player_id },
+              update: player,
+              create: player,
+            });
+          }
+        },
+        {
+          timeout: 1000000,
+        }
+      );
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
