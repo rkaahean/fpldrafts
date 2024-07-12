@@ -77,6 +77,13 @@ export const columns: ColumnDef<TransferColumnData>[] = [
                 player_id: row.original.player_id,
                 selling_price: row.original.now_value,
                 web_name: row.original.web_name,
+                // made up
+                position: 1,
+                team_code: 1,
+                expected_goal_involvements_per_90: 10,
+                total_points: 100,
+                element_type: 10,
+                fixtures: [],
               });
             }
             // if already selected, remove from state
