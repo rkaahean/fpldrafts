@@ -1,7 +1,10 @@
 import { FPLGameweekPicks, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-type JSONResponse = Omit<FPLGameweekPicks, "id">[];
+type JSONResponsePicks = Omit<FPLGameweekPicks, "id">[];
+type JSONResponseHistory = NonNullable<
+  Awaited<ReturnType<typeof parseHistoryData>>
+>;
 function getPicksData(teamId: number, gameweek: number) {
   return fetch(
     `https://fantasy.premierleague.com/api/entry/44421/event/${gameweek}/picks/`
@@ -17,35 +20,46 @@ function getPicksData(teamId: number, gameweek: number) {
 
 function getTransfersData(teamId: number) {
   return fetch(`
-  https://fantasy.premierleague.com/api/entry/44421/transfers/
+  https://fantasy.premierleague.com/api/entry/${teamId}/transfers/
   `).then((res) => res.json());
 }
 
 async function parsePicksData(
   data: any,
   gameweek: number
-): Promise<JSONResponse | undefined> {
-  if (data["detail"] != "Not found.") {
-    let picks = data["picks"];
+): Promise<JSONResponsePicks | undefined> {
+  if (data["detail"] !== "Not found.") {
+    const picks = data["picks"];
+    const elementIds = picks.map((pick: any) => pick.element);
 
-    // get id, team, team_code, web_name, element_type
-    const formattedPicks: JSONResponse = picks.map(async (pick: any) => {
-      const player = await getPlayerByElement(
-        pick.element,
-        "133e854c-8817-47a9-888e-d07bd2cd76b6"
-      );
-      console.log(pick.element, player);
-      return {
-        fpl_team_id: "53ed0ea1-7298-4069-b609-f8108468c885",
-        fpl_player_id: player!.id,
-        position: pick.position,
-        multiplier: pick.multiplier,
-        is_captain: pick.is_captain,
-        is_vice_captain: pick.is_vice_captain,
-        gameweek,
-      };
+    const players = await prisma.fPLPlayer.findMany({
+      where: {
+        player_id: {
+          in: elementIds,
+        },
+        season_id: "133e854c-8817-47a9-888e-d07bd2cd76b6",
+      },
+      select: {
+        id: true,
+        player_id: true,
+      },
     });
-    return Promise.all(formattedPicks);
+
+    const playerMap = new Map(
+      players.map((player) => [player.player_id, player.id])
+    );
+
+    const formattedPicks: JSONResponsePicks = picks.map((pick: any) => ({
+      fpl_team_id: "53ed0ea1-7298-4069-b609-f8108468c885",
+      fpl_player_id: playerMap.get(pick.element),
+      position: pick.position,
+      multiplier: pick.multiplier,
+      is_captain: pick.is_captain,
+      is_vice_captain: pick.is_vice_captain,
+      gameweek,
+    }));
+
+    return formattedPicks;
   }
 }
 
@@ -70,75 +84,95 @@ async function parseHistoryData(data: any, gameweek: number) {
 
 try {
   const data = [];
+  const picks: JSONResponsePicks = [];
+  const history: JSONResponseHistory[] = [];
+
   for (let i = 1; i <= 38; i++) {
     const gameweekData = getPicksData(44421, i);
     data.push(gameweekData);
   }
+  const alldata = Promise.all(data);
 
-  data.map(async (obj) => {
-    const { picks, history } = await obj;
-    if (picks) {
-      picks.map(async (pick: any) => {
-        await prisma.fPLGameweekPicks.upsert({
-          where: {
-            fpl_team_id_gameweek_position: {
-              fpl_team_id: pick.fpl_team_id,
-              gameweek: pick.gameweek,
-              position: pick.position,
-            },
-          },
-          update: pick,
-          create: pick,
-        });
-      });
-
-      if (history) {
-        await prisma.fPLGameweekOverallStats.upsert({
-          where: {
-            fpl_team_id_gameweek: {
-              fpl_team_id: "53ed0ea1-7298-4069-b609-f8108468c885",
-              gameweek: history.gameweek,
-            },
-          },
-          update: history,
-          create: history,
-        });
+  console.log("Getting data...");
+  alldata.then(async (data) => {
+    data.map((gw) => {
+      if (gw.picks) {
+        picks.push(...gw.picks);
       }
-    }
+
+      if (gw.history) {
+        history.push(gw.history);
+      }
+    });
+
+    // insert all data in one go;
+    console.log("Inserting picks...");
+    await prisma.fPLGameweekPicks.createMany({
+      data: picks,
+      skipDuplicates: true,
+    });
+
+    console.log("Inserting overall stats...");
+    await prisma.fPLGameweekOverallStats.createMany({
+      data: history,
+      skipDuplicates: true,
+    });
   });
 
+  console.log("Inserting transfer data...");
   getTransfersData(44421).then(async (data) => {
-    const maxTime = await prisma.fPLGameweekTransfers.aggregate({
-      _max: {
-        time: true,
+    const inPlayers = await prisma.fPLPlayer.findMany({
+      where: {
+        player_id: {
+          in: data.map(
+            (transfer: { element_in: number }) => transfer.element_in
+          ),
+        },
+        season_id: "133e854c-8817-47a9-888e-d07bd2cd76b6",
+      },
+      select: {
+        id: true,
+        player_id: true,
       },
     });
 
-    let dataToInsert = data;
-    if (maxTime._max.time) {
-      dataToInsert = data.filter((obj: any) => {
-        return new Date(obj.time) > maxTime._max.time!;
-      });
-    }
-
-    dataToInsert.map(async (transfer: any) => {
-      await prisma.fPLGameweekTransfers.create({
-        data: {
-          fpl_team_id: "53ed0ea1-7298-4069-b609-f8108468c885",
-          in_player_id: (await getPlayerByElement(
-            transfer.element_in,
-            "133e854c-8817-47a9-888e-d07bd2cd76b6"
-          ).then((player) => player?.id)) as string,
-          in_player_cost: transfer.element_in_cost,
-          out_player_id: (await getPlayerByElement(
-            transfer.element_out,
-            "133e854c-8817-47a9-888e-d07bd2cd76b6"
-          ).then((player) => player?.id)) as string,
-          out_player_cost: transfer.element_out_cost,
-          time: transfer.time,
-          gameweek: transfer.event,
+    const outPlayers = await prisma.fPLPlayer.findMany({
+      where: {
+        player_id: {
+          in: data.map(
+            (transfer: { element_out: number }) => transfer.element_out
+          ),
         },
-      });
+        season_id: "133e854c-8817-47a9-888e-d07bd2cd76b6",
+      },
+      select: {
+        id: true,
+        player_id: true,
+      },
+    });
+
+    const inPlayerMap = new Map(
+      inPlayers.map((player) => [player.player_id, player.id])
+    );
+    const outPlayerMap = new Map(
+      outPlayers.map((player) => [player.player_id, player.id])
+    );
+
+    const formattedData = data.map((transfer: any) => {
+      return {
+        fpl_team_id: "53ed0ea1-7298-4069-b609-f8108468c885",
+        in_player_id: inPlayerMap.get(transfer.element_in),
+        in_player_cost: transfer.element_in_cost,
+        out_player_id: outPlayerMap.get(transfer.element_out),
+        out_player_cost: transfer.element_out_cost,
+        time: transfer.time,
+        gameweek: transfer.event,
+      };
+    });
+
+    await prisma.fPLGameweekTransfers.createMany({
+      data: formattedData,
+      skipDuplicates: true,
     });
   });
 
@@ -146,13 +180,4 @@ try {
 } catch (e) {
   console.error(e);
   prisma.$disconnect();
-}
-
-async function getPlayerByElement(element: number, season_id: string) {
-  return await prisma.fPLPlayer.findFirst({
-    where: {
-      player_id: element,
-      season_id,
-    },
-  });
 }

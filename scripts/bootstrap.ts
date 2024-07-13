@@ -10,15 +10,15 @@ function getData() {
     .then(async (data) => {
       const { players, teams } = data;
       // upsert player team data.
-      // data.teams.map(async (team) => {
-      //   await prisma.fPLPlayerTeam.upsert({
-      //     where: {
-      //       code: team.code,
-      //     },
-      //     update: team,
-      //     create: team,
-      //   });
-      // });
+      teams.map(async (team) => {
+        await prisma.fPLPlayerTeam.upsert({
+          where: {
+            code: team.code,
+          },
+          update: team,
+          create: team,
+        });
+      });
 
       // upsert fpl player data
       // Step 1: Fetch existing player IDs

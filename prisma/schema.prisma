@@ -140,6 +140,8 @@ model FPLGameweekTransfers {
 
   in_fpl_player  FPLPlayer @relation("in_player", fields: [in_player_id], references: [id])
   out_fpl_player FPLPlayer @relation("out_player", fields: [out_player_id], references: [id])
+
+  @@unique([in_player_id, out_player_id, time])
 }
 
 model FPLTeam {
