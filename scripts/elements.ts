@@ -2,7 +2,7 @@ import { FPLGameweekPlayerStats, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 type JSONResponse = Omit<FPLGameweekPlayerStats, "id">[];
-function getData(): Promise<Promise<JSONResponse>[]> {
+function getData() {
   const players = prisma.fPLPlayer.findMany({
     orderBy: {
       total_points: "desc",
@@ -11,17 +11,51 @@ function getData(): Promise<Promise<JSONResponse>[]> {
 
   return players
     .then((players) => {
-      return players.map(async (player) => {
-        return await fetch(
-          `https://fantasy.premierleague.com/api/element-summary/${player.player_id}/`
-        ).then((res) => res.json());
-      });
+      return Promise.all(
+        players.map(async (player) => {
+          try {
+            const data = await fetch(
+              `https://fantasy.premierleague.com/api/element-summary/${player.player_id}/`
+            ).then((res) => res.json());
+            return {
+              id: player.id,
+              ...data,
+            };
+          } catch (e) {
+            return {};
+          }
+        })
+      );
     })
-    .then(async (players) => {
-      const data = players.map(async (player) => {
-        return await parseElementsData(player);
+    .then(async (playersData) => {
+      // for all players
+
+      // console.log(playersData);
+      const formattedData = playersData
+        .filter((value) => Object.keys(value).length != 0)
+        .map((player) => {
+          if (player) {
+            const history = player["history"];
+            return history.map((h: any) => {
+              return {
+                fpl_player_id: player?.id,
+                gameweek: h.round,
+                total_points: h.total_points,
+                goals_scored: h.goals_scored,
+                assists: h.assists,
+                expected_goals: parseFloat(h.expected_goals),
+                expected_assists: parseFloat(h.expected_assists),
+                value: h.value,
+                fixture_id: h.fixture,
+              };
+            });
+          }
+        });
+      // console.log(formattedData);
+      await prisma.fPLGameweekPlayerStats.createMany({
+        data: formattedData.flat(),
+        skipDuplicates: true,
       });
-      return data;
     });
 }
 
@@ -58,22 +92,22 @@ async function parseElementsData(data: any): Promise<JSONResponse> {
 try {
   // get all players
   const data = getData();
-  data.then(async (res) => {
-    Promise.all(res).then(async (playerData) => {
-      playerData.flat().map(async (data) => {
-        await prisma.fPLGameweekPlayerStats.upsert({
-          where: {
-            fpl_player_id_fixture_id: {
-              fpl_player_id: data.fpl_player_id,
-              fixture_id: data.fixture_id,
-            },
-          },
-          update: data,
-          create: data,
-        });
-      });
-    });
-  });
+  // data.then(async (res) => {
+  //   Promise.all(res).then(async (playerData) => {
+  //     playerData.flat().map(async (data) => {
+  //       await prisma.fPLGameweekPlayerStats.upsert({
+  //         where: {
+  //           fpl_player_id_fixture_id: {
+  //             fpl_player_id: data.fpl_player_id,
+  //             fixture_id: data.fixture_id,
+  //           },
+  //         },
+  //         update: data,
+  //         create: data,
+  //       });
+  //     });
+  //   });
+  // });
   prisma.$disconnect();
 } catch (e) {
   console.error(e);
