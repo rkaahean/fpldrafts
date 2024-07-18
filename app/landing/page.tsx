@@ -3,6 +3,8 @@
 import { signIn } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import GoogleIcon from "@mui/icons-material/Google";
 
 export default function SignIn() {
@@ -18,19 +20,23 @@ export default function SignIn() {
               with the actual FPL account.
             </div>
           </div>
-          {/* <form
-            action={async () => {
-              "use server";
-              await signIn("google");
-            }}
-          ></form> */}
+
           <Button
             onClick={() => signIn("google")}
-            className="bg-foreground hover:bg-foreground"
+            className="bg-foreground hover:bg-foreground h-10"
             variant="ghost"
           >
             <GoogleIcon className="text-background" />
           </Button>
+
+          <div>
+            <Label htmlFor="teamid">Team ID</Label>
+            <Input
+              id="teamid"
+              placeholder="Your FPL team ID"
+              className="h-10"
+            />
+          </div>
         </div>
       </div>
     </main>
