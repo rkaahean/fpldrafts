@@ -377,6 +377,7 @@ export async function getAllFixtures(gameweek: number, count: number) {
         gte: gameweek,
         lte: gameweek + count,
       },
+      season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
     },
     orderBy: {
       event: "asc",

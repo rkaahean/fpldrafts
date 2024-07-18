@@ -5,9 +5,11 @@ type JSONResponsePicks = Omit<FPLGameweekPicks, "id">[];
 type JSONResponseHistory = NonNullable<
   Awaited<ReturnType<typeof parseHistoryData>>
 >;
+
+const TEAM_ID = 7894;
 function getPicksData(teamId: number, gameweek: number) {
   return fetch(
-    `https://fantasy.premierleague.com/api/entry/44421/event/${gameweek}/picks/`
+    `https://fantasy.premierleague.com/api/entry/${teamId}/event/${gameweek}/picks/`
   )
     .then((res) => res.json())
     .then(async (data) => {
@@ -88,7 +90,7 @@ try {
   const history: JSONResponseHistory[] = [];
 
   for (let i = 1; i <= 38; i++) {
-    const gameweekData = getPicksData(44421, i);
+    const gameweekData = getPicksData(TEAM_ID, i);
     data.push(gameweekData);
   }
   const alldata = Promise.all(data);
@@ -120,7 +122,7 @@ try {
   });
 
   console.log("Inserting transfer data...");
-  getTransfersData(44421).then(async (data) => {
+  getTransfersData(TEAM_ID).then(async (data) => {
     const inPlayers = await prisma.fPLPlayer.findMany({
       where: {
         player_id: {

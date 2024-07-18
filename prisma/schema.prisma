@@ -64,7 +64,7 @@ model FPLPlayerTeam {
 model FPLFixtures {
   id                String  @id @default(uuid())
   season_id         String
-  code              Int     @unique
+  code              Int 
   fixture_id        Int
   finished          Boolean
   team_h_id         String
@@ -78,6 +78,8 @@ model FPLFixtures {
   fpl_season FPLSeason     @relation(fields: [season_id], references: [id])
   fpl_team_h FPLPlayerTeam @relation("home_team", fields: [team_h_id], references: [id])
   fpl_team_a FPLPlayerTeam @relation("away_team", fields: [team_a_id], references: [id])
+
+  @@unique([season_id, code])
 }
 
 model FPLGameweekOverallStats {

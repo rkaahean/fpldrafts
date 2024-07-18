@@ -21,14 +21,6 @@ async function parseFixtureData(data: any): Promise<JSONResponse> {
 
   const teams = await getPlayerTeams("dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865");
   const formattedPicks: JSONResponse = data.map((fixture: any) => {
-    // const team_h = await getTeamById(
-    //   fixture.team_h,
-    //   "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865"
-    // );
-    // const team_a = await getTeamById(
-    //   fixture.team_a,
-    //   "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865"
-    // );
     const [team_h] = teams.filter((team) => team.team_id == fixture.team_h);
     const [team_a] = teams.filter((team) => team.team_id == fixture.team_a);
 
@@ -56,31 +48,11 @@ async function parseFixtureData(data: any): Promise<JSONResponse> {
 }
 
 try {
-  // getData().then(async (fixtureData) => {
-  //   fixtureData.map(async (data) => {
-  //     await prisma.fPLFixtures.upsert({
-  //       where: {
-  //         code: data.code,
-  //       },
-  //       update: data,
-  //       create: data,
-  //     });
-  //   });
-  // });
   getData();
   prisma.$disconnect();
 } catch (e) {
   console.error(e);
   prisma.$disconnect();
-}
-
-async function getTeamById(team_id: number, season_id: string) {
-  return await prisma.fPLPlayerTeam.findFirst({
-    where: {
-      team_id,
-      season_id,
-    },
-  });
 }
 
 async function getPlayerTeams(season_id: string) {

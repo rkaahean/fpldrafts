@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
         },
       };
     });
-    console.log(playerData);
+    console.log(playerData[0].fpl_player.fpl_player_team);
     return Response.json({
       data: await Promise.all(playerData),
       overall: {
