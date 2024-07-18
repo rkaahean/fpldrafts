@@ -15,7 +15,8 @@
     "update": "npm run bootstrap && npm run picks && npm run elements && npm run fixtures"
   },
   "dependencies": {
-    "@prisma/client": "^5.11.0",
+    "@auth/prisma-adapter": "^2.4.1",
+    "@prisma/client": "^5.17.0",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-checkbox": "^1.1.0",
     "@radix-ui/react-dialog": "^1.0.5",
@@ -38,6 +39,7 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.343.0",
     "next": "^14.2.4",
+    "next-auth": "^5.0.0-beta.19",
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
@@ -54,7 +56,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
     "postcss": "^8",
-    "prisma": "^5.11.0",
+    "prisma": "^5.17.0",
     "tailwindcss": "^3.3.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.2"
