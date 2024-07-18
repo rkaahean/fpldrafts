@@ -123,10 +123,10 @@ export const picksStore = create<State>()((set, get) => ({
         };
       }
 
-      let newDrafts: DraftTransfer[] = [];
+      let draftTransfers: DraftTransfer[] = [];
       if (drafts && drafts.changes) {
-        newDrafts = [...drafts.changes];
-        newDrafts.push({
+        draftTransfers = [...drafts.changes];
+        draftTransfers.push({
           in: {
             data: substitutedIn,
             price: 0,
@@ -144,7 +144,8 @@ export const picksStore = create<State>()((set, get) => ({
         substitutedIn: undefined,
         substitutedOut: undefined,
         drafts: {
-          changes: newDrafts,
+          ...drafts,
+          changes: draftTransfers,
         },
         transfersIn: structuredClone(TRANSFER_INIT_VALUE),
         transfersOut: structuredClone(TRANSFER_INIT_VALUE),
@@ -283,11 +284,6 @@ export async function swapPlayers(
     newData[inPlayerIndex] = inPlayer;
     newData[outPlayerIndex] = outPlayer;
   }
-
-  console.log(
-    "New bank",
-    data.overall.bank + substitutedOut.price - substitutedIn.price
-  );
 
   return {
     data: newData,

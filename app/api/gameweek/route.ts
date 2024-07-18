@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import {
+  FPLPlayerData2,
   getGameweekOverallData,
   getGameweekPicksData,
   getLastTransferValue,
@@ -14,7 +15,7 @@ export async function POST(req: NextRequest) {
   if (request.gameweek == 1) {
     let playerData: any[] = [];
 
-    const allPlayers = await getPlayerDataBySeason(
+    const allPlayers: FPLPlayerData2[] = await getPlayerDataBySeason(
       "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865"
     );
     // get 2 goalkeeps
@@ -66,7 +67,6 @@ export async function POST(req: NextRequest) {
         },
       };
     });
-    // console.log(playerData[0].fpl_player.fpl_player_team);
     return Response.json({
       data: await Promise.all(playerData),
       overall: {

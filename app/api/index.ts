@@ -294,6 +294,12 @@ export type FPLPlayerData = Pick<
   position: number;
 };
 
+export type FPLPlayerData2 = NonNullable<
+  Awaited<ReturnType<typeof getPlayerData>>
+> & {
+  selling_price?: number;
+  position?: number;
+};
 export async function getAllPlayerData(season_id: string) {
   // sort by total_points
   const players = await prisma.fPLPlayer.findMany({
