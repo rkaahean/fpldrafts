@@ -94,6 +94,9 @@ export async function getPlayerDataBySeason(season_id: string) {
         select: {
           short_name: true,
           home_fixtures: {
+            where: {
+              season_id,
+            },
             select: {
               fpl_team_a: {
                 select: {
@@ -105,6 +108,9 @@ export async function getPlayerDataBySeason(season_id: string) {
             },
           },
           away_fixtures: {
+            where: {
+              season_id,
+            },
             select: {
               fpl_team_h: {
                 select: {
