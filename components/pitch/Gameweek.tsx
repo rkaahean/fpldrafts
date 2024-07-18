@@ -61,6 +61,8 @@ export default function Gameweek() {
 
       // if there's a base, apply relevant draft changes
       let draftData = base;
+      // console.log("Picks", data.data);
+      // console.log("Drafts", draftData);
       if (base.data && base.data.length > 0) {
         // some players are still selected in to transfer
         const remainingTransferInSum = Object.values(transfers).reduce(

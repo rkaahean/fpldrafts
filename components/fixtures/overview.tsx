@@ -42,6 +42,7 @@ export default function Fixtures() {
     team_id: string;
     short_name: string;
     fixtures: TransformedFixture[];
+    full_name: string;
   };
 
   function transformData(fixtures: FPLFixtures[]): Team[] {
@@ -52,7 +53,10 @@ export default function Fixtures() {
       const awayTeamId = fixture.team_a_id;
       const event = fixture.event;
       const homeShortName = fixture.fpl_team_h.short_name;
+      const homeFullName = fixture.fpl_team_h.name;
+
       const awayShortName = fixture.fpl_team_a.short_name;
+      const awayFullName = fixture.fpl_team_a.name;
 
       // Add the fixture to the home team
       if (!teams[homeTeamId]) {
@@ -60,6 +64,7 @@ export default function Fixtures() {
           team_id: homeTeamId,
           short_name: homeShortName,
           fixtures: [],
+          full_name: homeFullName,
         };
       }
       teams[homeTeamId].fixtures.push({
@@ -75,6 +80,7 @@ export default function Fixtures() {
           team_id: awayTeamId,
           short_name: awayShortName,
           fixtures: [],
+          full_name: awayFullName,
         };
       }
       teams[awayTeamId].fixtures.push({
@@ -121,12 +127,11 @@ export default function Fixtures() {
           {formattedData.map((data, row) => {
             return (
               <TableRow className="grid grid-cols-7 h-6" key={row}>
-                <TableCell className="col-span-2">{data.short_name}</TableCell>
+                <TableCell className="col-span-2">{data.full_name}</TableCell>
                 {gameweeks.map((gw, index) => {
                   const allFixtures = data.fixtures.filter(
                     (gameweekFixture) => gameweekFixture.event == gw
                   );
-                  // console.log(data.short_name, allFixtures);
                   if (allFixtures.length == 0) {
                     return <TableCell key={0}>-</TableCell>;
                   } else if (allFixtures.length == 1) {

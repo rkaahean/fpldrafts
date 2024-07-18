@@ -13,10 +13,30 @@ export async function POST(req: NextRequest) {
 
   // special basecase
   if (request.gameweek == 1) {
+    // allison: 310
+    // ederson: 347
+
+    // l.martinez: 380
+    // tripper: 418
+    // virgil: 339
+    // gabriel: 3
+    // gvardiol: 350
+
+    // martinelli: 9
+    // mbeumo: 99
+    // sterling: 186
+    // eze: 199
+    // rashford: 385
+
+    // watkins: 58
+    // havertz: 4
+    // toney: 108
+
     let playerData: any[] = [];
 
     const allPlayers: FPLPlayerData2[] = await getPlayerDataBySeason(
-      "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865"
+      "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+      [310, 347, 380, 418, 339, 3, 350, 9, 99, 186, 199, 385, 58, 4, 108]
     );
     // get 2 goalkeeps
     const gks = allPlayers
@@ -88,7 +108,12 @@ export async function POST(req: NextRequest) {
   // get overall gameweek data
   const overall = await getGameweekOverallData(request.gameweek);
   // get gameweek picks data
-  let data = await getGameweekPicksData(request.gameweek);
+  let data = await getGameweekPicksData(
+    request.gameweek,
+    "a561246c-c291-4111-8457-b0b282a33b19"
+  );
+
+  console.log("Gameweek data", request.gameweek, data);
 
   let newData = data.map(async (player) => {
     // get transfer in price of player_id

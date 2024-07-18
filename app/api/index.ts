@@ -73,7 +73,10 @@ export async function getPlayerData(
   return players;
 }
 
-export async function getPlayerDataBySeason(season_id: string) {
+export async function getPlayerDataBySeason(
+  season_id: string,
+  player_filter: number[]
+) {
   // get from prisma
   const players = await prisma.fPLPlayer.findMany({
     // Include the related FPLPlayer record
@@ -132,6 +135,9 @@ export async function getPlayerDataBySeason(season_id: string) {
     },
     where: {
       season_id,
+      player_id: {
+        in: player_filter,
+      },
     },
   });
   return players;
@@ -181,7 +187,7 @@ export async function getGameweekOverallData(gameweek: number) {
   });
 }
 
-export async function getGameweekPicksData(gameweek: number) {
+export async function getGameweekPicksData(gameweek: number, team_id: string) {
   const result = await prisma.fPLGameweekPicks.findMany({
     select: {
       position: true,
@@ -246,6 +252,7 @@ export async function getGameweekPicksData(gameweek: number) {
     },
     where: {
       gameweek,
+      fpl_team_id: team_id,
     },
   });
   return result;
@@ -367,7 +374,11 @@ export async function deleteDraft(draftId: string) {
   });
 }
 
-export async function getAllFixtures(gameweek: number, count: number) {
+export async function getAllFixtures(
+  gameweek: number,
+  count: number,
+  season_id: string
+) {
   return await prisma.fPLFixtures.findMany({
     select: {
       code: true,
@@ -377,11 +388,13 @@ export async function getAllFixtures(gameweek: number, count: number) {
       fpl_team_h: {
         select: {
           short_name: true,
+          name: true,
         },
       },
       fpl_team_a: {
         select: {
           short_name: true,
+          name: true,
         },
       },
     },
@@ -390,7 +403,7 @@ export async function getAllFixtures(gameweek: number, count: number) {
         gte: gameweek,
         lte: gameweek + count,
       },
-      season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+      season_id,
     },
     orderBy: {
       event: "asc",

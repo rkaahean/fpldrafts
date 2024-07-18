@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { FPLGameweekPicksData, FPLPlayerData, getPlayerData } from "../api";
 import { DraftState, DraftTransfer, PlayerData } from "./utils";
+import { get } from "lodash";
 
 interface State {
   currentGameweek: number;
@@ -90,7 +91,7 @@ export const picksStore = create<State>()((set, get) => ({
   setTransferOut: (players) => set({ transfersOut: players }),
   setDrafts: (drafts) => set({ drafts }),
   setCurrentGameweek: (gameweek: number) => {
-    if (gameweek <= 38) {
+    if (gameweek >= 1 && gameweek <= 38) {
       set({ currentGameweek: gameweek });
     }
   },

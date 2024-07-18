@@ -14,11 +14,19 @@ export async function POST(req: NextRequest) {
     // if no profit, sell at current price
     return {
       in: {
-        data: await getPlayerData(player.player_in_id, request.gameweek),
+        data: await getPlayerData(
+          player.player_in_id,
+          request.gameweek,
+          "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865"
+        ),
         price: player.in_cost,
       },
       out: {
-        data: await getPlayerData(player.player_out_id, request.gameweek),
+        data: await getPlayerData(
+          player.player_out_id,
+          request.gameweek,
+          "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865"
+        ),
         price: player.out_cost,
       },
       gameweek: request.gameweek,

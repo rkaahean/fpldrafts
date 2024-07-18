@@ -122,7 +122,7 @@ export function DataTable<TData, TValue>({
             onChange={(event) =>
               table.getColumn("web_name")?.setFilterValue(event.target.value)
             }
-            className="w-1/2 max-w-sm bg-border"
+            className="w-1/2 max-w-sm"
           />
           <ToggleGroup
             type="single"
