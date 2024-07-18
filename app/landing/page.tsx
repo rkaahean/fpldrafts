@@ -10,7 +10,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 export default function SignIn() {
   return (
     <main className="grid grid-cols-2 min-h-screen min-w-screen">
-      <div className="col-span-1">Hi</div>
+      <div className="col-span-1 bg-gradient-to-b from-stone-950 to-stone-900"></div>
       <div className="col-span-1 w-full flex flex-col min-h-screen items-center justify-center">
         <div className="w-1/2 flex flex-col gap-5">
           <div>
@@ -21,14 +21,6 @@ export default function SignIn() {
             </div>
           </div>
 
-          <Button
-            onClick={() => signIn("google")}
-            className="bg-foreground hover:bg-foreground h-10"
-            variant="ghost"
-          >
-            <GoogleIcon className="text-background" />
-          </Button>
-
           <div>
             <Label htmlFor="teamid">Team ID</Label>
             <Input
@@ -36,6 +28,17 @@ export default function SignIn() {
               placeholder="Your FPL team ID"
               className="h-10"
             />
+          </div>
+
+          <div className="flex flex-col w-full gap-1">
+            <Label htmlFor="signin">Authenticate</Label>
+            <Button
+              onClick={() => signIn("google")}
+              className="bg-foreground hover:bg-foreground h-10"
+              variant="ghost"
+            >
+              <GoogleIcon className="text-background" />
+            </Button>
           </div>
         </div>
       </div>
