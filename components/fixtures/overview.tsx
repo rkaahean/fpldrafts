@@ -127,7 +127,9 @@ export default function Fixtures() {
           {formattedData.map((data, row) => {
             return (
               <TableRow className="grid grid-cols-7 h-6" key={row}>
-                <TableCell className="col-span-2">{data.full_name}</TableCell>
+                <div className="col-span-2 w-full text-center">
+                  {data.full_name}
+                </div>
                 {gameweeks.map((gw, index) => {
                   const allFixtures = data.fixtures.filter(
                     (gameweekFixture) => gameweekFixture.event == gw

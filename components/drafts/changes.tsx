@@ -22,7 +22,7 @@ export default function DraftChanges() {
           <LoopIcon />
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="overflow-scroll">
         <SheetHeader>
           <SheetTitle>{drafts.name ? drafts.name : "Changes"}</SheetTitle>
           <SheetDescription>
