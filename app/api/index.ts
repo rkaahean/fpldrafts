@@ -1,7 +1,11 @@
 import prisma from "../../lib/db";
 import { DraftTransfer } from "../store/utils";
 
-export async function getPlayerData(id: number, gameweek: number = 1) {
+export async function getPlayerData(
+  id: number,
+  gameweek: number = 1,
+  season_id: string
+) {
   // get from prisma
   const players = await prisma.fPLPlayer.findFirst({
     // Include the related FPLPlayer record
@@ -33,9 +37,7 @@ export async function getPlayerData(id: number, gameweek: number = 1) {
               event: true,
             },
             where: {
-              event: {
-                gte: gameweek,
-              },
+              season_id,
             },
           },
           away_fixtures: {
@@ -49,9 +51,7 @@ export async function getPlayerData(id: number, gameweek: number = 1) {
               event: true,
             },
             where: {
-              event: {
-                gte: gameweek,
-              },
+              season_id,
             },
           },
         },
@@ -67,6 +67,7 @@ export async function getPlayerData(id: number, gameweek: number = 1) {
     },
     where: {
       player_id: id,
+      season_id,
     },
   });
   return players;

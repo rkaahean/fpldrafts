@@ -159,13 +159,10 @@ export const picksStore = create<State>()((set, get) => ({
   makeTransfers: async () => {
     const {
       drafts,
-      picks,
       transfersIn,
       transfersOut,
       currentGameweek: gameweek,
     } = get();
-
-    const data = picks?.data;
 
     let isvalid = true;
     let reason = "OK";
@@ -189,7 +186,6 @@ export const picksStore = create<State>()((set, get) => ({
       ) {
         const in_transfer = transfersIn[e_type].pop()!;
         const out_transfer = transfersOut[e_type].pop()!;
-        // console.log("Popping", in_transfer, out_transfer);
         newDrafts.push({
           in: {
             data: in_transfer,
@@ -287,6 +283,11 @@ export async function swapPlayers(
     newData[inPlayerIndex] = inPlayer;
     newData[outPlayerIndex] = outPlayer;
   }
+
+  console.log(
+    "New bank",
+    data.overall.bank + substitutedOut.price - substitutedIn.price
+  );
 
   return {
     data: newData,
