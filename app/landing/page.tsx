@@ -3,7 +3,6 @@
 import { signIn } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import GoogleIcon from "@mui/icons-material/Google";
 
@@ -21,19 +20,19 @@ export default function SignIn() {
             </div>
           </div>
 
-          <div>
+          {/* <div>
             <Label htmlFor="teamid">Team ID</Label>
             <Input
               id="teamid"
               placeholder="Your FPL team ID"
               className="h-10"
             />
-          </div>
+          </div> */}
 
           <div className="flex flex-col w-full gap-1">
             <Label htmlFor="signin">Authenticate</Label>
             <Button
-              onClick={() => signIn("google")}
+              onClick={() => signIn("google", { redirectTo: "/dashboard" })}
               className="bg-foreground hover:bg-foreground h-10"
               variant="ghost"
             >

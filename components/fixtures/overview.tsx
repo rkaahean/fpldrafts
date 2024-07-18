@@ -113,7 +113,7 @@ export default function Fixtures() {
       <Table>
         <TableHeader>
           <TableRow className="grid grid-cols-7 h-6">
-            <TableHead className="col-span-2"></TableHead>
+            <TableHead className="col-span-2 text-xs"></TableHead>
             {Array.from({ length: maxGameweek + 1 }, (_, i) => i).map(
               (number) => {
                 return (
@@ -126,7 +126,7 @@ export default function Fixtures() {
         <TableBody>
           {formattedData.map((data, row) => {
             return (
-              <TableRow className="grid grid-cols-7 h-6" key={row}>
+              <TableRow className="grid grid-cols-7 h-6 text-xs" key={row}>
                 <div className="col-span-2 w-full text-center">
                   {data.full_name}
                 </div>
