@@ -39,7 +39,7 @@ model FPLPlayer {
 
   fpl_season                FPLSeason                @relation(fields: [season_id], references: [id])
   fpl_gameweek_player_stats FPLGameweekPlayerStats[]
-  fpl_player_team           FPLPlayerTeam            @relation(fields: [team_code], references: [code])
+  fpl_player_team           FPLPlayerTeam            @relation(fields: [team_code,season_id], references: [code, season_id])
   in_fpl_transfers          FPLGameweekTransfers[]   @relation("in_player")
   out_fpl_transfers         FPLGameweekTransfers[]   @relation("out_player")
 
@@ -49,7 +49,7 @@ model FPLPlayer {
 model FPLPlayerTeam {
   id         String @id @default(uuid())
   season_id  String
-  code       Int    @unique // this is the actual team code that likely reamins across seasons
+  code       Int    // this is the actual team code that likely reamins across seasons
   team_id    Int // this is the id (1-20). Usually used for sorting
   name       String
   short_name String
@@ -59,6 +59,8 @@ model FPLPlayerTeam {
   home_fixtures FPLFixtures[] @relation("home_team")
   away_fixtures FPLFixtures[] @relation("away_team")
   FPLPlayer     FPLPlayer[]
+
+  @@unique([season_id,code])
 }
 
 model FPLFixtures {

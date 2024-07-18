@@ -15,8 +15,10 @@ function getData() {
       teams.map(async (team) => {
         await prisma.fPLPlayerTeam.upsert({
           where: {
-            code: team.code,
-            season_id: "133e854c-8817-47a9-888e-d07bd2cd76b6",
+            season_id_code: {
+              season_id: "133e854c-8817-47a9-888e-d07bd2cd76b6",
+              code: team.code,
+            },
           },
           update: team,
           create: team,
