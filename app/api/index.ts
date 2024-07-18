@@ -72,6 +72,64 @@ export async function getPlayerData(id: number, gameweek: number = 1) {
   return players;
 }
 
+export async function getPlayerDataBySeason(season_id: string) {
+  // get from prisma
+  const players = await prisma.fPLPlayer.findMany({
+    // Include the related FPLPlayer record
+    select: {
+      id: true,
+      player_id: true,
+      web_name: true,
+      team_code: true,
+      element_type: true,
+      total_points: true,
+      expected_assists: true,
+      expected_assists_per_90: true,
+      expected_goals: true,
+      expected_goals_per_90: true,
+      expected_goal_involvements: true,
+      expected_goal_involvements_per_90: true,
+      now_value: true,
+      fpl_player_team: {
+        select: {
+          short_name: true,
+          home_fixtures: {
+            select: {
+              fpl_team_a: {
+                select: {
+                  short_name: true,
+                },
+              },
+              id: true,
+              event: true,
+            },
+          },
+          away_fixtures: {
+            select: {
+              fpl_team_h: {
+                select: {
+                  short_name: true,
+                },
+              },
+              id: true,
+              event: true,
+            },
+          },
+        },
+      },
+      fpl_gameweek_player_stats: {
+        select: {
+          value: true,
+        },
+      },
+    },
+    where: {
+      season_id,
+    },
+  });
+  return players;
+}
+
 export async function getPlayerStaticData(id: number) {
   return await prisma.fPLPlayer.findFirst({
     select: {
@@ -229,11 +287,14 @@ export type FPLPlayerData = Pick<
   position: number;
 };
 
-export async function getAllPlayerData() {
+export async function getAllPlayerData(season_id: string) {
   // sort by total_points
   const players = await prisma.fPLPlayer.findMany({
     orderBy: {
       total_points: "desc",
+    },
+    where: {
+      season_id,
     },
   });
   return players;

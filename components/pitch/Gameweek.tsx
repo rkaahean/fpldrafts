@@ -86,7 +86,7 @@ export default function Gameweek() {
   });
 
   if (data) {
-    // console.log("Data", data?.data);
+    console.log("Data", data?.data);
   }
 
   if (data && data.data) {

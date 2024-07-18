@@ -16,7 +16,7 @@ datasource db {
 
 model FPLPlayer {
   id                                String             @id @default(uuid())
-  player_id                         Int                @unique // the player_id = element from the JSON
+  player_id                         Int                // the player_id = element from the JSON
   season_id                         String
   first_name                        String
   second_name                       String
@@ -42,6 +42,8 @@ model FPLPlayer {
   fpl_player_team           FPLPlayerTeam            @relation(fields: [team_code], references: [code])
   in_fpl_transfers          FPLGameweekTransfers[]   @relation("in_player")
   out_fpl_transfers         FPLGameweekTransfers[]   @relation("out_player")
+
+    @@unique([player_id, season_id])
 }
 
 model FPLPlayerTeam {

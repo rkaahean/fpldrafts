@@ -39,7 +39,7 @@ export const picksStore = create<State>()((set, get) => ({
   drafts: {
     changes: [],
   },
-  currentGameweek: 36,
+  currentGameweek: 1,
   transfersIn: structuredClone(TRANSFER_INIT_VALUE),
   transfersOut: structuredClone(TRANSFER_INIT_VALUE),
   setPicks: (picks: FPLGameweekPicksData) => {

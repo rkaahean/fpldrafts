@@ -126,7 +126,7 @@ export default function Fixtures() {
                   const allFixtures = data.fixtures.filter(
                     (gameweekFixture) => gameweekFixture.event == gw
                   );
-                  console.log(data.short_name, allFixtures);
+                  // console.log(data.short_name, allFixtures);
                   if (allFixtures.length == 0) {
                     return <TableCell key={0}>-</TableCell>;
                   } else if (allFixtures.length == 1) {

@@ -71,7 +71,7 @@ async function parseElementsData(data: any): Promise<JSONResponse> {
         const player = await getPlayerByElement(
           element.element,
           // season id
-          "133e854c-8817-47a9-888e-d07bd2cd76b6"
+          "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865"
         );
         return {
           fpl_player_id: player?.id,
