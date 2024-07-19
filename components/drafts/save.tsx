@@ -17,7 +17,7 @@ import {
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
-export default function DraftSave() {
+export default function DraftSave(props: { teamId: string }) {
   const drafts = picksStore((state) => state.drafts);
   const picks = picksStore((state) => state.picks);
   const [open, setOpen] = useState(false);
@@ -68,7 +68,7 @@ export default function DraftSave() {
             type="submit"
             className="h-8 w-24 text-xs"
             onClick={async () => {
-              console.log("Saving draft...");
+              console.log("Saving draft...", drafts.changes);
               await fetch("/api/drafts/create", {
                 method: "POST",
                 headers: {
@@ -77,7 +77,7 @@ export default function DraftSave() {
                 body: JSON.stringify({
                   changes: drafts.changes,
                   name: draftName,
-                  team_id: "53ed0ea1-7298-4069-b609-f8108468c885",
+                  team_id: props.teamId,
                   description: draftDescription,
                   gameweek: Math.min(
                     ...drafts.changes.map((draft) => draft.gameweek)

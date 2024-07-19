@@ -88,7 +88,7 @@ export default function Team() {
           </TooltipProvider>
         </div>
         <div>
-          <DraftSave />
+          <DraftSave teamId={session?.team_id!} />
         </div>
         <div>
           <DraftChanges />
@@ -137,7 +137,7 @@ export default function Team() {
         </div>
       </nav>
       <div className="flex flex-col flex-grow">
-        <Gameweek team_id={session?.team_id!} />
+        <Gameweek teamId={session?.team_id!} />
       </div>
     </div>
   );
