@@ -16,6 +16,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       });
 
       session.hasTeam = !!userWithTeam;
+      if (session.hasTeam) {
+        session.team_id = userWithTeam!.id;
+      }
       return session;
     },
   },

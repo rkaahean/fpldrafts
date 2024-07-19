@@ -10,9 +10,10 @@ import {
 
 export async function POST(req: NextRequest) {
   const request = await req.json();
+  const { gameweek, team_id } = request;
 
   // special basecase
-  if (request.gameweek == 1) {
+  if (gameweek == 1) {
     // allison: 310
     // ederson: 347
 
@@ -108,17 +109,14 @@ export async function POST(req: NextRequest) {
   // get overall gameweek data
   const overall = await getGameweekOverallData(request.gameweek);
   // get gameweek picks data
-  let data = await getGameweekPicksData(
-    request.gameweek,
-    "a561246c-c291-4111-8457-b0b282a33b19"
-  );
+  let data = await getGameweekPicksData(request.gameweek, team_id);
 
   console.log("Gameweek data", request.gameweek, data);
 
   let newData = data.map(async (player) => {
     // get transfer in price of player_id
     const transferInPrice = await getLastTransferValue(
-      "53ed0ea1-7298-4069-b609-f8108468c885",
+      team_id,
       player.fpl_player.id
     );
     // current price

@@ -8,7 +8,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 import PitchRow, { filterData } from "./PitchRow";
 
-export default function Gameweek() {
+export default function Gameweek(props: { team_id: string }) {
   const picksSelectors = picksStore((state) => ({
     setBase: state.setBase,
     setCurrentGameweek: state.setCurrentGameweek,
@@ -41,7 +41,10 @@ export default function Gameweek() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ gameweek: currentGameweek }),
+        body: JSON.stringify({
+          gameweek: currentGameweek,
+          team_id: props.team_id,
+        }),
       });
       const data: FPLGameweekPicksData = await response.json();
 

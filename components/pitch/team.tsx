@@ -26,8 +26,7 @@ export default function Team() {
 
   const { data: session, status } = useSession();
 
-  console.log(session, status);
-  if (status == "authenticated" && session!.hasTeam) {
+  if (status == "authenticated" && !session!.hasTeam) {
     redirect("/landing");
   }
 
@@ -112,7 +111,7 @@ export default function Team() {
                       body: JSON.stringify({
                         id: drafts.id,
                         changes: drafts.changes,
-                        team_id: "a561246c-c291-4111-8457-b0b282a33b19",
+                        team_id: session?.team_id,
                         gameweek: Math.min(
                           ...drafts.changes.map((draft) => draft.gameweek)
                         ),
@@ -138,7 +137,7 @@ export default function Team() {
         </div>
       </nav>
       <div className="flex flex-col flex-grow">
-        <Gameweek />
+        <Gameweek team_id={session?.team_id!} />
       </div>
     </div>
   );

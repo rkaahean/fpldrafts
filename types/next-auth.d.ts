@@ -6,5 +6,6 @@ declare module "next-auth" {
    */
   interface Session {
     hasTeam: boolean;
+    team_id: string;
   }
 }
