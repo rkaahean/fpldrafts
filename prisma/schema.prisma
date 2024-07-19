@@ -16,7 +16,7 @@ datasource db {
 
 model FPLPlayer {
   id                                String             @id @default(uuid())
-  player_id                         Int                // the player_id = element from the JSON
+  player_id                         Int // the player_id = element from the JSON
   season_id                         String
   first_name                        String
   second_name                       String
@@ -43,13 +43,13 @@ model FPLPlayer {
   in_fpl_transfers          FPLGameweekTransfers[]   @relation("in_player")
   out_fpl_transfers         FPLGameweekTransfers[]   @relation("out_player")
 
-    @@unique([player_id, season_id])
+  @@unique([player_id, season_id])
 }
 
 model FPLPlayerTeam {
   id         String @id @default(uuid())
   season_id  String
-  code       Int    // this is the actual team code that likely reamins across seasons
+  code       Int // this is the actual team code that likely reamins across seasons
   team_id    Int // this is the id (1-20). Usually used for sorting
   name       String
   short_name String
@@ -60,13 +60,13 @@ model FPLPlayerTeam {
   away_fixtures FPLFixtures[] @relation("away_team")
   FPLPlayer     FPLPlayer[]
 
-  @@unique([season_id,code])
+  @@unique([season_id, code])
 }
 
 model FPLFixtures {
   id                String  @id @default(uuid())
   season_id         String
-  code              Int 
+  code              Int
   fixture_id        Int
   finished          Boolean
   team_h_id         String
@@ -154,10 +154,13 @@ model FPLTeam {
   id            String @id @default(uuid())
   name          String
   team_id       Int
+  user_id       String
   fpl_season_id String
 
   fpl_gameweek_picks FPLGameweekPicks[]
   fpl_season         FPLSeason          @relation(fields: [fpl_season_id], references: [id])
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model FPLSeason {
@@ -194,17 +197,18 @@ model FPLDraftTransfers {
 
 // Auth
 model User {
-  id            String          @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String          @unique
+  email         String    @unique
   emailVerified DateTime?
   image         String?
+  fpl_teams     FPLTeam[]
   accounts      Account[]
   sessions      Session[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
- 
+
 model Account {
   userId            String
   type              String
@@ -217,29 +221,29 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@id([provider, providerAccountId])
 }
- 
+
 model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
- 
+
 model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@id([identifier, token])
 }
