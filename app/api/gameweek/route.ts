@@ -111,7 +111,7 @@ export async function POST(req: NextRequest) {
   // get gameweek picks data
   let data = await getGameweekPicksData(request.gameweek, team_id);
 
-  console.log("Gameweek data", request.gameweek, data);
+  console.log("Gameweek data", request.gameweek, data, team_id);
 
   let newData = data.map(async (player) => {
     // get transfer in price of player_id

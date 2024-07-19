@@ -112,8 +112,8 @@ export default function Fixtures() {
       <div className="text-sm font-black">Fixtures</div>
       <Table>
         <TableHeader>
-          <TableRow className="grid grid-cols-7 h-6">
-            <TableHead className="col-span-2 text-xs"></TableHead>
+          <TableRow className="grid grid-cols-7 h-6 text-xs">
+            <TableHead className="col-span-2"></TableHead>
             {Array.from({ length: maxGameweek + 1 }, (_, i) => i).map(
               (number) => {
                 return (
