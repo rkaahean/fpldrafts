@@ -8,8 +8,9 @@ import {
 
 export async function POST(req: NextRequest) {
   const request = await req.json();
+  const { draftId, teamId } = request;
 
-  let data = await getDraftTransfers(request.draftId);
+  let data = await getDraftTransfers(draftId, teamId);
   let newData = data.map(async (player) => {
     // if no profit, sell at current price
     return {

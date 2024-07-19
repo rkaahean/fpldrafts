@@ -9,7 +9,8 @@ export const useDraftLoader = () => {
     draftId: string,
     name: string,
     description: string,
-    bank: number
+    bank: number,
+    teamId: string
   ) => {
     const drafts: { data: DraftTransfer[] } = await fetch("/api/drafts/get", {
       method: "POST",
@@ -19,6 +20,7 @@ export const useDraftLoader = () => {
       body: JSON.stringify({
         draftId,
         gameweek,
+        teamId,
       }),
     }).then((res) => res.json());
 

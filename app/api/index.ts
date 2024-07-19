@@ -358,10 +358,13 @@ export async function getAllDrafts() {
   return await prisma.fPLDrafts.findMany();
 }
 
-export async function getDraftTransfers(draftId: string) {
+export async function getDraftTransfers(draftId: string, teamId: string) {
   return await prisma.fPLDraftTransfers.findMany({
     where: {
       fpl_draft_id: draftId,
+      fpl_draft: {
+        fpl_team_id: teamId,
+      },
     },
   });
 }

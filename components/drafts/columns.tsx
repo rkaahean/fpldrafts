@@ -4,6 +4,7 @@ import { revalidateDrafts } from "@/app/actions";
 import { useDraftLoader } from "@/app/hooks";
 import { DownloadIcon, TrashIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
+import { useSession } from "next-auth/react";
 import { Button } from "../ui/button";
 import { Draft } from "./overview";
 
@@ -42,6 +43,8 @@ export const columns: ColumnDef<Draft>[] = [
     cell: ({ row }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { loadDrafts } = useDraftLoader();
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { data: session } = useSession();
       return (
         <div className="flex h-full items-center justify-center w-full">
           <Button
@@ -52,7 +55,8 @@ export const columns: ColumnDef<Draft>[] = [
                 row.original.id,
                 row.original.name,
                 row.original.description || "",
-                row.original.bank
+                row.original.bank,
+                session?.team_id!
               );
             }}
           >

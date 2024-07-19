@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { FPLGameweekPicksData, FPLPlayerData, getPlayerData } from "../api";
 import { DraftState, DraftTransfer, PlayerData } from "./utils";
-import { get } from "lodash";
 
 interface State {
   currentGameweek: number;
@@ -180,7 +179,7 @@ export const picksStore = create<State>()((set, get) => ({
       }
 
       // console.log("Parsing", e_type);
-      let newDrafts: DraftTransfer[] = drafts.changes;
+      let newDraftChanges: DraftTransfer[] = drafts.changes;
       // console.log("Drafts", newDrafts);
       while (
         transfersIn[e_type].length &&
@@ -188,7 +187,7 @@ export const picksStore = create<State>()((set, get) => ({
       ) {
         const in_transfer = transfersIn[e_type].pop()!;
         const out_transfer = transfersOut[e_type].pop()!;
-        newDrafts.push({
+        newDraftChanges.push({
           in: {
             data: in_transfer,
             price: in_transfer.selling_price,
@@ -203,7 +202,8 @@ export const picksStore = create<State>()((set, get) => ({
       // otherwise keep transferring elements
       set({
         drafts: {
-          changes: newDrafts,
+          ...drafts,
+          changes: newDraftChanges,
         },
       });
     }
