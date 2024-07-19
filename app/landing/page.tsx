@@ -32,7 +32,7 @@ export default function SignIn() {
           <div className="flex flex-col w-full gap-1">
             <Label htmlFor="signin">Authenticate</Label>
             <Button
-              onClick={() => signIn("google", { redirectTo: "/dashboard" })}
+              onClick={() => signIn("google", { callbackUrl: "/" })}
               className="bg-foreground hover:bg-foreground h-10"
               variant="ghost"
             >

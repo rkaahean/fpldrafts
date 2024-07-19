@@ -2,6 +2,8 @@
 
 import { picksStore } from "@/app/store";
 import { CubeIcon, ResetIcon, UpdateIcon } from "@radix-ui/react-icons";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 import DraftChanges from "../drafts/changes";
 import DraftSave from "../drafts/save";
 import { Button } from "../ui/button";
@@ -21,6 +23,13 @@ export default function Team() {
 
   const setDrafts = picksStore((state) => state.setDrafts);
   const resetTransfers = picksStore((state) => state.resetTransfers);
+
+  const { data: session, status } = useSession();
+
+  console.log(session, status);
+  if (status == "authenticated" && session!.hasTeam) {
+    redirect("/landing");
+  }
 
   return (
     <div className="w-full min-h-full max-h-screen flex flex-row justify-start gap-1">
