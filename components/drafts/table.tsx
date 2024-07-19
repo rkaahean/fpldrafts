@@ -92,7 +92,7 @@ export function DataTable<TData, TValue>({
       )}
       <div className="rounded-sm border">
         <Table>
-          <TableHeader>
+          <TableHeader className="text-xs">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
