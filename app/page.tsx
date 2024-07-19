@@ -1,6 +1,6 @@
 import PlayerComparison from "@/components/charts/player";
 import Drafts from "@/components/drafts/overview";
-import Fixtures from "@/components/fixtures/overview";
+import Fixtures from "@/components/fixtures/table";
 import Team from "@/components/pitch/team";
 import Selector from "@/components/transfers/server";
 
