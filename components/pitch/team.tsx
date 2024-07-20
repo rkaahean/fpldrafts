@@ -120,7 +120,7 @@ export default function Team() {
                     });
                     toast({
                       title: "Draft updated.",
-                      description: `"${drafts.name} has been updated.`,
+                      description: `${drafts.name} has been updated.`,
                     });
                   }}
                 >
