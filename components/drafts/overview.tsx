@@ -5,7 +5,7 @@ import { columns } from "./columns";
 import { DataTable } from "./table";
 
 const getData = unstable_cache(
-  async () => {
+  async (teamId: string) => {
     const data = await prisma.fPLDrafts.findMany({
       select: {
         id: true,
@@ -14,6 +14,9 @@ const getData = unstable_cache(
         base_gameweek: true,
         FPLDraftTransfers: true,
         bank: true,
+      },
+      where: {
+        fpl_team_id: teamId,
       },
     });
     return data;
@@ -26,8 +29,8 @@ const getData = unstable_cache(
 
 export type Draft = Awaited<ReturnType<typeof getData>>[number];
 
-export default async function Drafts() {
-  const drafts = await getData();
+export default async function Drafts(props: { teamId: string }) {
+  const drafts = await getData(props.teamId);
   return (
     <div className="flex flex-col h-1/3">
       <div className="text-sm font-black">Drafts</div>

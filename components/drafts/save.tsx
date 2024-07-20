@@ -68,6 +68,7 @@ export default function DraftSave(props: { teamId: string }) {
             type="submit"
             className="h-8 w-24 text-xs"
             onClick={async () => {
+              console.log(drafts.changes);
               console.log("Saving draft...", drafts.changes);
               await fetch("/api/drafts/create", {
                 method: "POST",

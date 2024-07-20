@@ -87,12 +87,8 @@ export default function Team() {
             </Tooltip>
           </TooltipProvider>
         </div>
-        <div>
-          <DraftSave teamId={session?.team_id!} />
-        </div>
-        <div>
-          <DraftChanges />
-        </div>
+        <DraftSave teamId={session?.team_id!} />
+        <DraftChanges />
         <div>
           <TooltipProvider>
             <Tooltip>

@@ -7,6 +7,7 @@ export interface DraftState {
 }
 
 export type PlayerData = {
+  id: string;
   player_id: number;
   position: number;
   team_code: number;

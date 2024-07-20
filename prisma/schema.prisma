@@ -42,6 +42,8 @@ model FPLPlayer {
   fpl_player_team           FPLPlayerTeam            @relation(fields: [team_code, season_id], references: [code, season_id])
   in_fpl_transfers          FPLGameweekTransfers[]   @relation("in_player")
   out_fpl_transfers         FPLGameweekTransfers[]   @relation("out_player")
+  draft_transfer_out        FPLDraftTransfers[]      @relation("in_player")
+  draft_transfer_in         FPLDraftTransfers[]      @relation("out_player")
 
   @@unique([player_id, season_id])
 }
@@ -185,12 +187,15 @@ model FPLDrafts {
 model FPLDraftTransfers {
   id            String    @id @default(uuid())
   fpl_draft_id  String
-  player_in_id  Int
-  player_out_id Int
+  player_in_id  String
+  player_out_id String
   gameweek      Int
   in_cost       Int
   out_cost      Int
   fpl_draft     FPLDrafts @relation(fields: [fpl_draft_id], references: [id], onDelete: Cascade)
+
+  in_fpl_player  FPLPlayer @relation("in_player", fields: [player_in_id], references: [id])
+  out_fpl_player FPLPlayer @relation("out_player", fields: [player_out_id], references: [id])
 
   @@unique([gameweek, player_in_id, player_out_id])
 }

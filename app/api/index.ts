@@ -340,8 +340,8 @@ export async function createDraft(request: {
 
   const data = request.changes.map((change) => {
     return {
-      player_in_id: change.in.data.player_id,
-      player_out_id: change.out.data.player_id,
+      player_in_id: change.in.data.id,
+      player_out_id: change.out.data.id,
       gameweek: change.gameweek,
       fpl_draft_id: draft.id,
       in_cost: change.in.price,
@@ -359,12 +359,26 @@ export async function getAllDrafts() {
 }
 
 export async function getDraftTransfers(draftId: string, teamId: string) {
-  return await prisma.fPLDraftTransfers.findMany({
-    where: {
-      fpl_draft_id: draftId,
-      fpl_draft: {
-        fpl_team_id: teamId,
+  return await prisma.fPLDrafts.findUnique({
+    select: {
+      id: true,
+      bank: true,
+      name: true,
+      description: true,
+      base_gameweek: true,
+      FPLDraftTransfers: {
+        select: {
+          gameweek: true,
+          in_cost: true,
+          in_fpl_player: true,
+          out_cost: true,
+          out_fpl_player: true,
+        },
       },
+    },
+    where: {
+      id: draftId,
+      fpl_team_id: teamId,
     },
   });
 }

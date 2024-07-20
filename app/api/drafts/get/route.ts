@@ -2,7 +2,6 @@ import { NextRequest } from "next/server";
 import {
   getDraftTransfers,
   getLastTransferValue,
-  getPlayerData,
   getPlayerValueByGameweek,
 } from "../..";
 
@@ -11,23 +10,15 @@ export async function POST(req: NextRequest) {
   const { draftId, teamId } = request;
 
   let data = await getDraftTransfers(draftId, teamId);
-  let newData = data.map(async (player) => {
+  let newData = data!.FPLDraftTransfers.map(async (player) => {
     // if no profit, sell at current price
     return {
       in: {
-        data: await getPlayerData(
-          player.player_in_id,
-          request.gameweek,
-          "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865"
-        ),
+        data: player.in_fpl_player,
         price: player.in_cost,
       },
       out: {
-        data: await getPlayerData(
-          player.player_out_id,
-          request.gameweek,
-          "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865"
-        ),
+        data: player.out_fpl_player,
         price: player.out_cost,
       },
       gameweek: request.gameweek,
