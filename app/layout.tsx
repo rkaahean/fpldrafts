@@ -1,10 +1,9 @@
 import { Toaster } from "@/components/ui/toaster";
+import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import ReactQueryProvider from "./provider";
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "FPL Planner",
@@ -19,7 +18,7 @@ export default function RootLayout({
   return (
     <ReactQueryProvider>
       <html lang="en" className="dark">
-        <body className={inter.className}>
+        <body className={GeistSans.className}>
           <SessionProvider>
             <main>{children}</main>
           </SessionProvider>
