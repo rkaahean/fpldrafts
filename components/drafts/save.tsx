@@ -3,6 +3,7 @@
 import { revalidateDrafts } from "@/app/actions";
 import { picksStore } from "@/app/store";
 import { DownloadIcon } from "@radix-ui/react-icons";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import {
@@ -22,6 +23,8 @@ export default function DraftSave(props: { teamId: string }) {
   const picks = picksStore((state) => state.picks);
   const [open, setOpen] = useState(false);
   const [draftName, setDraftName] = useState("GW 27 draft");
+  const queryClient = useQueryClient();
+
   const [draftDescription, setDraftDescription] = useState(
     "A draft for chip strategy"
   );
@@ -85,6 +88,9 @@ export default function DraftSave(props: { teamId: string }) {
                   ),
                   bank: picks?.overall.bank,
                 }),
+              });
+              queryClient.invalidateQueries({
+                queryKey: ["draftsget"],
               });
               setOpen(false);
               revalidateDrafts();

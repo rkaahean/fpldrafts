@@ -1,3 +1,4 @@
+import prisma from "@/lib/db";
 import { NextRequest } from "next/server";
 import {
   getDraftTransfers,
@@ -9,23 +10,40 @@ export async function POST(req: NextRequest) {
   const request = await req.json();
   const { draftId, teamId } = request;
 
-  let data = await getDraftTransfers(draftId, teamId);
-  let newData = data!.FPLDraftTransfers.map(async (player) => {
-    // if no profit, sell at current price
-    return {
-      in: {
-        data: player.in_fpl_player,
-        price: player.in_cost,
-      },
-      out: {
-        data: player.out_fpl_player,
-        price: player.out_cost,
-      },
-      gameweek: request.gameweek,
-    };
-  });
+  if (draftId) {
+    let data = await getDraftTransfers(draftId, teamId);
+    let newData = data!.FPLDraftTransfers.map(async (player) => {
+      // if no profit, sell at current price
+      return {
+        in: {
+          data: player.in_fpl_player,
+          price: player.in_cost,
+        },
+        out: {
+          data: player.out_fpl_player,
+          price: player.out_cost,
+        },
+        gameweek: request.gameweek,
+      };
+    });
 
-  return Response.json({ data: await Promise.all(newData) });
+    return Response.json({ data: await Promise.all(newData) });
+  } else {
+    const data = await prisma.fPLDrafts.findMany({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        FPLDraftTransfers: true,
+        bank: true,
+        base_gameweek: true,
+      },
+      where: {
+        fpl_team_id: teamId,
+      },
+    });
+    return Response.json({ data });
+  }
 }
 
 async function computeSellingPrice(player_id: string, gameweek: number) {

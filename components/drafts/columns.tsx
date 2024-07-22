@@ -1,17 +1,23 @@
 "use client";
 
-import { revalidateDrafts } from "@/app/actions";
 import { useDraftLoader } from "@/app/hooks";
+import { FPLDraftTransfers, FPLDrafts } from "@prisma/client";
 import { DownloadIcon, TrashIcon } from "@radix-ui/react-icons";
+import { useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { useSession } from "next-auth/react";
 import { Button } from "../ui/button";
-import { Draft } from "./overview";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.Draft
 
-export const columns: ColumnDef<Draft>[] = [
+// Existing types
+
+export interface DraftsData extends FPLDrafts {
+  FPLDraftTransfers: FPLDraftTransfers[];
+}
+
+export const columns: ColumnDef<DraftsData>[] = [
   {
     accessorKey: "name",
     header: "Name",
@@ -50,7 +56,7 @@ export const columns: ColumnDef<Draft>[] = [
           <Button
             size="table"
             variant="ghost"
-            onClick={async () => {
+            onClick={() => {
               loadDrafts(
                 row.original.id,
                 row.original.name,
@@ -69,6 +75,8 @@ export const columns: ColumnDef<Draft>[] = [
   {
     id: "delete",
     cell: ({ row }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const queryClient = useQueryClient();
       return (
         <div className="flex h-full items-center justify-center w-full">
           <Button
@@ -85,7 +93,9 @@ export const columns: ColumnDef<Draft>[] = [
                   draftId: row.original.id,
                 }),
               }).then((res) => res.json());
-              revalidateDrafts();
+              queryClient.invalidateQueries({
+                queryKey: ["draftsget"],
+              });
             }}
           >
             <TrashIcon className="w-3 h-3" />

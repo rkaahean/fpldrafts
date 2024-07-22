@@ -1,42 +1,37 @@
-import prisma from "@/lib/db";
-import { unstable_cache } from "next/cache";
+"use client";
 
-import { columns } from "./columns";
+import { useQuery } from "@tanstack/react-query";
+import { DraftsData, columns } from "./columns";
 import { DataTable } from "./table";
 
-const getData = unstable_cache(
-  async (teamId: string) => {
-    const data = await prisma.fPLDrafts.findMany({
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        base_gameweek: true,
-        FPLDraftTransfers: true,
-        bank: true,
-      },
-      where: {
-        fpl_team_id: teamId,
-      },
-    });
-    return data;
-  },
-  ["drafts"],
-  {
-    tags: ["drafts"],
+export default function Drafts(props: { teamId: string }) {
+  const { data } = useQuery({
+    queryKey: ["draftsget"],
+    queryFn: async () => {
+      const response: { data: DraftsData[] } = await fetch("/api/drafts/get", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          teamId: props.teamId,
+        }),
+      }).then((res) => res.json());
+
+      return response;
+    },
+  });
+
+  if (!data) {
+    return <div>Loading...</div>;
   }
-);
 
-export type Draft = Awaited<ReturnType<typeof getData>>[number];
-
-export default async function Drafts(props: { teamId: string }) {
-  const drafts = await getData(props.teamId);
   return (
     <div className="flex flex-col h-1/3">
       <div className="text-sm font-black">Drafts</div>
       <DataTable
         columns={columns}
-        data={drafts!}
+        data={data.data!}
         name="drafts"
         isFilterable={false}
       />

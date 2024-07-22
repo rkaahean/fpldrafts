@@ -197,7 +197,7 @@ model FPLDraftTransfers {
   in_fpl_player  FPLPlayer @relation("in_player", fields: [player_in_id], references: [id])
   out_fpl_player FPLPlayer @relation("out_player", fields: [player_out_id], references: [id])
 
-  @@unique([gameweek, player_in_id, player_out_id])
+  @@unique([fpl_draft_id, gameweek, player_in_id, player_out_id])
 }
 
 // Auth
