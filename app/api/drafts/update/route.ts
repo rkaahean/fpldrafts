@@ -17,8 +17,8 @@ export async function POST(req: NextRequest) {
 
   const data = request.changes.map((change: any) => {
     return {
-      player_in_id: change.in.data.player_id,
-      player_out_id: change.out.data.player_id,
+      player_in_id: change.in.data.id,
+      player_out_id: change.out.data.id,
       gameweek: change.gameweek,
       fpl_draft_id: request.id,
       in_cost: change.in.price,

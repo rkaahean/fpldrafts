@@ -98,7 +98,7 @@ export default function Team() {
                   variant="ghost"
                   disabled={!drafts.id}
                   onClick={async () => {
-                    console.log("SAVED DRAFT", drafts, !drafts.id);
+                    console.log(drafts.changes);
                     await fetch("/api/drafts/update", {
                       method: "POST",
                       headers: {
