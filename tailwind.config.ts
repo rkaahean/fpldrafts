@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss";
+import { Config } from "tailwind-merge";
 
 const config = {
   darkMode: ["class"],
@@ -25,6 +25,7 @@ const config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         highlight: "var(--highlight)",
+        bgsecondary: "var(--bgsecondary)",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

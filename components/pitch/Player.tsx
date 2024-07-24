@@ -31,7 +31,9 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
     <motion.div
       className={cn(
         "flex flex-row w-32 h-32 2xl:w-40 2xl:h-40 border rounded-md p-2",
-        player?.player_id == props.data.player_id ? "bg-secondary" : "",
+        player?.player_id == props.data.player_id
+          ? "bg-secondary"
+          : "bg-bgsecondary",
         isSelectedForTransfer ? "bg-destructive" : ""
       )}
       initial={{ opacity: 0, scale: 0.5 }}
@@ -118,7 +120,7 @@ function PlayerFixtureTicker({
         if (Array.isArray(fixture)) {
           return (
             <div
-              className="grid grid-rows-2 text-xs tracking-tighter text-center border-[1px] rounded-sm border-stone-700 bg-highlight pb-1"
+              className="grid grid-rows-2 text-xs tracking-tighter text-center border-[1px] rounded-sm border-stone-700 pb-1"
               key={idx}
             >
               {fixture.map((double_fixture) => {
