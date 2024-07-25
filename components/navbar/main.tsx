@@ -15,7 +15,7 @@ export default function Navbar() {
   }
 
   return (
-    <div className="flex flex-col h-screen py-5 items-center gap-5 bg-bgsecondary">
+    <div className="flex flex-col h-screen py-5 items-center gap-5 pl-2">
       <Avatar>
         <AvatarImage src={session!.user!.image!} />
         <AvatarFallback>CN</AvatarFallback>

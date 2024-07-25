@@ -3,6 +3,7 @@
 import { FPLFixtures, getAllFixtures } from "@/app/api";
 import { picksStore } from "@/app/store";
 import { useQuery } from "@tanstack/react-query";
+import Heading from "../text/heading";
 import {
   Table,
   TableBody,
@@ -109,7 +110,7 @@ export default function Fixtures() {
 
   return (
     <div>
-      <div className="text-sm font-black">Fixtures</div>
+      <Heading text={"Fixtures"} />
       <div className="rounded-sm border">
         <Table>
           <TableHeader>

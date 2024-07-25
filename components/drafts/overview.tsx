@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import Heading from "../text/heading";
 import { DraftsData, columns } from "./columns";
 import { DataTable } from "./table";
 
@@ -31,7 +32,8 @@ export default function Drafts() {
 
   return (
     <div className="flex flex-col h-1/3">
-      <div className="text-sm font-black">Drafts</div>
+      <Heading text={"Drafts"} />
+
       <DataTable
         columns={columns}
         data={data.data!}
