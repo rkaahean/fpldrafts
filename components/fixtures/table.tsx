@@ -110,67 +110,71 @@ export default function Fixtures() {
   return (
     <div>
       <div className="text-sm font-black">Fixtures</div>
-      <Table>
-        <TableHeader>
-          <TableRow className="grid grid-cols-7 h-6 text-xs">
-            <TableHead className="col-span-2"></TableHead>
-            {Array.from({ length: maxGameweek + 1 }, (_, i) => i).map(
-              (number) => {
-                return (
-                  <TableHead key={number}>{`GW${gameweek + number}`}</TableHead>
-                );
-              }
-            )}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {formattedData.map((data, row) => {
-            return (
-              <TableRow className="grid grid-cols-7 h-6 text-xs" key={row}>
-                <td className="col-span-2 w-full flex h-full items-center px-1">
-                  <div>{data.full_name}</div>
-                </td>
-                {gameweeks.map((gw, index) => {
-                  const allFixtures = data.fixtures.filter(
-                    (gameweekFixture) => gameweekFixture.event == gw
+      <div className="rounded-sm border">
+        <Table>
+          <TableHeader>
+            <TableRow className="grid grid-cols-7 h-6 text-xs">
+              <TableHead className="col-span-2"></TableHead>
+              {Array.from({ length: maxGameweek + 1 }, (_, i) => i).map(
+                (number) => {
+                  return (
+                    <TableHead key={number}>{`GW${
+                      gameweek + number
+                    }`}</TableHead>
                   );
-                  if (allFixtures.length == 0) {
-                    return <TableCell key={0}>-</TableCell>;
-                  } else if (allFixtures.length == 1) {
-                    return (
-                      <TableCell key={allFixtures[0].event}>
-                        {allFixtures[0].is_home
-                          ? allFixtures[0].short_name
-                          : allFixtures[0].short_name.toLowerCase()}
-                      </TableCell>
+                }
+              )}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {formattedData.map((data, row) => {
+              return (
+                <TableRow className="grid grid-cols-7 h-6 text-xs" key={row}>
+                  <td className="col-span-2 w-full flex h-full items-center px-1">
+                    <div>{data.full_name}</div>
+                  </td>
+                  {gameweeks.map((gw, index) => {
+                    const allFixtures = data.fixtures.filter(
+                      (gameweekFixture) => gameweekFixture.event == gw
                     );
-                  } else {
-                    return (
-                      <TableCell
-                        key={gw}
-                        className="grid grid-cols-2 gap-2 items-center justify-center text-center"
-                      >
-                        {allFixtures.map((fixture, index) => {
-                          return (
-                            <div
-                              key={gw + index}
-                              className="col-span-1 text-[10px]"
-                            >
-                              {fixture.is_home
-                                ? fixture.short_name
-                                : fixture.short_name.toLowerCase()}
-                            </div>
-                          );
-                        })}
-                      </TableCell>
-                    );
-                  }
-                })}
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+                    if (allFixtures.length == 0) {
+                      return <TableCell key={0}>-</TableCell>;
+                    } else if (allFixtures.length == 1) {
+                      return (
+                        <TableCell key={allFixtures[0].event}>
+                          {allFixtures[0].is_home
+                            ? allFixtures[0].short_name
+                            : allFixtures[0].short_name.toLowerCase()}
+                        </TableCell>
+                      );
+                    } else {
+                      return (
+                        <TableCell
+                          key={gw}
+                          className="grid grid-cols-2 gap-2 items-center justify-center text-center"
+                        >
+                          {allFixtures.map((fixture, index) => {
+                            return (
+                              <div
+                                key={gw + index}
+                                className="col-span-1 text-[10px]"
+                              >
+                                {fixture.is_home
+                                  ? fixture.short_name
+                                  : fixture.short_name.toLowerCase()}
+                              </div>
+                            );
+                          })}
+                        </TableCell>
+                      );
+                    }
+                  })}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
