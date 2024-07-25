@@ -107,6 +107,8 @@ export default function Gameweek(props: { teamId: string }) {
     },
   });
 
+  console.log("Data", data);
+
   if (data && data.data) {
     return (
       <ReactQueryProvider>

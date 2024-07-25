@@ -1,4 +1,3 @@
-import PlayerComparison from "@/components/charts/player";
 import Drafts from "@/components/drafts/overview";
 import Fixtures from "@/components/fixtures/table";
 import Navbar from "@/components/navbar/main";
@@ -14,7 +13,7 @@ export default function Home() {
           <div className="h-3/4 relative overflow-scroll">
             <Selector />
           </div>
-          <PlayerComparison />
+          {/* <PlayerComparison /> */}
         </div>
         <div className="col-span-1 h-full py-2">
           <div className="flex flex-col h-full gap-2">
