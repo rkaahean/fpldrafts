@@ -16,7 +16,7 @@ function getData() {
         await prisma.fPLPlayerTeam.upsert({
           where: {
             season_id_code: {
-              season_id: "133e854c-8817-47a9-888e-d07bd2cd76b6",
+              season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
               code: team.code,
             },
           },
