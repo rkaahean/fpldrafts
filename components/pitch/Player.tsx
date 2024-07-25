@@ -179,6 +179,7 @@ function PlayerDescription({
           alt="Player"
           width={33}
           height={33}
+          priority
           className="w-auto h-auto"
         />
       </div>
