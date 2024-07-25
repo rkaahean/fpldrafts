@@ -55,10 +55,6 @@ export const columns: ColumnDef<TransferColumnData>[] = [
     header: "A",
   },
   {
-    accessorKey: "minutes",
-    header: "Minutes",
-  },
-  {
     id: "player_add",
     cell: ({ row }) => {
       const transfersIn = picksStore((store) => store.transfersIn);

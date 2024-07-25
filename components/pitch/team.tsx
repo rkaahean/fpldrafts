@@ -3,7 +3,7 @@
 import { picksStore } from "@/app/store";
 import { CubeIcon, ResetIcon, UpdateIcon } from "@radix-ui/react-icons";
 import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import DraftChanges from "../drafts/changes";
 import DraftSave from "../drafts/save";
 import { Button } from "../ui/button";
@@ -17,6 +17,7 @@ import { toast } from "../ui/use-toast";
 import Gameweek from "./Gameweek";
 
 export default function Team() {
+  const router = useRouter();
   const drafts = picksStore((state) => state.drafts);
   const gameweek = picksStore((state) => state.currentGameweek);
   const picks = picksStore((state) => state.picks);
@@ -28,10 +29,10 @@ export default function Team() {
 
   if (status === "loading") return;
   if ((status == "authenticated" && !session) || status == "unauthenticated") {
-    redirect("/landing");
+    router.push("/landing");
   } else if (status == "authenticated" && !session!.hasTeam) {
     // use is signed in but no team ID
-    redirect("/link");
+    router.push("/link");
   }
 
   console.log("Team", session);

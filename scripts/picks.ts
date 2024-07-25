@@ -89,34 +89,32 @@ async function parseHistoryData(data: any, gameweek: number, teamId: string) {
   }
 }
 
-try {
+export async function updateFPLTeamData(
+  team_id: string,
+  fpl_team_number: number
+) {
   const data = [];
   const picks: JSONResponsePicks = [];
   const history: JSONResponseHistory[] = [];
 
   for (let i = 1; i <= 38; i++) {
-    const gameweekData = getPicksData(
-      TEAM_ID,
-      i,
-      "53ed0ea1-7298-4069-b609-f8108468c885"
-    );
+    const gameweekData = getPicksData(fpl_team_number, i, team_id);
     data.push(gameweekData);
   }
-  const alldata = Promise.all(data);
 
+  const alldata = Promise.all(data);
   console.log("Getting data...");
-  alldata.then(async (data) => {
+
+  await alldata.then(async (data) => {
     data.map((gw) => {
       if (gw.picks) {
         picks.push(...gw.picks);
       }
-
       if (gw.history) {
         history.push(gw.history);
       }
     });
 
-    // insert all data in one go;
     console.log("Inserting picks...");
     await prisma.fPLGameweekPicks.createMany({
       data: picks,
@@ -131,7 +129,7 @@ try {
   });
 
   console.log("Inserting transfer data...");
-  getTransfersData(TEAM_ID).then(async (data) => {
+  await getTransfersData(fpl_team_number).then(async (data) => {
     const inPlayers = await prisma.fPLPlayer.findMany({
       where: {
         player_id: {
@@ -171,7 +169,7 @@ try {
 
     const formattedData = data.map((transfer: any) => {
       return {
-        fpl_team_id: "53ed0ea1-7298-4069-b609-f8108468c885",
+        fpl_team_id: team_id,
         in_player_id: inPlayerMap.get(transfer.element_in),
         in_player_cost: transfer.element_in_cost,
         out_player_id: outPlayerMap.get(transfer.element_out),
@@ -186,7 +184,12 @@ try {
       skipDuplicates: true,
     });
   });
+}
 
+try {
+  updateFPLTeamData("53ed0ea1-7298-4069-b609-f8108468c885", TEAM_ID).then(() =>
+    console.log("Completed upload...")
+  );
   prisma.$disconnect();
 } catch (e) {
   console.error(e);

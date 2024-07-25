@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,8 +11,16 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 
 export default function Link() {
+  const [teamNumber, setTeamNumber] = useState("44421");
+  const { data: session, status } = useSession();
+  if (status == "loading" || status == "unauthenticated") {
+    return;
+  }
+
   return (
     <main className="flex flex-col h-screen w-screen items-center justify-center">
       <Card className="w-[350px]">
@@ -25,13 +35,29 @@ export default function Link() {
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="teamid">Team Id</Label>
-                <Input id="teamid" placeholder="44421" />
+                <Input
+                  id="teamid"
+                  placeholder="44421"
+                  onChange={(e) => setTeamNumber(e.target.value)}
+                />
               </div>
             </div>
           </form>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button>Submit</Button>
+          <Button
+            onClick={async () => {
+              await fetch("/api/link", {
+                method: "POST",
+                body: JSON.stringify({
+                  teamNumber,
+                  userId: session!.user?.id,
+                }),
+              }).then((res) => res.json());
+            }}
+          >
+            Link Team
+          </Button>
         </CardFooter>
       </Card>
     </main>

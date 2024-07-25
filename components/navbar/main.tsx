@@ -14,10 +14,8 @@ export default function Navbar() {
     redirect("/landing");
   }
 
-  console.log("Navbar", session, status);
-
   return (
-    <div className="flex flex-col w-12 px-0 h-screen py-5 items-center gap-5 bg-bgsecondary">
+    <div className="flex flex-col h-screen py-5 items-center gap-5 bg-bgsecondary">
       <Avatar>
         <AvatarImage src={session!.user!.image!} />
         <AvatarFallback>CN</AvatarFallback>
