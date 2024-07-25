@@ -127,7 +127,7 @@ export default function Fixtures() {
           {formattedData.map((data, row) => {
             return (
               <TableRow className="grid grid-cols-7 h-6 text-xs" key={row}>
-                <td className="col-span-2 w-full flex h-full items-center">
+                <td className="col-span-2 w-full flex h-full items-center px-1">
                   <div>{data.full_name}</div>
                 </td>
                 {gameweeks.map((gw, index) => {
