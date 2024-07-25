@@ -25,9 +25,11 @@ export default function Team() {
   const resetTransfers = picksStore((state) => state.resetTransfers);
 
   const { data: session, status } = useSession();
-
-  if (status == "authenticated" && !session!.hasTeam) {
+  if (status == "authenticated" && !session) {
     redirect("/landing");
+  } else if (status == "authenticated" && !session!.hasTeam) {
+    // use is signed in but no team ID
+    redirect("/link");
   }
 
   return (

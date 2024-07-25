@@ -1,6 +1,5 @@
 "use client";
 
-import { revalidateDrafts } from "@/app/actions";
 import { picksStore } from "@/app/store";
 import { DownloadIcon } from "@radix-ui/react-icons";
 import { useQueryClient } from "@tanstack/react-query";
@@ -93,7 +92,6 @@ export default function DraftSave(props: { teamId: string }) {
                 queryKey: ["draftsget"],
               });
               setOpen(false);
-              revalidateDrafts();
             }}
           >
             Save changes

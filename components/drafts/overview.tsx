@@ -1,10 +1,13 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { DraftsData, columns } from "./columns";
 import { DataTable } from "./table";
 
-export default function Drafts(props: { teamId: string }) {
+export default function Drafts() {
+  const { data: session } = useSession();
+
   const { data } = useQuery({
     queryKey: ["draftsget"],
     queryFn: async () => {
@@ -14,7 +17,7 @@ export default function Drafts(props: { teamId: string }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          teamId: props.teamId,
+          teamId: session!.team_id,
         }),
       }).then((res) => res.json());
 
