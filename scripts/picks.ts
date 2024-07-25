@@ -17,9 +17,17 @@ function getPicksData(
   )
     .then((res) => res.json())
     .then(async (data) => {
+      if (data["detail"] != "Not found.") {
+        return {
+          picks: await parsePicksData(data, gameweek, teamId),
+          history: await parseHistoryData(data, gameweek, teamId),
+        };
+      }
+    })
+    .catch((error) => {
       return {
-        picks: await parsePicksData(data, gameweek, teamId),
-        history: await parseHistoryData(data, gameweek, teamId),
+        picks: undefined,
+        history: undefined,
       };
     });
 }
@@ -103,14 +111,13 @@ export async function updateFPLTeamData(
   }
 
   const alldata = Promise.all(data);
-  console.log("Getting data...");
 
   await alldata.then(async (data) => {
     data.map((gw) => {
-      if (gw.picks) {
+      if (gw && gw.picks) {
         picks.push(...gw.picks);
       }
-      if (gw.history) {
+      if (gw && gw.history) {
         history.push(gw.history);
       }
     });

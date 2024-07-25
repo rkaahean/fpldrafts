@@ -12,9 +12,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Link() {
+  const router = useRouter();
   const [teamNumber, setTeamNumber] = useState("44421");
   const { data: session, status } = useSession();
   if (status == "loading" || status == "unauthenticated") {
@@ -54,6 +56,7 @@ export default function Link() {
                   userId: session!.user?.id,
                 }),
               }).then((res) => res.json());
+              router.push("/");
             }}
           >
             Link Team
