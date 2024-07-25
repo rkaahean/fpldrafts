@@ -7,15 +7,19 @@ type JSONResponseHistory = NonNullable<
 >;
 
 const TEAM_ID = 7894;
-function getPicksData(teamId: number, gameweek: number) {
+function getPicksData(
+  fpl_team_numer: number,
+  gameweek: number,
+  teamId: string
+) {
   return fetch(
-    `https://fantasy.premierleague.com/api/entry/${teamId}/event/${gameweek}/picks/`
+    `https://fantasy.premierleague.com/api/entry/${fpl_team_numer}/event/${gameweek}/picks/`
   )
     .then((res) => res.json())
     .then(async (data) => {
       return {
-        picks: await parsePicksData(data, gameweek),
-        history: await parseHistoryData(data, gameweek),
+        picks: await parsePicksData(data, gameweek, teamId),
+        history: await parseHistoryData(data, gameweek, teamId),
       };
     });
 }
@@ -28,7 +32,8 @@ function getTransfersData(teamId: number) {
 
 async function parsePicksData(
   data: any,
-  gameweek: number
+  gameweek: number,
+  teamId: string
 ): Promise<JSONResponsePicks | undefined> {
   if (data["detail"] !== "Not found.") {
     const picks = data["picks"];
@@ -52,7 +57,7 @@ async function parsePicksData(
     );
 
     const formattedPicks: JSONResponsePicks = picks.map((pick: any) => ({
-      fpl_team_id: "53ed0ea1-7298-4069-b609-f8108468c885",
+      fpl_team_id: teamId,
       fpl_player_id: playerMap.get(pick.element),
       position: pick.position,
       multiplier: pick.multiplier,
@@ -65,12 +70,12 @@ async function parsePicksData(
   }
 }
 
-async function parseHistoryData(data: any, gameweek: number) {
+async function parseHistoryData(data: any, gameweek: number, teamId: string) {
   if (data["detail"] != "Not found.") {
     let history = data["entry_history"];
 
     return {
-      fpl_team_id: "53ed0ea1-7298-4069-b609-f8108468c885",
+      fpl_team_id: teamId,
       gameweek,
       bank: history.bank,
       value: history.value,
@@ -90,7 +95,11 @@ try {
   const history: JSONResponseHistory[] = [];
 
   for (let i = 1; i <= 38; i++) {
-    const gameweekData = getPicksData(TEAM_ID, i);
+    const gameweekData = getPicksData(
+      TEAM_ID,
+      i,
+      "53ed0ea1-7298-4069-b609-f8108468c885"
+    );
     data.push(gameweekData);
   }
   const alldata = Promise.all(data);
