@@ -55,8 +55,10 @@ export default function Link() {
                   teamNumber,
                   userId: session!.user?.id,
                 }),
-              }).then((res) => res.json());
-              router.push("/");
+              })
+                .then((res) => res.json())
+                // .then(() => new Promise((resolve) => setTimeout(resolve, 2000)))
+                .then(() => router.push("/"));
             }}
           >
             Link Team

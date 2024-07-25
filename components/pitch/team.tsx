@@ -4,6 +4,7 @@ import { picksStore } from "@/app/store";
 import { CubeIcon, ResetIcon, UpdateIcon } from "@radix-ui/react-icons";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import DraftChanges from "../drafts/changes";
 import DraftSave from "../drafts/save";
 import { Button } from "../ui/button";
@@ -27,13 +28,17 @@ export default function Team() {
 
   const { data: session, status } = useSession();
 
-  if (status === "loading") return;
-  if ((status == "authenticated" && !session) || status == "unauthenticated") {
-    router.push("/landing");
-  } else if (status == "authenticated" && !session!.hasTeam) {
-    // use is signed in but no team ID
-    router.push("/link");
-  }
+  useEffect(() => {
+    if (status === "loading") return;
+    if (
+      (status === "authenticated" && !session) ||
+      status === "unauthenticated"
+    ) {
+      router.push("/landing");
+    } else if (status === "authenticated" && session && !session.hasTeam) {
+      router.push("/link");
+    }
+  }, [status, session, router]);
 
   console.log("Team", session);
 

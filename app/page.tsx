@@ -5,6 +5,7 @@ import Team from "@/components/pitch/team";
 import Selector from "@/components/transfers/server";
 
 export default function Home() {
+  console.log("Loading home...");
   return (
     <div className="flex flex-row min-h-screen max-h-screen">
       <Navbar />
