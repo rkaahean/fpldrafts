@@ -3,7 +3,9 @@
 import { FPLFixtures, getAllFixtures } from "@/app/api";
 import { picksStore } from "@/app/store";
 import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 import Heading from "../text/heading";
+import { Skeleton } from "../ui/skeleton";
 import {
   Table,
   TableBody,
@@ -102,8 +104,15 @@ export default function Fixtures() {
   for (let i = gameweek; i <= gameweek + maxGameweek; i++) {
     gameweeks.push(i);
   }
-  if (isLoading) {
-    return <Heading text={"Fixtures"} />;
+  if (!data) {
+    return (
+      <div className="flex flex-col w-full h-full">
+        <Heading text={"Fixtures"} />
+        <Skeleton className="w-full h-full rounded-md flex flex-col items-center justify-center">
+          <Loader2 className="mr-2 h-12 w-12 animate-spin" />
+        </Skeleton>
+      </div>
+    );
   }
 
   const formattedData = transformData(data?.data!);

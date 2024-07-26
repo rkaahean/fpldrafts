@@ -30,7 +30,7 @@ export default function Drafts(props: { teamId: string }) {
 
   if (!data) {
     return (
-      <div className="flex flex-col h-1/3 w-full">
+      <div className="flex flex-col h-full w-full">
         <Heading text={"Drafts"} />
         <Skeleton className="w-full h-full rounded-md flex flex-col items-center justify-center">
           <Loader2 className="mr-2 h-12 w-12 animate-spin" />
@@ -40,7 +40,7 @@ export default function Drafts(props: { teamId: string }) {
   }
 
   return (
-    <div className="flex flex-col h-1/3">
+    <div className="flex flex-col h-full">
       <Heading text={"Drafts"} />
       <DataTable
         columns={columns}

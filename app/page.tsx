@@ -28,8 +28,12 @@ export default async function Home() {
         </div>
         <div className="col-span-1 h-full py-2">
           <div className="flex flex-col h-full gap-2">
-            <Drafts teamId={session.team_id} />
-            <Fixtures />
+            <div className="h-1/3">
+              <Drafts teamId={session.team_id} />
+            </div>
+            <div className="h-2/3">
+              <Fixtures />
+            </div>
           </div>
         </div>
         <div className="col-span-2 py-2 pr-2">
