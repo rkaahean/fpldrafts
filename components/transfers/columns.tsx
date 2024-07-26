@@ -2,7 +2,7 @@
 
 import { picksStore } from "@/app/store";
 import { removeTransfer } from "@/app/store/utils";
-import { PlusCircledIcon } from "@radix-ui/react-icons";
+import { PlusIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "../ui/use-toast";
 
@@ -107,7 +107,7 @@ export const columns: ColumnDef<TransferColumnData>[] = [
             }
           }}
         >
-          <PlusCircledIcon className="w-3 h-3" />
+          <PlusIcon className="w-3 h-3 text-green-500 hover:text-white transition-all hover:bg-green-500 rounded-full" />
         </button>
       );
     },
