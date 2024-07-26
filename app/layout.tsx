@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
@@ -23,6 +24,7 @@ export default function RootLayout({
             <main>{children}</main>
           </SessionProvider>
           <Toaster />
+          <SpeedInsights />
         </body>
       </html>
     </ReactQueryProvider>
