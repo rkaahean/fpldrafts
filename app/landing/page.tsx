@@ -25,27 +25,27 @@ export default function SignIn() {
     {
       icon: <SaveIcon />,
       title: "Save Drafts",
-      description: "Store and revisit multiple team selections",
+      description: "Store and revisit multiple team selections.",
     },
     {
       icon: <PoundSterlingIcon />,
       title: "Completely Free",
-      description: "No hidden costs or premium features",
+      description: "No hidden costs or premium features.",
     },
     {
       icon: <UserRoundIcon />,
       title: "Player Comparisons",
-      description: "Compare stats and form of different players",
+      description: "Compare stats and form of different players.",
     },
     {
       icon: <LayoutListIcon />,
       title: "Draft Comparisons",
-      description: "Analyze strengths of different team setups",
+      description: "Analyze strengths of different team setups.",
     },
     {
       icon: <CalendarIcon />,
       title: "Fixture Planning",
-      description: "Plan transfers based on upcoming matches",
+      description: "Plan transfers based on upcoming matches.",
     },
   ];
 
