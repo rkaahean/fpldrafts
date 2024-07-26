@@ -1,14 +1,24 @@
+import { auth } from "@/auth/main";
 import Drafts from "@/components/drafts/overview";
 import Fixtures from "@/components/fixtures/table";
 import Navbar from "@/components/navbar/main";
 import Team from "@/components/pitch/team";
 import Selector from "@/components/transfers/server";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  console.log("Loading home...");
+export default async function Home() {
+  const session = await auth();
+  console.log("Home page", session);
+
+  if (!session) {
+    redirect("/landing");
+  } else if (!session.hasTeam) {
+    redirect("/link");
+  }
+
   return (
     <div className="flex flex-row min-h-screen max-h-screen">
-      <Navbar />
+      <Navbar image={session.user!.image!} />
       <div className="grid grid-cols-4 gap-2">
         <div className="flex flex-col col-span-1 max-h-screen gap-1 pl-1 py-2">
           <div className="h-3/4 relative overflow-scroll">
@@ -18,12 +28,12 @@ export default function Home() {
         </div>
         <div className="col-span-1 h-full py-2">
           <div className="flex flex-col h-full gap-2">
-            <Drafts />
+            <Drafts teamId={session.team_id} />
             <Fixtures />
           </div>
         </div>
         <div className="col-span-2 py-2 pr-2">
-          <Team />
+          <Team teamId={session.team_id} />
         </div>
       </div>
     </div>

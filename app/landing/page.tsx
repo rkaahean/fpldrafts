@@ -2,6 +2,7 @@
 
 import { signIn } from "next-auth/react";
 
+import { auth } from "@/auth/main";
 import { Button } from "@/components/ui/button";
 import {
   Card,

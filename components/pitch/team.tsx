@@ -2,9 +2,7 @@
 
 import { picksStore } from "@/app/store";
 import { CubeIcon, ResetIcon, UpdateIcon } from "@radix-ui/react-icons";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import DraftChanges from "../drafts/changes";
 import DraftSave from "../drafts/save";
 import { Button } from "../ui/button";
@@ -17,7 +15,7 @@ import {
 import { toast } from "../ui/use-toast";
 import Gameweek from "./Gameweek";
 
-export default function Team() {
+export default function Team(props: { teamId: string }) {
   const router = useRouter();
   const drafts = picksStore((state) => state.drafts);
   const gameweek = picksStore((state) => state.currentGameweek);
@@ -25,20 +23,6 @@ export default function Team() {
 
   const setDrafts = picksStore((state) => state.setDrafts);
   const resetTransfers = picksStore((state) => state.resetTransfers);
-
-  const { data: session, status } = useSession();
-
-  useEffect(() => {
-    if (status === "loading") return;
-    if (
-      (status === "authenticated" && !session) ||
-      status === "unauthenticated"
-    ) {
-      router.push("/landing");
-    } else if (status === "authenticated" && session && !session.hasTeam) {
-      router.push("/link");
-    }
-  }, [status, session, router]);
 
   return (
     <div className="w-full min-h-full max-h-screen flex flex-row justify-start gap-1">
@@ -97,7 +81,7 @@ export default function Team() {
             </Tooltip>
           </TooltipProvider>
         </div>
-        <DraftSave teamId={session?.team_id!} />
+        <DraftSave teamId={props.teamId} />
         <DraftChanges />
         <div>
           <TooltipProvider>
@@ -117,7 +101,7 @@ export default function Team() {
                       body: JSON.stringify({
                         id: drafts.id,
                         changes: drafts.changes,
-                        team_id: session?.team_id,
+                        team_id: props.teamId,
                         gameweek: Math.min(
                           ...drafts.changes.map((draft) => draft.gameweek)
                         ),
@@ -143,7 +127,7 @@ export default function Team() {
         </div>
       </nav>
       <div className="flex flex-col flex-grow">
-        <Gameweek teamId={session?.team_id!} />
+        <Gameweek teamId={props.teamId} />
       </div>
     </div>
   );

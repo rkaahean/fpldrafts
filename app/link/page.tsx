@@ -57,7 +57,7 @@ export default function Link() {
                 }),
               })
                 .then((res) => res.json())
-                // .then(() => new Promise((resolve) => setTimeout(resolve, 2000)))
+                .then(() => new Promise((resolve) => setTimeout(resolve, 2000)))
                 .then(() => router.push("/"));
             }}
           >
