@@ -18,7 +18,10 @@ import { useState } from "react";
 export default function Link() {
   const router = useRouter();
   const [teamNumber, setTeamNumber] = useState("44421");
+
   const { data: session, status } = useSession();
+
+  const [loading, setLoading] = useState(false);
   if (status == "loading" || status == "unauthenticated") {
     return;
   }
@@ -29,7 +32,7 @@ export default function Link() {
         <CardHeader>
           <CardTitle>Enter your team id.</CardTitle>
           <CardDescription>
-            Deploy your new project in one-click.
+            Get the number from the Gameweek History page.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -48,6 +51,7 @@ export default function Link() {
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button
+            disabled={loading}
             onClick={async () => {
               await fetch("/api/link", {
                 method: "POST",
