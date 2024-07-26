@@ -101,8 +101,9 @@ export const columns: ColumnDef<TransferColumnData>[] = [
                 selling_price: row.original.now_value,
               });
               toast({
-                title: "Cannot make transfer",
+                title: "Cannot make transfer.",
                 description: reason,
+                variant: "destructive",
               });
             }
           }}

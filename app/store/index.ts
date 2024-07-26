@@ -247,7 +247,7 @@ export const picksStore = create<State>()((set, get) => ({
       // if there are transfers of in type, but no transfers of out type
       if (transfersIn[e_type].length > 0 && transfersOut[e_type].length == 0) {
         isvalid = false;
-        reason = `Please transfer out a player of ${transfersIn[e_type][0].web_name}'s type`;
+        reason = `Transfer out a player of ${transfersIn[e_type][0].web_name}'s type.`;
         break;
       }
 
