@@ -33,19 +33,19 @@ export default function SignIn() {
       description: "No hidden costs or premium features.",
     },
     {
+      icon: <CalendarIcon />,
+      title: "Fixture Planning",
+      description: "Plan transfers based on upcoming matches.",
+    },
+    {
       icon: <UserRoundIcon />,
-      title: "Player Comparisons",
+      title: "(Coming Soon) Player Comparisons",
       description: "Compare stats and form of different players.",
     },
     {
       icon: <LayoutListIcon />,
-      title: "Draft Comparisons",
+      title: "(Coming Soon) Draft Comparisons",
       description: "Analyze strengths of different team setups.",
-    },
-    {
-      icon: <CalendarIcon />,
-      title: "Fixture Planning",
-      description: "Plan transfers based on upcoming matches.",
     },
   ];
 
