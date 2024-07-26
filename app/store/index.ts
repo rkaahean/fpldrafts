@@ -1,3 +1,4 @@
+import { toast } from "@/components/ui/use-toast";
 import { create } from "zustand";
 import { FPLGameweekPicksData, FPLPlayerData, getPlayerData } from "../api";
 import { DraftState, DraftTransfer, PlayerData } from "./utils";
@@ -15,10 +16,7 @@ interface State {
   setSubstituteIn: (player: PlayerData) => void;
   setSubstituteOut: (player: PlayerData) => void;
   setCurrentGameweek: (gameweek: number) => void;
-  makeSubs: () => Promise<{
-    isValid: boolean;
-    reason: string;
-  }>;
+  makeSubs: () => void;
   makeTransfers: () => Promise<{
     isvalid: boolean;
     reason: string;
@@ -107,37 +105,117 @@ export const picksStore = create<State>()((set, get) => ({
     // if both subs are set
     if (!!substitutedIn && !!substitutedOut) {
       // validate that both substituted in and subtituted out are of same type
-      const { isValid, reason } = await fetch("/api/validate/substitute", {
-        method: "POST",
-        body: JSON.stringify({
-          picks: data,
-          substitutedIn: substitutedIn.player_id,
-          substitutedOut: substitutedOut.player_id,
-        }),
-      }).then((res) => res.json());
+      // const { isValid, reason } = await fetch("/api/validate/substitute", {
+      //   method: "POST",
+      //   body: JSON.stringify({
+      //     picks: data,
+      //     substitutedIn: substitutedIn.player_id,
+      //     substitutedOut: substitutedOut.player_id,
+      //   }),
+      // }).then((res) => res.json());
 
-      if (!isValid) {
-        return {
-          isValid,
-          reason,
-        };
-      }
+      // if (!isValid) {
+      //   return {
+      //     isValid,
+      //     reason,
+      //   };
+      // }
+
+      // Rules of transferring
+
+      // 1. A GK can be swapped out only for a GK.
+
+      // 2. A swap of equal element type is always allowed.
+
+      // 3. The below rules are for when element types are different.
+
+      // 3.1 To swap out a DEF, you must have atleast 4 of them (>= 4)
+      // 3.2 To swap out a midfielder, you must have atleast 3 of them (>= 3)
+      // 3.3 To swap out a FWD, you must have atleast 2 of them
+
+      // first, get the number of players in each position until the drafts so far.
 
       let draftTransfers: DraftTransfer[] = [];
-      if (drafts && drafts.changes) {
-        draftTransfers = [...drafts.changes];
-        draftTransfers.push({
-          in: {
-            data: substitutedIn,
-            price: 0,
-          },
-          out: {
-            data: substitutedOut,
-            price: 0,
-          },
-          gameweek,
-        });
+      draftTransfers = [...drafts.changes];
+
+      const numDef = getNumPlayersByType(2, picks!);
+      const numMid = getNumPlayersByType(3, picks!);
+      const numFwd = getNumPlayersByType(4, picks!);
+
+      const [subInType, subOutType] = [
+        substitutedIn.element_type,
+        substitutedOut.element_type,
+      ];
+
+      // Rule 2. A swap of equal element type is always allowed.
+      if (subInType != subOutType) {
+        // Rule 1. A GK can be swapped out only for a GK.
+        if (subInType == 1 || subOutType == 1) {
+          toast({
+            title: "Cannot substitute player.",
+            description:
+              "A goalkeeper can be substituted only for another goalkeeper.",
+            variant: "destructive",
+          });
+          set({
+            substitutedIn: undefined,
+            substitutedOut: undefined,
+          });
+          return;
+        }
+
+        console.log(subOutType, subInType, numFwd);
+        // if subbing out a defender
+        if (subOutType == 2 && numDef == 3) {
+          toast({
+            title: "Cannot substitute player.",
+            description: "Need a minimum of 3 defenders in playing team.",
+            variant: "destructive",
+          });
+          set({
+            substitutedIn: undefined,
+            substitutedOut: undefined,
+          });
+          return;
+        }
+
+        if (subOutType == 3 && numMid == 2) {
+          toast({
+            title: "Cannot substitute player.",
+            description: "Need a minimum of 2 midfielders in playing team.",
+            variant: "destructive",
+          });
+          set({
+            substitutedIn: undefined,
+            substitutedOut: undefined,
+          });
+          return;
+        }
+
+        if (subOutType == 4 && numFwd == 1) {
+          toast({
+            title: "Cannot substitute player.",
+            description: "Need a minimum of 1 forward in playing team.",
+            variant: "destructive",
+          });
+          set({
+            substitutedIn: undefined,
+            substitutedOut: undefined,
+          });
+          return;
+        }
       }
+      draftTransfers.push({
+        in: {
+          data: substitutedIn,
+          price: 0,
+        },
+        out: {
+          data: substitutedOut,
+          price: 0,
+        },
+        gameweek,
+      });
 
       // Update the state with the modified data array
       set({
@@ -151,11 +229,6 @@ export const picksStore = create<State>()((set, get) => ({
         transfersOut: structuredClone(TRANSFER_INIT_VALUE),
       });
     }
-
-    return {
-      isValid: true,
-      reason: "OK",
-    };
   },
   makeTransfers: async () => {
     const {
@@ -293,4 +366,14 @@ export async function swapPlayers(
       bank: data.overall.bank + substitutedOut.price - substitutedIn.price,
     },
   };
+}
+
+function getNumPlayersByType(
+  element_type: number,
+  picks: FPLGameweekPicksData
+): number {
+  return picks?.data.filter(
+    (player) =>
+      player.fpl_player.element_type == element_type && player.position <= 11
+  ).length!;
 }

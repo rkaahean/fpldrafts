@@ -40,8 +40,6 @@ export default function Team() {
     }
   }, [status, session, router]);
 
-  console.log("Team", session);
-
   return (
     <div className="w-full min-h-full max-h-screen flex flex-row justify-start gap-1">
       <nav className="flex flex-col justify-center gap-4">
