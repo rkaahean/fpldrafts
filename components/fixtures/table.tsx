@@ -114,7 +114,7 @@ export default function Fixtures() {
       <div className="rounded-sm border">
         <Table>
           <TableHeader>
-            <TableRow className="grid grid-cols-7 h-6 text-xs">
+            <TableRow className="grid grid-cols-7 h-6">
               <TableHead className="col-span-2"></TableHead>
               {Array.from({ length: maxGameweek + 1 }, (_, i) => i).map(
                 (number) => {
