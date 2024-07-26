@@ -8,7 +8,6 @@ import { redirect } from "next/navigation";
 
 export default async function Home() {
   const session = await auth();
-  console.log("Home page", session);
 
   if (!session) {
     redirect("/landing");

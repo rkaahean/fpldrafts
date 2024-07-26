@@ -33,20 +33,25 @@ export default function Gameweek(props: { teamId: string }) {
 
   const { data } = useQuery({
     queryKey: [currentGameweek, drafts.changes],
+    staleTime: 60 * 60 * 1000,
     placeholderData: keepPreviousData,
     queryFn: async () => {
+      console.log("Going to fetch gameweek data...");
       // first step is to hit the gameweek endpoint and try to fetch data
       const response = await fetch("/api/gameweek", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        cache: "force-cache",
         body: JSON.stringify({
           gameweek: currentGameweek,
           team_id: props.teamId,
         }),
       });
       const data: FPLGameweekPicksData = await response.json();
+
+      console.log("Done fetching data...");
 
       let base: FPLGameweekPicksData;
       if (data.data.length > 0) {
@@ -108,6 +113,10 @@ export default function Gameweek(props: { teamId: string }) {
   });
 
   // console.log("Data", data);
+
+  if (!data) {
+    return "Loading...";
+  }
 
   if (data && data.data) {
     return (
