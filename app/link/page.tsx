@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -51,8 +52,8 @@ export default function Link() {
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button
-            disabled={loading}
             onClick={async () => {
+              setLoading(true);
               await fetch("/api/link", {
                 method: "POST",
                 body: JSON.stringify({
@@ -62,10 +63,18 @@ export default function Link() {
               })
                 .then((res) => res.json())
                 .then(() => new Promise((resolve) => setTimeout(resolve, 2000)))
+                .then(() => setLoading(false))
                 .then(() => router.push("/"));
             }}
           >
-            Link Team
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </>
+            ) : (
+              "Link Team"
+            )}
           </Button>
         </CardFooter>
       </Card>
