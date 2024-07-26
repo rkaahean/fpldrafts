@@ -1,3 +1,5 @@
+export const revalidate = 3600;
+
 import { NextRequest } from "next/server";
 import {
   FPLPlayerData2,
@@ -12,6 +14,7 @@ export async function POST(req: NextRequest) {
   const request = await req.json();
   const { gameweek, team_id } = request;
 
+  console.log("New gameweek request...");
   // special basecase
   if (gameweek == 1) {
     // allison: 310

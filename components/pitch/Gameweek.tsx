@@ -43,7 +43,7 @@ export default function Gameweek(props: { teamId: string }) {
         headers: {
           "Content-Type": "application/json",
         },
-        cache: "force-cache",
+        next: { revalidate: 3600 },
         body: JSON.stringify({
           gameweek: currentGameweek,
           team_id: props.teamId,
