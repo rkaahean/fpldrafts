@@ -103,7 +103,7 @@ export default function Fixtures() {
     gameweeks.push(i);
   }
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Heading text={"Fixtures"} />;
   }
 
   const formattedData = transformData(data?.data!);
