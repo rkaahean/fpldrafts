@@ -1,6 +1,7 @@
 export const revalidate = 3600;
 
-import { NextRequest } from "next/server";
+import prisma from "@/lib/db";
+import { NextRequest, NextResponse } from "next/server";
 import {
   FPLPlayerData2,
   getGameweekOverallData,
@@ -10,11 +11,41 @@ import {
   getPlayerValueByGameweek,
 } from "..";
 
-export async function POST(req: NextRequest) {
-  const request = await req.json();
-  const { gameweek, team_id } = request;
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
 
-  console.log("New gameweek request...");
+  const gameweek = parseInt(searchParams.get("gameweek")!);
+  const jwt = req.headers.get("authorization");
+
+  if (!jwt) {
+    return NextResponse.json(
+      { error: "Authorization header missing" },
+      { status: 401 }
+    );
+  }
+
+  const token = jwt.split(" ")[1];
+  const user_data = await prisma.account.findFirst({
+    select: {
+      user: {
+        select: {
+          fpl_teams: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      },
+    },
+    where: {
+      id_token: token,
+    },
+  });
+
+  const team_id = user_data?.user.fpl_teams[0].id!;
+
+  // get team and user from token
+
   // special basecase
   if (gameweek == 1) {
     // allison: 310
@@ -110,11 +141,9 @@ export async function POST(req: NextRequest) {
   }
 
   // get overall gameweek data
-  const overall = await getGameweekOverallData(request.gameweek);
+  const overall = await getGameweekOverallData(gameweek);
   // get gameweek picks data
-  let data = await getGameweekPicksData(request.gameweek, team_id);
-
-  console.log("Gameweek data", request.gameweek, data, team_id);
+  let data = await getGameweekPicksData(gameweek, team_id);
 
   let newData = data.map(async (player) => {
     // get transfer in price of player_id
@@ -125,7 +154,7 @@ export async function POST(req: NextRequest) {
     // current price
     const currentPrice = await getPlayerValueByGameweek(
       player.fpl_player.id,
-      request.gameweek
+      gameweek
     );
     const diff = currentPrice?.value! - transferInPrice?.in_player_cost!;
     // profit!

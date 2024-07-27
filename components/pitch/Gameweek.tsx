@@ -6,6 +6,8 @@ import { picksStore, swapPlayers } from "@/app/store";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
+import fetchGameweekData from "@/app/api/utils";
+import { useSession } from "next-auth/react";
 import PitchRow, { filterData } from "./PitchRow";
 
 export default function Gameweek(props: { teamId: string }) {
@@ -31,24 +33,19 @@ export default function Gameweek(props: { teamId: string }) {
     transfers,
   } = picksSelectors;
 
+  const { data: session, status } = useSession();
+
   const { data } = useQuery({
-    queryKey: [currentGameweek, drafts.changes],
+    queryKey: [currentGameweek, drafts.changes, status, session?.accessToken],
     staleTime: 60 * 60 * 1000,
     placeholderData: keepPreviousData,
+    enabled: !!session?.accessToken,
     queryFn: async () => {
       console.log("Going to fetch gameweek data...");
-      // first step is to hit the gameweek endpoint and try to fetch data
-      const response = await fetch("/api/gameweek", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        next: { revalidate: 3600 },
-        body: JSON.stringify({
-          gameweek: currentGameweek,
-          team_id: props.teamId,
-        }),
-      });
+      const response = await fetchGameweekData(
+        currentGameweek,
+        session?.accessToken!
+      );
       const data: FPLGameweekPicksData = await response.json();
 
       console.log("Done fetching data...");
@@ -114,11 +111,8 @@ export default function Gameweek(props: { teamId: string }) {
 
   // console.log("Data", data);
 
-  if (!data) {
-    return "Loading...";
-  }
-
-  if (data && data.data) {
+  if (data && data.data && session) {
+    // console.log(session);
     return (
       <ReactQueryProvider>
         <div className="flex flex-col gap-1">
@@ -162,6 +156,8 @@ export default function Gameweek(props: { teamId: string }) {
         </div>
       </ReactQueryProvider>
     );
+  } else {
+    return "Loading...";
   }
 }
 

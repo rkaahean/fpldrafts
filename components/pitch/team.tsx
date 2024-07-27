@@ -2,7 +2,6 @@
 
 import { picksStore } from "@/app/store";
 import { CubeIcon, ResetIcon, UpdateIcon } from "@radix-ui/react-icons";
-import { useRouter } from "next/navigation";
 import DraftChanges from "../drafts/changes";
 import DraftSave from "../drafts/save";
 import { Button } from "../ui/button";
@@ -16,7 +15,6 @@ import { toast } from "../ui/use-toast";
 import Gameweek from "./Gameweek";
 
 export default function Team(props: { teamId: string }) {
-  const router = useRouter();
   const drafts = picksStore((state) => state.drafts);
   const gameweek = picksStore((state) => state.currentGameweek);
   const picks = picksStore((state) => state.picks);
@@ -92,7 +90,6 @@ export default function Team(props: { teamId: string }) {
                   variant="ghost"
                   disabled={!drafts.id}
                   onClick={async () => {
-                    console.log(drafts.changes);
                     await fetch("/api/drafts/update", {
                       method: "POST",
                       headers: {

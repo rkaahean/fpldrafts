@@ -8,13 +8,11 @@ import { redirect } from "next/navigation";
 
 export default async function Home() {
   const session = await auth();
-
   if (!session) {
     redirect("/landing");
   } else if (!session.hasTeam) {
     redirect("/link");
   }
-
   return (
     <div className="flex flex-row min-h-screen max-h-screen">
       <Navbar image={session.user!.image!} />
