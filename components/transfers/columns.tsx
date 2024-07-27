@@ -74,8 +74,9 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
                 // made up
                 position: 1,
                 team_code: row.original.team_code,
-                expected_goal_involvements_per_90: 10,
-                total_points: 100,
+                expected_goal_involvements_per_90:
+                  row.original.expected_goal_involvements_per_90,
+                total_points: row.original.total_points,
                 element_type: row.original.element_type,
                 now_value: row.original.now_value,
                 fpl_gameweek_player_stats:
