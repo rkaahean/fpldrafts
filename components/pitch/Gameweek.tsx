@@ -7,6 +7,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 import fetchGameweekData from "@/app/api/utils";
+import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import PitchRow, { filterData } from "./PitchRow";
 
@@ -75,8 +76,6 @@ export default function Gameweek(props: { teamId: string }) {
 
       // if there's a base, apply relevant draft changes
       let draftData = base;
-      // console.log("Picks", data.data);
-      // console.log("Drafts", draftData);
       if (base.data && base.data.length > 0) {
         // some players are still selected in to transfer
         const remainingTransferInSum = Object.values(transfers).reduce(
@@ -118,10 +117,7 @@ export default function Gameweek(props: { teamId: string }) {
     },
   });
 
-  // console.log("Data", data);
-
   if (data && data.data && session) {
-    // console.log(session);
     return (
       <ReactQueryProvider>
         <div className="flex flex-col gap-1">
@@ -166,7 +162,11 @@ export default function Gameweek(props: { teamId: string }) {
       </ReactQueryProvider>
     );
   } else {
-    return "Loading...";
+    return (
+      <div className="flex flex-col h-full w-full items-center justify-center">
+        <Loader2 className="mr-2 h-12 w-12 animate-spin" />
+      </div>
+    );
   }
 }
 
