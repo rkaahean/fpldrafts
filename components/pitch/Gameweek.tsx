@@ -98,6 +98,8 @@ export default function Gameweek(props: { teamId: string }) {
           draftData = await swapPlayers(draftData, draftChange);
         }
 
+        console.log("FINAL DRAFT Data", draftData, transfers);
+
         // if loading a draft from DB
         if (drafts.id) {
           setPicks({

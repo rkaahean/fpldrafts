@@ -310,18 +310,6 @@ export type FPLPlayerData2 = NonNullable<
   selling_price?: number;
   position?: number;
 };
-export async function getAllPlayerData(season_id: string) {
-  // sort by total_points
-  const players = await prisma.fPLPlayer.findMany({
-    orderBy: {
-      total_points: "desc",
-    },
-    where: {
-      season_id,
-    },
-  });
-  return players;
-}
 
 export async function createDraft(request: {
   name: string;
@@ -373,9 +361,121 @@ export async function getDraftTransfers(draftId: string, teamId: string) {
         select: {
           gameweek: true,
           in_cost: true,
-          in_fpl_player: true,
+          in_fpl_player: {
+            select: {
+              id: true,
+              player_id: true,
+              web_name: true,
+              team_code: true,
+              element_type: true,
+              total_points: true,
+              expected_assists: true,
+              expected_assists_per_90: true,
+              expected_goals: true,
+              expected_goals_per_90: true,
+              expected_goal_involvements: true,
+              expected_goal_involvements_per_90: true,
+              now_value: true,
+              goals_scored: true,
+              assists: true,
+              fpl_player_team: {
+                select: {
+                  short_name: true,
+                  home_fixtures: {
+                    where: {
+                      season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+                    },
+                    select: {
+                      fpl_team_a: {
+                        select: {
+                          short_name: true,
+                        },
+                      },
+                      id: true,
+                      event: true,
+                    },
+                  },
+                  away_fixtures: {
+                    where: {
+                      season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+                    },
+                    select: {
+                      fpl_team_h: {
+                        select: {
+                          short_name: true,
+                        },
+                      },
+                      id: true,
+                      event: true,
+                    },
+                  },
+                },
+              },
+              fpl_gameweek_player_stats: {
+                select: {
+                  value: true,
+                },
+              },
+            },
+          },
           out_cost: true,
-          out_fpl_player: true,
+          out_fpl_player: {
+            select: {
+              id: true,
+              player_id: true,
+              web_name: true,
+              team_code: true,
+              element_type: true,
+              total_points: true,
+              expected_assists: true,
+              expected_assists_per_90: true,
+              expected_goals: true,
+              expected_goals_per_90: true,
+              expected_goal_involvements: true,
+              expected_goal_involvements_per_90: true,
+              now_value: true,
+              goals_scored: true,
+              assists: true,
+              fpl_player_team: {
+                select: {
+                  short_name: true,
+                  home_fixtures: {
+                    where: {
+                      season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+                    },
+                    select: {
+                      fpl_team_a: {
+                        select: {
+                          short_name: true,
+                        },
+                      },
+                      id: true,
+                      event: true,
+                    },
+                  },
+                  away_fixtures: {
+                    where: {
+                      season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+                    },
+                    select: {
+                      fpl_team_h: {
+                        select: {
+                          short_name: true,
+                        },
+                      },
+                      id: true,
+                      event: true,
+                    },
+                  },
+                },
+              },
+              fpl_gameweek_player_stats: {
+                select: {
+                  value: true,
+                },
+              },
+            },
+          },
         },
       },
     },
