@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import prisma from "../../lib/db";
 import { DraftTransfer } from "../store/utils";
 
@@ -73,7 +74,7 @@ export async function getPlayerData(
   return players;
 }
 
-export async function getPlayerDataBySeason(
+export async function getUncachedPlayerDataBySeason(
   season_id: string,
   player_filter: number[]
 ) {
@@ -142,6 +143,15 @@ export async function getPlayerDataBySeason(
   });
   return players;
 }
+
+export const getPlayerDataBySeason = unstable_cache(
+  async (season_id: string, player_filter: number[]) =>
+    getUncachedPlayerDataBySeason(season_id, player_filter),
+  ["fetch-player-data-by-season"],
+  {
+    revalidate: 3600,
+  }
+);
 
 export async function getPlayerStaticData(id: number) {
   return await prisma.fPLPlayer.findFirst({

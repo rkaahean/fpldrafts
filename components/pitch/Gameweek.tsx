@@ -36,10 +36,10 @@ export default function Gameweek(props: { teamId: string }) {
   const { data: session, status } = useSession();
 
   const { data } = useQuery({
-    queryKey: [currentGameweek, drafts.changes, status, session?.accessToken],
-    staleTime: 60 * 60 * 1000,
+    queryKey: [currentGameweek, drafts.changes, session?.accessToken],
     placeholderData: keepPreviousData,
     enabled: !!session?.accessToken,
+    staleTime: 60 * 60 * 1000 * 24,
     queryFn: async () => {
       console.log("Going to fetch gameweek data...");
       const response = await fetchGameweekData(
