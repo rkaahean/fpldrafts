@@ -8,6 +8,6 @@ export default async function fetchGameweekData(
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    cache: "force-cache",
+    cache: "no-cache",
   });
 }

@@ -33,20 +33,29 @@ export default function Gameweek(props: { teamId: string }) {
     transfers,
   } = picksSelectors;
 
-  const { data: session, status } = useSession();
-
-  const { data } = useQuery({
-    queryKey: [currentGameweek, drafts.changes, session?.accessToken],
-    placeholderData: keepPreviousData,
-    enabled: !!session?.accessToken,
-    staleTime: 60 * 60 * 1000 * 24,
+  const { data: session } = useSession();
+  const { data: gameweekData } = useQuery({
+    queryKey: ["gameweekData", currentGameweek, session?.accessToken],
     queryFn: async () => {
       console.log("Going to fetch gameweek data...");
       const response = await fetchGameweekData(
         currentGameweek,
         session?.accessToken!
       );
-      const data: FPLGameweekPicksData = await response.json();
+      return response.json();
+    },
+
+    enabled: !!session?.accessToken,
+    staleTime: 60 * 60 * 1000 * 24,
+  });
+
+  const { data } = useQuery({
+    queryKey: [currentGameweek, drafts.changes, session?.accessToken],
+    placeholderData: keepPreviousData,
+    enabled: !!gameweekData,
+    // staleTime: 60 * 60 * 1000 * 24,
+    queryFn: async () => {
+      const data: FPLGameweekPicksData = gameweekData;
 
       console.log("Done fetching data...");
 
