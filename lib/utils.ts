@@ -34,7 +34,7 @@ export function filterData(
 }
 
 export function FPLPlayerDataToPlayerData(player: FPLPlayerData) {
-  console.log("Evaluating player", player);
+  // console.log("Evaluating player", player);
   const home_fixtures = player.fpl_player.fpl_player_team.home_fixtures;
   const away_fixtures = player.fpl_player.fpl_player_team.away_fixtures;
 

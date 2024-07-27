@@ -359,6 +359,7 @@ export async function swapPlayers(
     newData[outPlayerIndex] = outPlayer;
   }
 
+  console.log(data.overall.bank, substitutedOut.price, substitutedIn.price);
   return {
     data: newData,
     overall: {

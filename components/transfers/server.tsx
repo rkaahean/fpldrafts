@@ -7,7 +7,6 @@ export default async function Selector() {
     "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865"
   );
 
-  console.log(data[0]);
   return (
     <div>
       <Heading text={"Players"} />
