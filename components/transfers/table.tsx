@@ -44,8 +44,8 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({
-    "0": true,
-    "1": true,
+    // "0": true,
+    // "1": true,
   });
 
   const [selectionOrder, setSelectionOrder] = useState<string[]>(["0", "1"]);
@@ -95,7 +95,7 @@ export function DataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    onRowSelectionChange: handleRowSelectionChange,
+    // onRowSelectionChange: handleRowSelectionChange,
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     state: { columnFilters, rowSelection },

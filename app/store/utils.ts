@@ -83,11 +83,13 @@ export function removeTransfer(
       (transfer) => transfer.player_id == data.player_id
     ).length > 0;
 
-  if (isAlreadyTransferred && removeFromBank) {
+  if (isAlreadyTransferred) {
     // since transfer out is being removed, player is being added back
-    removeFromBank(data.selling_price);
+    // removeFromBank(data.selling_price);
     transfers[data.element_type] = transfers[data.element_type].filter(
       (transfer) => transfer.player_id != data.player_id
     );
   }
+
+  return transfers;
 }

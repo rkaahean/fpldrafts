@@ -49,7 +49,11 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
     id: "player_add",
     cell: ({ row }) => {
       const transfersIn = picksStore((store) => store.transfersIn);
+      const setTransferIn = picksStore((store) => store.setTransferIn);
+
       const makeTransfers = picksStore((store) => store.makeTransfers);
+
+      // console.log("TRANSFERS TABLE", transfersIn);
 
       const isSelectedForTransfer =
         transfersIn[row.original.element_type].filter(
@@ -84,7 +88,6 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
                 fpl_player_team: row.original.fpl_player_team,
                 fixtures: formatted.fixtures,
               });
-              console.log("TRANSFERS TABLE", transfersIn);
             }
             // if already selected, remove from state
             else {
@@ -93,15 +96,20 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
               ].filter(
                 (transfer) => transfer.player_id != row.original.player_id
               );
+              setTransferIn(transfersIn);
+              return;
             }
+
             const { isvalid, reason } = await makeTransfers();
             if (!isvalid) {
               // remove the transfer in as it is invalid
-              removeTransfer(transfersIn, {
+              const newTransfers = removeTransfer(transfersIn, {
                 player_id: row.original.player_id,
                 element_type: row.original.element_type,
                 selling_price: row.original.now_value,
               });
+              console.log("NEW", newTransfers);
+              setTransferIn(newTransfers);
               toast({
                 title: "Cannot make transfer.",
                 description: reason,
