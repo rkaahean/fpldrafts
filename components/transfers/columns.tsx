@@ -1,5 +1,6 @@
 "use client";
 
+import { FPLPlayerData2 } from "@/app/api";
 import { picksStore } from "@/app/store";
 import { removeTransfer } from "@/app/store/utils";
 import { PlusIcon } from "@radix-ui/react-icons";
@@ -8,19 +9,8 @@ import { toast } from "../ui/use-toast";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type TransferColumnData = {
-  id: string;
-  player_id: number;
-  web_name: string;
-  total_points: number;
-  expected_goal_involvements_per_90: number;
-  goals_scored: number;
-  assists: number;
-  now_value: number;
-  element_type: number;
-};
 
-export const columns: ColumnDef<TransferColumnData>[] = [
+export const columns: ColumnDef<FPLPlayerData2>[] = [
   {
     accessorKey: "web_name",
     header: "Name",
@@ -77,11 +67,15 @@ export const columns: ColumnDef<TransferColumnData>[] = [
                 web_name: row.original.web_name,
                 // made up
                 position: 1,
-                team_code: 1,
+                team_code: row.original.team_code,
                 expected_goal_involvements_per_90: 10,
                 total_points: 100,
-                element_type: 10,
+                element_type: row.original.element_type,
                 fixtures: [],
+                now_value: row.original.now_value,
+                fpl_gameweek_player_stats:
+                  row.original.fpl_gameweek_player_stats,
+                fpl_player_team: row.original.fpl_player_team,
               });
             }
             // if already selected, remove from state

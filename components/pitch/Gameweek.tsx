@@ -6,10 +6,11 @@ import { picksStore, swapPlayers } from "@/app/store";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
-import fetchGameweekData from "@/app/api/utils";
+import { fetchGameweekData } from "@/app/api/utils";
+import { filterData } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import PitchRow, { filterData } from "./PitchRow";
+import PitchRow from "./PitchRow";
 
 export default function Gameweek(props: { teamId: string }) {
   const picksSelectors = picksStore((state) => ({
@@ -38,7 +39,7 @@ export default function Gameweek(props: { teamId: string }) {
   const { data: gameweekData } = useQuery({
     queryKey: ["gameweekData", currentGameweek, session?.accessToken],
     queryFn: async () => {
-      console.log("Going to fetch gameweek data...");
+      // console.log("Going to fetch gameweek data...");
       const response = await fetchGameweekData(
         currentGameweek,
         session?.accessToken!
@@ -58,7 +59,7 @@ export default function Gameweek(props: { teamId: string }) {
     queryFn: async () => {
       const data: FPLGameweekPicksData = gameweekData;
 
-      console.log("Done fetching data...");
+      // console.log("Done fetching data...");
 
       let base: FPLGameweekPicksData;
       if (data.data.length > 0) {

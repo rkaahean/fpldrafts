@@ -21,6 +21,9 @@ export type PlayerData = {
     event: number;
   }[];
   selling_price: number;
+  now_value: number;
+  fpl_gameweek_player_stats: any;
+  fpl_player_team: any;
 };
 
 export interface DraftTransfer {

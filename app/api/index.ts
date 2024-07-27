@@ -1,4 +1,3 @@
-import { unstable_cache } from "next/cache";
 import prisma from "../../lib/db";
 import { DraftTransfer } from "../store/utils";
 
@@ -74,9 +73,9 @@ export async function getPlayerData(
   return players;
 }
 
-export async function getUncachedPlayerDataBySeason(
+export async function getPlayerDataBySeason(
   season_id: string,
-  player_filter: number[]
+  player_filter?: number[]
 ) {
   // get from prisma
   const players = await prisma.fPLPlayer.findMany({
@@ -95,6 +94,8 @@ export async function getUncachedPlayerDataBySeason(
       expected_goal_involvements: true,
       expected_goal_involvements_per_90: true,
       now_value: true,
+      goals_scored: true,
+      assists: true,
       fpl_player_team: {
         select: {
           short_name: true,
@@ -136,22 +137,14 @@ export async function getUncachedPlayerDataBySeason(
     },
     where: {
       season_id,
-      player_id: {
-        in: player_filter,
-      },
+      ...(player_filter && { player_id: { in: player_filter } }),
+    },
+    orderBy: {
+      total_points: "desc",
     },
   });
   return players;
 }
-
-export const getPlayerDataBySeason = unstable_cache(
-  async (season_id: string, player_filter: number[]) =>
-    getUncachedPlayerDataBySeason(season_id, player_filter),
-  ["fetch-player-data-by-season"],
-  {
-    revalidate: 3600,
-  }
-);
 
 export async function getPlayerStaticData(id: number) {
   return await prisma.fPLPlayer.findFirst({

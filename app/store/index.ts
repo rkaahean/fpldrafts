@@ -1,6 +1,6 @@
 import { toast } from "@/components/ui/use-toast";
 import { create } from "zustand";
-import { FPLGameweekPicksData, FPLPlayerData, getPlayerData } from "../api";
+import { FPLGameweekPicksData, FPLPlayerData } from "../api";
 import { DraftState, DraftTransfer, PlayerData } from "./utils";
 
 interface State {
@@ -317,21 +317,21 @@ export async function swapPlayers(
   let inPlayer: FPLPlayerData;
   if (inPlayerIndex === -1) {
     // Player being bought in is not in team, making a transfer
-    const response: {
-      data: NonNullable<Awaited<ReturnType<typeof getPlayerData>>>;
-    } = await fetch("/api/player", {
-      method: "POST",
-      body: JSON.stringify({
-        id: substitutedIn.data.player_id,
-      }),
-    }).then((res) => res.json());
+
+    console.time("player-load");
+    // const response: {
+    //   data: NonNullable<Awaited<ReturnType<typeof getPlayerData>>>;
+    // } = await fetchPlayerData(substitutedIn.data.player_id).then((res) =>
+    //   res.json()
+    // );
+    console.timeEnd("player-load");
 
     inPlayer = {
-      fpl_player: response.data,
+      fpl_player: substitutedIn.data,
       position: data.data[outPlayerIndex].position,
-      selling_price: response.data.now_value,
+      selling_price: substitutedIn.price,
     };
-    console.log("New player data loading", inPlayer);
+    console.log("Compeleted new player data loading", inPlayer);
   } else {
     // Happens when players being switched up within the team
     inPlayer = {
