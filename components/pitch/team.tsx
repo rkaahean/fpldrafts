@@ -6,7 +6,7 @@ import DraftSave from "../drafts/table/save";
 import DraftUpdate from "../drafts/update";
 import Gameweek from "./Gameweek";
 
-export default function Team(props: { teamId: string }) {
+export default function Team() {
   return (
     <div className="w-full min-h-full max-h-screen flex flex-row justify-start gap-1">
       <nav className="flex flex-col justify-center gap-4">
@@ -15,7 +15,7 @@ export default function Team(props: { teamId: string }) {
         {/* <ResetCurrentGameweek /> */}
         <DraftSave />
         <DraftChanges />
-        <DraftUpdate teamId={props.teamId} />
+        <DraftUpdate />
       </nav>
       <div className="flex flex-col flex-grow">
         <Gameweek />

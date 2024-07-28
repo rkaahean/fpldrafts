@@ -37,7 +37,7 @@ export default async function Home() {
           </div>
         </div>
         <div className="col-span-2 py-2 pr-2">
-          <Team teamId={session.team_id} />
+          <Team />
         </div>
       </div>
     </div>
