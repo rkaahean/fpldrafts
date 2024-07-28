@@ -6,7 +6,7 @@ import { DownloadIcon, TrashIcon } from "@radix-ui/react-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { useSession } from "next-auth/react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.Draft

@@ -2,8 +2,8 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import Heading from "../text/heading";
-import { Skeleton } from "../ui/skeleton";
+import Heading from "../../text/heading";
+import { Skeleton } from "../../ui/skeleton";
 import { DraftsData, columns } from "./columns";
 import { DataTable } from "./table";
 

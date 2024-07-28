@@ -19,9 +19,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
+import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

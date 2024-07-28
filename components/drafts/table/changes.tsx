@@ -1,8 +1,8 @@
 import { picksStore } from "@/app/store";
 import { DraftTransfer } from "@/app/store/utils";
 import { LoopIcon, MinusIcon, PlusIcon } from "@radix-ui/react-icons";
-import { Button } from "../ui/button";
-import { Card, CardHeader, CardTitle } from "../ui/card";
+import { Button } from "../../ui/button";
+import { Card, CardHeader, CardTitle } from "../../ui/card";
 import {
   Sheet,
   SheetContent,
@@ -10,7 +10,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "../ui/sheet";
+} from "../../ui/sheet";
 
 export default function DraftChanges() {
   const drafts = picksStore((store) => store.drafts);

@@ -105,23 +105,6 @@ export const picksStore = create<State>()((set, get) => ({
     const data = picks?.data;
     // if both subs are set
     if (!!substitutedIn && !!substitutedOut) {
-      // validate that both substituted in and subtituted out are of same type
-      // const { isValid, reason } = await fetch("/api/validate/substitute", {
-      //   method: "POST",
-      //   body: JSON.stringify({
-      //     picks: data,
-      //     substitutedIn: substitutedIn.player_id,
-      //     substitutedOut: substitutedOut.player_id,
-      //   }),
-      // }).then((res) => res.json());
-
-      // if (!isValid) {
-      //   return {
-      //     isValid,
-      //     reason,
-      //   };
-      // }
-
       // Rules of transferring
 
       // 1. A GK can be swapped out only for a GK.
