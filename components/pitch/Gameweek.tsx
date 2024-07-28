@@ -53,7 +53,7 @@ export default function Gameweek() {
   });
 
   const { data } = useQuery({
-    queryKey: [currentGameweek, drafts.changes, session?.accessToken],
+    queryKey: [currentGameweek, drafts.changes],
     placeholderData: keepPreviousData,
     enabled: !!gameweekData,
     // staleTime: 60 * 60 * 1000 * 24,
