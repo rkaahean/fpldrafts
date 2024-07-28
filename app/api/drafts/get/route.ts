@@ -1,3 +1,5 @@
+export const runtime = "edge";
+
 import prisma from "@/lib/db";
 import { jwtDecode } from "jwt-decode";
 import { NextRequest, NextResponse } from "next/server";
