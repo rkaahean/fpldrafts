@@ -90,7 +90,10 @@ export default function SignIn() {
               <div className="flex flex-col w-full gap-1">
                 <Label htmlFor="signin">Authenticate</Label>
                 <Button
-                  onClick={() => signIn("google", { callbackUrl: "/" })}
+                  onClick={async () => {
+                    await signIn("google", { callbackUrl: "/" });
+                    // router.push("/");
+                  }}
                   className="bg-foreground hover:bg-foreground h-10"
                   variant="ghost"
                 >

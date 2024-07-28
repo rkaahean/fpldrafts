@@ -59,7 +59,6 @@ export async function GET(req: NextRequest) {
         fpl_team_id: teamId,
       },
     });
-    console.log("DRAFTS", data);
     return Response.json({ data });
   }
 }

@@ -1,3 +1,4 @@
+import { auth } from "@/auth/main";
 import { jwtDecode } from "jwt-decode";
 import { NextRequest, NextResponse } from "next/server";
 import process from "process";
@@ -13,7 +14,7 @@ import {
 
 const secret = process.env.NEXTAUTH_SECRET!;
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export const GET = auth(async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
 
   const gameweek = parseInt(searchParams.get("gameweek")!);
@@ -164,4 +165,4 @@ export async function GET(req: NextRequest, res: NextResponse) {
     data: await Promise.all(newData),
     overall,
   });
-}
+});
