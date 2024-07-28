@@ -1,13 +1,29 @@
 import prisma from "@/lib/db";
-import { NextRequest } from "next/server";
+import { jwtDecode } from "jwt-decode";
+import { NextRequest, NextResponse } from "next/server";
+import { getUserTeamFromEmail } from "../..";
 
 export async function POST(req: NextRequest) {
   const request = await req.json();
+
+  const jwt = req.headers.get("authorization");
+
+  if (!jwt) {
+    return NextResponse.json(
+      { error: "Authorization header missing" },
+      { status: 401 }
+    );
+  }
+  const token = jwt.split(" ")[1];
+  const decoded = jwtDecode<{ email: string }>(token);
+
+  const { userId, teamId } = await getUserTeamFromEmail(decoded.email);
 
   // update main drafts
   await prisma.fPLDrafts.update({
     where: {
       id: request.id,
+      fpl_team_id: teamId,
     },
     data: {
       bank: request.bank,

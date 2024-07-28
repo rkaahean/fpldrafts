@@ -13,7 +13,7 @@ export default function Team(props: { teamId: string }) {
         <RemoveAll />
         {/* <ResetAll /> */}
         {/* <ResetCurrentGameweek /> */}
-        <DraftSave teamId={props.teamId} />
+        <DraftSave />
         <DraftChanges />
         <DraftUpdate teamId={props.teamId} />
       </nav>

@@ -10,7 +10,7 @@ import {
 } from "../ui/tooltip";
 import { toast } from "../ui/use-toast";
 
-export default function DraftUpdate(props: { teamId: string }) {
+export default function DraftUpdate() {
   const drafts = picksStore((state) => state.drafts);
   const gameweek = picksStore((state) => state.currentGameweek);
   const picks = picksStore((state) => state.picks);
@@ -33,7 +33,6 @@ export default function DraftUpdate(props: { teamId: string }) {
                   body: JSON.stringify({
                     id: drafts.id,
                     changes: drafts.changes,
-                    team_id: props.teamId,
                     gameweek: Math.min(
                       ...drafts.changes.map((draft) => draft.gameweek)
                     ),
