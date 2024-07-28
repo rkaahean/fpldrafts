@@ -30,7 +30,12 @@ export default function DraftSave(props: { teamId: string }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="xs" title="Save Draft">
+        <Button
+          variant="ghost"
+          size="xs"
+          title="Save Draft"
+          disabled={drafts.changes.length == 0}
+        >
           <DownloadIcon />
         </Button>
       </DialogTrigger>
