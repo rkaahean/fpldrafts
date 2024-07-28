@@ -1,6 +1,31 @@
 import prisma from "../../lib/db";
 import { DraftTransfer } from "../store/utils";
 
+export async function getUserTeamFromEmail(email: string) {
+  const user_data = await prisma.user.findFirst({
+    select: {
+      id: true,
+      fpl_teams: {
+        select: {
+          id: true,
+        },
+        where: {
+          fpl_season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+        },
+      },
+    },
+    where: {
+      email,
+    },
+  })!;
+  const teamId = user_data!.fpl_teams[0].id!;
+
+  return {
+    userId: user_data?.id,
+    teamId,
+  };
+}
+
 export async function getPlayerData(
   id: number,
   gameweek: number = 1,
@@ -313,7 +338,7 @@ export type FPLPlayerData2 = NonNullable<
 
 export async function createDraft(request: {
   name: string;
-  team_id: string;
+  teamId: string;
   gameweek: number;
   description: string;
   bank: number;
@@ -322,7 +347,7 @@ export async function createDraft(request: {
   const draft = await prisma.fPLDrafts.create({
     data: {
       name: request.name,
-      fpl_team_id: request.team_id,
+      fpl_team_id: request.teamId,
       base_gameweek: request.gameweek,
       description: request.description,
       bank: request.bank,
@@ -532,6 +557,7 @@ export async function getAllFixtures(
 }
 
 export type FPLFixtures = Awaited<ReturnType<typeof getAllFixtures>>[number];
+
 export async function getLatestGameweek() {
   return prisma.fPLGameweekPicks.aggregate({
     _max: {

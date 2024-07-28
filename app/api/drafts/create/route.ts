@@ -1,9 +1,22 @@
-import { NextRequest } from "next/server";
-import { createDraft } from "../..";
+import { jwtDecode } from "jwt-decode";
+import { NextRequest, NextResponse } from "next/server";
+import { createDraft, getUserTeamFromEmail } from "../..";
 
 export async function POST(req: NextRequest) {
   const request = await req.json();
-  const data = await createDraft(request);
+  const jwt = req.headers.get("authorization");
+
+  if (!jwt) {
+    return NextResponse.json(
+      { error: "Authorization header missing" },
+      { status: 401 }
+    );
+  }
+  const token = jwt.split(" ")[1];
+  const decoded = jwtDecode<{ email: string }>(token);
+
+  const { userId, teamId } = await getUserTeamFromEmail(decoded.email);
+  const data = await createDraft({ ...request, teamId });
 
   return Response.json({ data });
 }

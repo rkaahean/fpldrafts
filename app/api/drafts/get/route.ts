@@ -5,12 +5,13 @@ import {
   getDraftTransfers,
   getLastTransferValue,
   getPlayerValueByGameweek,
+  getUserTeamFromEmail,
 } from "../..";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
 
-  const draftId = searchParams.get("draftId")!;
+  const draftId = searchParams.get("id")!;
   const jwt = req.headers.get("authorization");
 
   if (!jwt) {
@@ -23,27 +24,12 @@ export async function GET(req: NextRequest) {
   const token = jwt.split(" ")[1];
   const decoded = jwtDecode<{ email: string }>(token);
 
-  const user_data = await prisma.user.findFirst({
-    select: {
-      fpl_teams: {
-        select: {
-          id: true,
-        },
-        where: {
-          fpl_season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
-        },
-      },
-    },
-    where: {
-      email: decoded.email,
-    },
-  })!;
-  const teamId = user_data!.fpl_teams[0].id!;
+  const { teamId } = await getUserTeamFromEmail(decoded.email);
 
   if (draftId) {
     const gameweek = parseInt(searchParams.get("gameweek")!);
     let data = await getDraftTransfers(draftId, teamId);
-    let newData = data!.FPLDraftTransfers.map(async (player) => {
+    let newData = data!.FPLDraftTransfers.map((player) => {
       // if no profit, sell at current price
       return {
         in: {
@@ -58,7 +44,7 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    return Response.json({ data: await Promise.all(newData) });
+    return Response.json({ data: newData });
   } else {
     const data = await prisma.fPLDrafts.findMany({
       select: {
@@ -73,6 +59,7 @@ export async function GET(req: NextRequest) {
         fpl_team_id: teamId,
       },
     });
+    console.log("DRAFTS", data);
     return Response.json({ data });
   }
 }

@@ -3,6 +3,7 @@
 import { picksStore } from "@/app/store";
 import { DownloadIcon } from "@radix-ui/react-icons";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "../../ui/button";
 import {
@@ -17,7 +18,7 @@ import {
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 
-export default function DraftSave(props: { teamId: string }) {
+export default function DraftSave() {
   const drafts = picksStore((state) => state.drafts);
   const picks = picksStore((state) => state.picks);
   const [open, setOpen] = useState(false);
@@ -27,6 +28,8 @@ export default function DraftSave(props: { teamId: string }) {
   const [draftDescription, setDraftDescription] = useState(
     "A draft for chip strategy"
   );
+
+  const { data: session } = useSession();
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -81,11 +84,11 @@ export default function DraftSave(props: { teamId: string }) {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
+                  Authorization: `Bearer ${session?.accessToken}`,
                 },
                 body: JSON.stringify({
                   changes: drafts.changes,
                   name: draftName,
-                  team_id: props.teamId,
                   description: draftDescription,
                   gameweek: Math.min(
                     ...drafts.changes.map((draft) => draft.gameweek)

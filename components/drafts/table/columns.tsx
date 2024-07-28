@@ -1,6 +1,7 @@
 "use client";
 
-import { useDraftLoader } from "@/app/hooks";
+import { picksStore } from "@/app/store";
+import { DraftTransfer } from "@/app/store/utils";
 import { FPLDraftTransfers, FPLDrafts } from "@prisma/client";
 import { DownloadIcon, TrashIcon } from "@radix-ui/react-icons";
 import { useQueryClient } from "@tanstack/react-query";
@@ -48,22 +49,31 @@ export const columns: ColumnDef<DraftsData>[] = [
     id: "actions",
     cell: ({ row }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { loadDrafts } = useDraftLoader();
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       const { data: session } = useSession();
+      const setDrafts = picksStore((state) => state.setDrafts);
       return (
         <div className="flex h-full items-center justify-center w-full">
           <Button
             size="table"
             variant="ghost"
-            onClick={() => {
-              loadDrafts(
-                row.original.id,
-                row.original.name,
-                row.original.description || "",
-                row.original.bank,
-                session?.team_id!
-              );
+            onClick={async () => {
+              const drafts: { data: DraftTransfer[] } = await fetch(
+                `/api/drafts/get?id=${row.original.id}`,
+                {
+                  method: "GET",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${session?.accessToken}`,
+                  },
+                }
+              ).then((res) => res.json());
+              setDrafts({
+                id: row.original.id,
+                name: row.original.name,
+                description: row.original.description || "",
+                changes: drafts.data,
+                bank: row.original.bank,
+              });
             }}
           >
             <DownloadIcon className="w-3 h-3" />

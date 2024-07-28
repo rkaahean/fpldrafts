@@ -1,6 +1,3 @@
-export const revalidate = 3600;
-
-import prisma from "@/lib/db";
 import { jwtDecode } from "jwt-decode";
 import { NextRequest, NextResponse } from "next/server";
 import process from "process";
@@ -11,6 +8,7 @@ import {
   getLastTransferValue,
   getPlayerDataBySeason,
   getPlayerValueByGameweek,
+  getUserTeamFromEmail,
 } from "..";
 
 const secret = process.env.NEXTAUTH_SECRET!;
@@ -19,35 +17,19 @@ export async function GET(req: NextRequest, res: NextResponse) {
   const { searchParams } = new URL(req.url);
 
   const gameweek = parseInt(searchParams.get("gameweek")!);
-  const jwt = req.headers.get("authorization");
 
+  // decode token from header
+  const jwt = req.headers.get("authorization");
   if (!jwt) {
     return NextResponse.json(
       { error: "Authorization header missing" },
       { status: 401 }
     );
   }
-
   const token = jwt.split(" ")[1];
   const decoded = jwtDecode<{ email: string }>(token);
 
-  const user_data = await prisma.user.findFirst({
-    select: {
-      fpl_teams: {
-        select: {
-          id: true,
-        },
-        where: {
-          fpl_season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
-        },
-      },
-    },
-    where: {
-      email: decoded.email,
-    },
-  })!;
-
-  const team_id = user_data!.fpl_teams[0].id!;
+  const { teamId } = await getUserTeamFromEmail(decoded.email);
 
   // get team and user from token
 
@@ -148,12 +130,12 @@ export async function GET(req: NextRequest, res: NextResponse) {
   // get overall gameweek data
   const overall = await getGameweekOverallData(gameweek);
   // get gameweek picks data
-  let data = await getGameweekPicksData(gameweek, team_id);
+  let data = await getGameweekPicksData(gameweek, teamId);
 
   let newData = data.map(async (player) => {
     // get transfer in price of player_id
     const transferInPrice = await getLastTransferValue(
-      team_id,
+      teamId,
       player.fpl_player.id
     );
     // current price

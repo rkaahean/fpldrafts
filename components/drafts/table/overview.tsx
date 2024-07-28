@@ -20,7 +20,7 @@ export default function Drafts() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer: ${session?.accessToken}`,
+          Authorization: `Bearer ${session?.accessToken}`,
         },
       }).then((res) => res.json());
 
