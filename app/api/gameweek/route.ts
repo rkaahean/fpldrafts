@@ -1,5 +1,3 @@
-export const runtime = "edge";
-
 import { auth } from "@/auth/main";
 import { jwtDecode } from "jwt-decode";
 import { NextRequest, NextResponse } from "next/server";
