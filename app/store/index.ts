@@ -306,14 +306,6 @@ export async function swapPlayers(
   if (inPlayerIndex === -1) {
     // Player being bought in is not in team, making a transfer
 
-    console.time("player-load");
-    // const response: {
-    //   data: NonNullable<Awaited<ReturnType<typeof getPlayerData>>>;
-    // } = await fetchPlayerData(substitutedIn.data.player_id).then((res) =>
-    //   res.json()
-    // );
-    console.timeEnd("player-load");
-
     inPlayer = {
       fpl_player: substitutedIn.data,
       position: data.data[outPlayerIndex].position,

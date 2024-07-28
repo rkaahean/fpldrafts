@@ -171,23 +171,6 @@ export async function getPlayerDataBySeason(
   return players;
 }
 
-export async function getPlayerStaticData(id: number) {
-  return await prisma.fPLPlayer.findFirst({
-    select: {
-      element_type: true,
-      fpl_player_team: {
-        select: {
-          code: true,
-          name: true,
-        },
-      },
-    },
-    where: {
-      player_id: id,
-    },
-  });
-}
-
 export async function getGameweekData(gameweek: number) {
   const picks = await prisma.fPLGameweekPicks.findMany({
     where: {
@@ -368,10 +351,6 @@ export async function createDraft(request: {
   await prisma.fPLDraftTransfers.createMany({
     data,
   });
-}
-
-export async function getAllDrafts() {
-  return await prisma.fPLDrafts.findMany();
 }
 
 export async function getDraftTransfers(draftId: string, teamId: string) {

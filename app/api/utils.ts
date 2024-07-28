@@ -7,9 +7,3 @@ export async function fetchGameweekData(gameweek: number, token: string) {
     },
   });
 }
-
-export async function fetchPlayerData(player_id: number) {
-  return await fetch(`/api/player?id=${player_id}`, {
-    method: "GET",
-  });
-}
