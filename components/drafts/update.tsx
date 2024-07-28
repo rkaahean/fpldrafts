@@ -1,6 +1,7 @@
 import { UpdateIcon } from "@radix-ui/react-icons";
 
 import { picksStore } from "@/app/store";
+import { useSession } from "next-auth/react";
 import { Button } from "../ui/button";
 import {
   Tooltip,
@@ -12,8 +13,9 @@ import { toast } from "../ui/use-toast";
 
 export default function DraftUpdate() {
   const drafts = picksStore((state) => state.drafts);
-  const gameweek = picksStore((state) => state.currentGameweek);
   const picks = picksStore((state) => state.picks);
+
+  const { data: session } = useSession();
 
   return (
     <div>
@@ -29,6 +31,7 @@ export default function DraftUpdate() {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${session?.accessToken}`,
                   },
                   body: JSON.stringify({
                     id: drafts.id,

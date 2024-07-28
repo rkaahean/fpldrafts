@@ -27,7 +27,6 @@ export async function GET(req: NextRequest) {
   const { teamId } = await getUserTeamFromEmail(decoded.email);
 
   if (draftId) {
-    const gameweek = parseInt(searchParams.get("gameweek")!);
     let data = await getDraftTransfers(draftId, teamId);
     let newData = data!.FPLDraftTransfers.map((player) => {
       // if no profit, sell at current price
@@ -40,7 +39,7 @@ export async function GET(req: NextRequest) {
           data: player.out_fpl_player,
           price: player.out_cost,
         },
-        gameweek,
+        gameweek: player.gameweek,
       };
     });
 
