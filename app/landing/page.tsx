@@ -94,7 +94,6 @@ export default function SignIn() {
                     await signIn("google", {
                       callbackUrl: `/`,
                     });
-                    // router.push("/");
                   }}
                   className="bg-foreground hover:bg-foreground h-10"
                   variant="ghost"
