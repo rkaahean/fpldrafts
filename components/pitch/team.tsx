@@ -1,7 +1,6 @@
 "use client";
 
 import { RemoveAll } from "../drafts/remove";
-import { ResetAll, ResetCurrentGameweek } from "../drafts/reset";
 import DraftChanges from "../drafts/table/changes";
 import DraftSave from "../drafts/table/save";
 import DraftUpdate from "../drafts/update";
@@ -12,8 +11,8 @@ export default function Team(props: { teamId: string }) {
     <div className="w-full min-h-full max-h-screen flex flex-row justify-start gap-1">
       <nav className="flex flex-col justify-center gap-4">
         <RemoveAll />
-        <ResetAll />
-        <ResetCurrentGameweek />
+        {/* <ResetAll /> */}
+        {/* <ResetCurrentGameweek /> */}
         <DraftSave teamId={props.teamId} />
         <DraftChanges />
         <DraftUpdate teamId={props.teamId} />
