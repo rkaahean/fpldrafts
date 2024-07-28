@@ -154,6 +154,9 @@ export function DataTable<TData, TValue>({
           >
             Previous
           </Button>
+          <div className="text-xs">{`${
+            table.getState().pagination.pageIndex + 1
+          }  / ${table.getPageCount()}`}</div>
           <Button
             variant="outline"
             size="xs"
