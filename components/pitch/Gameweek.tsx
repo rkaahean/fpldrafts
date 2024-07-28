@@ -39,8 +39,9 @@ export default function Gameweek() {
 
   const { data: gameweekData } = useQuery({
     queryKey: ["gameweekData", currentGameweek, session?.accessToken],
+    placeholderData: keepPreviousData,
     queryFn: async () => {
-      // console.log("Going to fetch gameweek data...");
+      console.log("Going to fetch gameweek data...");
       const response = await fetchGameweekData(
         currentGameweek,
         session?.accessToken!
@@ -60,7 +61,7 @@ export default function Gameweek() {
     queryFn: async () => {
       const data: FPLGameweekPicksData = gameweekData;
 
-      // console.log("Done fetching data...");
+      console.log("Setting gameweek state...");
 
       let base: FPLGameweekPicksData;
       if (data.data.length > 0) {
@@ -96,13 +97,6 @@ export default function Gameweek() {
           // swap players in the team
           draftData = await swapPlayers(draftData, draftChange);
         }
-
-        console.log(
-          "FINAL DRAFT Data",
-          draftData,
-          transfers,
-          remainingTransferOutSum
-        );
 
         // if loading a draft from DB
         if (drafts.id) {

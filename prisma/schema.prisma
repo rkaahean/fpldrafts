@@ -46,6 +46,8 @@ model FPLPlayer {
   draft_transfer_in         FPLDraftTransfers[]      @relation("out_player")
 
   @@unique([player_id, season_id])
+  @@index([season_id])
+  @@index([team, season_id])
 }
 
 model FPLPlayerTeam {
@@ -63,6 +65,7 @@ model FPLPlayerTeam {
   FPLPlayer     FPLPlayer[]
 
   @@unique([season_id, code])
+  @@index([season_id])
 }
 
 model FPLFixtures {
@@ -84,6 +87,10 @@ model FPLFixtures {
   fpl_team_a FPLPlayerTeam @relation("away_team", fields: [team_a_id], references: [id])
 
   @@unique([season_id, code])
+  @@index([season_id])
+  @@index([team_h_id])
+  @@index([team_a_score])
+
 }
 
 model FPLGameweekOverallStats {
