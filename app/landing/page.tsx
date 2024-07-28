@@ -91,7 +91,9 @@ export default function SignIn() {
                 <Label htmlFor="signin">Authenticate</Label>
                 <Button
                   onClick={async () => {
-                    await signIn("google", { callbackUrl: "/" });
+                    await signIn("google", {
+                      callbackUrl: `/`,
+                    });
                     // router.push("/");
                   }}
                   className="bg-foreground hover:bg-foreground h-10"

@@ -86,8 +86,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         accessToken: jwtToken?.id_token!,
       };
     },
-    redirect() {
-      return "/landing";
-    },
   },
 });

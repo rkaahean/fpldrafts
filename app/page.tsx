@@ -9,7 +9,7 @@ import { redirect } from "next/navigation";
 export default async function Home() {
   const session = await auth();
 
-  // console.log("HOME PAGE", session);
+  console.log("HOME PAGE", session);
   // if there's no session, or there's no access token
   if (!session || (session && !session.accessToken)) {
     redirect("/landing");
