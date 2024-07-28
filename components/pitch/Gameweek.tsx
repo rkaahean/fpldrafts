@@ -79,7 +79,7 @@ export default function Gameweek(props: { teamId: string }) {
       let draftData = base;
       if (base.data && base.data.length > 0) {
         // some players are still selected in to transfer
-        const remainingTransferInSum = Object.values(transfers).reduce(
+        const remainingTransferOutSum = Object.values(transfers).reduce(
           (total, array) => {
             return (
               total +
@@ -91,14 +91,17 @@ export default function Gameweek(props: { teamId: string }) {
           0
         );
 
-        draftData.overall.bank =
-          draftData.overall.bank + remainingTransferInSum;
         for (let draftChange of gameweekDraft) {
           // swap players in the team
           draftData = await swapPlayers(draftData, draftChange);
         }
 
-        console.log("FINAL DRAFT Data", draftData, transfers);
+        console.log(
+          "FINAL DRAFT Data",
+          draftData,
+          transfers,
+          remainingTransferOutSum
+        );
 
         // if loading a draft from DB
         if (drafts.id) {
@@ -106,12 +109,21 @@ export default function Gameweek(props: { teamId: string }) {
             data: draftData.data,
             overall: {
               ...draftData.overall,
-              bank: drafts.bank!,
+              bank: drafts.bank! + remainingTransferOutSum,
             },
           });
         } else {
-          setPicks(draftData);
+          setPicks({
+            data: draftData.data,
+            overall: {
+              ...draftData.overall,
+              bank: draftData.overall.bank! + remainingTransferOutSum,
+            },
+          });
         }
+
+        draftData.overall.bank =
+          draftData.overall.bank + remainingTransferOutSum;
         return draftData;
       } else if (data.data.length > 0) {
         setPicks(data);

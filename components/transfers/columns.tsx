@@ -108,7 +108,6 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
                 element_type: row.original.element_type,
                 selling_price: row.original.now_value,
               });
-              console.log("NEW", newTransfers);
               setTransferIn(newTransfers);
               toast({
                 title: "Cannot make transfer.",

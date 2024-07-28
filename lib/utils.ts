@@ -73,3 +73,18 @@ export function FPLPlayerDataToPlayerData(player: FPLPlayerData) {
 
   // sort by position to display in order
 }
+
+export function elemnentTypeToPosition(type: number): string {
+  switch (type) {
+    case 1:
+      return "GK";
+    case 2:
+      return "DEF";
+    case 3:
+      return "MID";
+    case 4:
+      return "FWD";
+    default:
+      return "None";
+  }
+}

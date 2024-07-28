@@ -1,4 +1,5 @@
 import { toast } from "@/components/ui/use-toast";
+import { elemnentTypeToPosition } from "@/lib/utils";
 import { create } from "zustand";
 import { FPLGameweekPicksData, FPLPlayerData } from "../api";
 import { DraftState, DraftTransfer, PlayerData } from "./utils";
@@ -247,7 +248,9 @@ export const picksStore = create<State>()((set, get) => ({
       // if there are transfers of in type, but no transfers of out type
       if (transfersIn[e_type].length > 0 && transfersOut[e_type].length == 0) {
         isvalid = false;
-        reason = `Transfer out a player of ${transfersIn[e_type][0].web_name}'s type.`;
+        reason = `Select a ${elemnentTypeToPosition(
+          transfersIn[e_type][0].element_type
+        )} in team to transfer in ${transfersIn[e_type][0].web_name}.`;
         break;
       }
 
@@ -300,6 +303,8 @@ export async function swapPlayers(
   transfer: DraftTransfer
 ): Promise<FPLGameweekPicksData> {
   const { in: substitutedIn, out: substitutedOut } = transfer;
+
+  console.log("Swapping player", substitutedIn, substitutedOut);
 
   const inPlayerIndex = data.data.findIndex(
     (player) => player.fpl_player.player_id === substitutedIn.data.player_id
