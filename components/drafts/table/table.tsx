@@ -50,7 +50,7 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 10,
+        pageSize: 7,
       },
       columnVisibility: {
         element_type: false,
@@ -59,7 +59,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div>
+    <div className="relative h-full">
       {isFilterable && (
         <div className="flex items-center pb-1 gap-2">
           <Input
@@ -145,7 +145,7 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       {isPaginated && (
-        <div className="flex items-center justify-center space-x-2 py-4">
+        <div className="absolute bottom-0 flex items-center justify-between space-x-2 py-4 w-full">
           <Button
             variant="outline"
             size="xs"

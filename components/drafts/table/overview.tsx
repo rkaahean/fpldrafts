@@ -47,6 +47,7 @@ export default function Drafts(props: { teamId: string }) {
         data={data.data!}
         name="drafts"
         isFilterable={false}
+        isPaginated={true}
       />
     </div>
   );
