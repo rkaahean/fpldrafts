@@ -10,7 +10,8 @@ export default async function Home() {
   const session = await auth();
 
   // console.log("HOME PAGE", session);
-  if (!session) {
+  // if there's no session, or there's no access token
+  if (!session || (session && !session.accessToken)) {
     redirect("/landing");
   } else if (!session.hasTeam) {
     redirect("/link");
@@ -28,7 +29,7 @@ export default async function Home() {
         <div className="col-span-1 h-full py-2">
           <div className="flex flex-col h-full gap-2">
             <div className="h-1/3">
-              <Drafts teamId={session.team_id} />
+              <Drafts />
             </div>
             <div className="h-2/3">
               <Fixtures />

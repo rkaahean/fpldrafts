@@ -60,7 +60,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
       });
 
-      // if (token && token.exp > Date.now() / 100) {
+      // if (token && token.exp! > Date.now() / 100) {
       //   return null;
       // }
 
@@ -87,7 +87,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       };
     },
     redirect() {
-      return "/";
+      return "/landing";
     },
   },
 });

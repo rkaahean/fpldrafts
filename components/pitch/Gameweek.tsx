@@ -12,7 +12,7 @@ import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import PitchRow from "./PitchRow";
 
-export default function Gameweek(props: { teamId: string }) {
+export default function Gameweek() {
   const picksSelectors = picksStore((state) => ({
     setBase: state.setBase,
     setCurrentGameweek: state.setCurrentGameweek,
@@ -36,6 +36,7 @@ export default function Gameweek(props: { teamId: string }) {
   } = picksSelectors;
 
   const { data: session } = useSession();
+
   const { data: gameweekData } = useQuery({
     queryKey: ["gameweekData", currentGameweek, session?.accessToken],
     queryFn: async () => {

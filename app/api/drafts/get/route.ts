@@ -1,16 +1,47 @@
 import prisma from "@/lib/db";
-import { NextRequest } from "next/server";
+import { jwtDecode } from "jwt-decode";
+import { NextRequest, NextResponse } from "next/server";
 import {
   getDraftTransfers,
   getLastTransferValue,
   getPlayerValueByGameweek,
 } from "../..";
 
-export async function POST(req: NextRequest) {
-  const request = await req.json();
-  const { draftId, teamId } = request;
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+
+  const draftId = searchParams.get("draftId")!;
+  const jwt = req.headers.get("authorization");
+
+  if (!jwt) {
+    return NextResponse.json(
+      { error: "Authorization header missing" },
+      { status: 401 }
+    );
+  }
+
+  const token = jwt.split(" ")[1];
+  const decoded = jwtDecode<{ email: string }>(token);
+
+  const user_data = await prisma.user.findFirst({
+    select: {
+      fpl_teams: {
+        select: {
+          id: true,
+        },
+        where: {
+          fpl_season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+        },
+      },
+    },
+    where: {
+      email: decoded.email,
+    },
+  })!;
+  const teamId = user_data!.fpl_teams[0].id!;
 
   if (draftId) {
+    const gameweek = parseInt(searchParams.get("gameweek")!);
     let data = await getDraftTransfers(draftId, teamId);
     let newData = data!.FPLDraftTransfers.map(async (player) => {
       // if no profit, sell at current price
@@ -23,7 +54,7 @@ export async function POST(req: NextRequest) {
           data: player.out_fpl_player,
           price: player.out_cost,
         },
-        gameweek: request.gameweek,
+        gameweek,
       };
     });
 

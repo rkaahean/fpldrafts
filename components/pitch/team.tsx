@@ -18,7 +18,7 @@ export default function Team(props: { teamId: string }) {
         <DraftUpdate teamId={props.teamId} />
       </nav>
       <div className="flex flex-col flex-grow">
-        <Gameweek teamId={props.teamId} />
+        <Gameweek />
       </div>
     </div>
   );
