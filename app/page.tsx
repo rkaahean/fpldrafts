@@ -8,6 +8,8 @@ import { redirect } from "next/navigation";
 
 export default async function Home() {
   const session = await auth();
+
+  // console.log("HOME PAGE", session);
   if (!session) {
     redirect("/landing");
   } else if (!session.hasTeam) {

@@ -1,7 +1,9 @@
 export const revalidate = 3600;
 
 import prisma from "@/lib/db";
+import { jwtDecode } from "jwt-decode";
 import { NextRequest, NextResponse } from "next/server";
+import process from "process";
 import {
   FPLPlayerData2,
   getGameweekOverallData,
@@ -11,7 +13,9 @@ import {
   getPlayerValueByGameweek,
 } from "..";
 
-export async function GET(req: NextRequest) {
+const secret = process.env.NEXTAUTH_SECRET!;
+
+export async function GET(req: NextRequest, res: NextResponse) {
   const { searchParams } = new URL(req.url);
 
   const gameweek = parseInt(searchParams.get("gameweek")!);
@@ -25,24 +29,25 @@ export async function GET(req: NextRequest) {
   }
 
   const token = jwt.split(" ")[1];
-  const user_data = await prisma.account.findFirst({
+  const decoded = jwtDecode<{ email: string }>(token);
+
+  const user_data = await prisma.user.findFirst({
     select: {
-      user: {
+      fpl_teams: {
         select: {
-          fpl_teams: {
-            select: {
-              id: true,
-            },
-          },
+          id: true,
+        },
+        where: {
+          fpl_season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
         },
       },
     },
     where: {
-      id_token: token,
+      email: decoded.email,
     },
-  });
+  })!;
 
-  const team_id = user_data?.user.fpl_teams[0].id!;
+  const team_id = user_data!.fpl_teams[0].id!;
 
   // get team and user from token
 

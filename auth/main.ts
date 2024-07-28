@@ -4,6 +4,8 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  debug: true,
+  secret: process.env.NEXTAUTH_SECRET!,
   adapter: PrismaAdapter(prisma),
   providers: [
     Google({
@@ -13,9 +15,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
     async session({ session, token }) {
+      // if (parseInt(session.expires) <= Date.now() / 1000) {
+      //   // Session has expired, invalidate it
+      //   return null;
+      // }
+
+      // if (!token) {
+      //   return null;
+      // }
+
+      // Session is still valid, proceed as usual
       // get user's current fpl team
       const userWithTeam = await prisma.fPLTeam.findFirst({
         where: {
@@ -40,12 +53,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
 
-    async jwt({ token, user }) {
+    async jwt({ token }) {
       const dbUser = await prisma.user.findFirst({
         where: {
           email: token.email!,
         },
       });
+
+      // if (token && token.exp > Date.now() / 100) {
+      //   return null;
+      // }
 
       if (!dbUser) {
         return null;
@@ -66,7 +83,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         name: dbUser.name,
         email: dbUser.email,
         picture: dbUser.image,
-        accessToken: jwtToken?.id_token || "",
+        accessToken: jwtToken?.id_token!,
       };
     },
     redirect() {
