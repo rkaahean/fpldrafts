@@ -13,7 +13,7 @@ import {
 
 // import dotenv from "dotenv";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 export const GET = auth(async function GET(req: NextRequest) {
   // console.log(prisma);
