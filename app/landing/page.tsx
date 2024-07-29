@@ -10,15 +10,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import {
   CalendarIcon,
-  FileInputIcon,
   LayoutListIcon,
   PoundSterlingIcon,
   SaveIcon,
   UserRoundIcon,
 } from "lucide-react";
+
+import { Icons } from "@/components/icons/";
 
 export default function SignIn() {
   const features = [
@@ -88,7 +88,7 @@ export default function SignIn() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-col w-full gap-1">
-                <Label htmlFor="signin">Authenticate</Label>
+                {/* <Label htmlFor="signin">Authenticate</Label> */}
                 <Button
                   onClick={async () => {
                     await signIn("google", {
@@ -98,7 +98,12 @@ export default function SignIn() {
                   className="bg-foreground hover:bg-foreground h-10"
                   variant="ghost"
                 >
-                  <FileInputIcon className="text-background" />
+                  <div className="flex flex-row gap-2">
+                    <Icons.google className="bg-background" />
+                    <div className="text-black text-sm ">
+                      Continue with Google
+                    </div>
+                  </div>
                 </Button>
               </div>
             </CardContent>
