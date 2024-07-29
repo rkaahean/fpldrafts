@@ -11,9 +11,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import GoogleIcon from "@mui/icons-material/Google";
 import {
   CalendarIcon,
+  FileInputIcon,
   LayoutListIcon,
   PoundSterlingIcon,
   SaveIcon,
@@ -98,7 +98,7 @@ export default function SignIn() {
                   className="bg-foreground hover:bg-foreground h-10"
                   variant="ghost"
                 >
-                  <GoogleIcon className="text-background" />
+                  <FileInputIcon className="text-background" />
                 </Button>
               </div>
             </CardContent>
