@@ -47,7 +47,7 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
   },
   {
     id: "player_add",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const transfersIn = picksStore((store) => store.transfersIn);
       const setTransferIn = picksStore((store) => store.setTransferIn);
 
@@ -63,6 +63,7 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
       return (
         <button
           onClick={async () => {
+            table.getColumn("web_name")?.setFilterValue("");
             const formatted = FPLPlayerDataToPlayerData({
               position: 1,
               fpl_player: row.original,
