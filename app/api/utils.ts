@@ -1,5 +1,5 @@
 export async function fetchGameweekData(gameweek: number, token: string) {
-  return await fetch(`/api/gameweek?gameweek=${gameweek}`, {
+  return await fetch(`/api/edge/gameweek?gameweek=${gameweek}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

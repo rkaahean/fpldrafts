@@ -1,7 +1,9 @@
 import { auth } from "@/auth/main";
+import { Pool } from "@neondatabase/serverless";
+import { PrismaNeon } from "@prisma/adapter-neon";
+import { PrismaClient } from "@prisma/client";
 import { jwtDecode } from "jwt-decode";
 import { NextRequest, NextResponse } from "next/server";
-import process from "process";
 import {
   FPLPlayerData2,
   getGameweekOverallData,
@@ -10,11 +12,14 @@ import {
   getPlayerDataBySeason,
   getPlayerValueByGameweek,
   getUserTeamFromEmail,
-} from "..";
+} from "../..";
 
-const secret = process.env.NEXTAUTH_SECRET!;
+export const runtime = "edge";
 
 export const GET = auth(async function GET(req: NextRequest) {
+  const neon = new Pool({ connectionString: process.env.DATABASE_URL });
+  const adapter = new PrismaNeon(neon);
+  const prisma = new PrismaClient({ adapter });
   console.time("gameweek");
   const { searchParams } = new URL(req.url);
 

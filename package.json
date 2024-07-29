@@ -12,7 +12,8 @@
     "elements": "npx tsc scripts/elements.ts --outDir build && node build/elements.js",
     "fixtures": "npx tsc scripts/fixtures.ts --outDir build && node build/fixtures.js",
     "scratchpad": "npx tsc scripts/scratchpad.ts --outDir build && node build/scratchpad.js",
-    "update": "npm run bootstrap && npm run picks && npm run elements && npm run fixtures"
+    "update": "npm run bootstrap && npm run picks && npm run elements && npm run fixtures",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.4.1",
@@ -20,6 +21,8 @@
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.16.4",
     "@mui/material": "^5.16.4",
+    "@neondatabase/serverless": "^0.9.4",
+    "@prisma/adapter-neon": "^5.17.0",
     "@prisma/client": "^5.17.0",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.1.0",
