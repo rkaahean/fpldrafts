@@ -1,7 +1,4 @@
 import { auth } from "@/auth/main";
-import { Pool } from "@neondatabase/serverless";
-import { PrismaNeon } from "@prisma/adapter-neon";
-import { PrismaClient } from "@prisma/client";
 import { jwtDecode } from "jwt-decode";
 import { NextRequest, NextResponse } from "next/server";
 import {
@@ -9,17 +6,17 @@ import {
   getGameweekOverallData,
   getGameweekPicksData,
   getLastTransferValue,
+  getPlayerDataBySeason,
   getPlayerValueByGameweek,
-} from "../..";
+  getUserTeamFromEmail,
+} from "..";
+
+// import dotenv from "dotenv";
 
 export const runtime = "edge";
 
 export const GET = auth(async function GET(req: NextRequest) {
-  const neon = new Pool({ connectionString: process.env.DATABASE_URL });
-  const adapter = new PrismaNeon(neon);
-  const prisma = new PrismaClient({ adapter });
-
-  console.log(prisma);
+  // console.log(prisma);
   console.time("gameweek");
   const { searchParams } = new URL(req.url);
 
@@ -37,24 +34,7 @@ export const GET = auth(async function GET(req: NextRequest) {
   const decoded = jwtDecode<{ email: string }>(token);
 
   console.time("user-team-email");
-  // const { teamId } = await getUserTeamFromEmail(decoded.email);
-  const user_data = await prisma.user.findFirst({
-    select: {
-      id: true,
-      fpl_teams: {
-        select: {
-          id: true,
-        },
-        where: {
-          fpl_season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
-        },
-      },
-    },
-    where: {
-      email: decoded.email,
-    },
-  })!;
-  const teamId = user_data!.fpl_teams[0].id!;
+  const { teamId } = await getUserTeamFromEmail(decoded.email);
   console.timeEnd("user-team-email");
 
   // get team and user from token
@@ -83,79 +63,10 @@ export const GET = auth(async function GET(req: NextRequest) {
     let playerData: any[] = [];
 
     console.time("player-data");
-    // const allPlayers: FPLPlayerData2[] = await getPlayerDataBySeason(
-    //   "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
-    //   [310, 347, 380, 418, 339, 3, 350, 9, 99, 186, 199, 385, 58, 4, 108]
-    // );
-    const allPlayers: FPLPlayerData2[] = await prisma.fPLPlayer.findMany({
-      // Include the related FPLPlayer record
-      select: {
-        id: true,
-        player_id: true,
-        web_name: true,
-        team_code: true,
-        element_type: true,
-        total_points: true,
-        expected_assists: true,
-        expected_assists_per_90: true,
-        expected_goals: true,
-        expected_goals_per_90: true,
-        expected_goal_involvements: true,
-        expected_goal_involvements_per_90: true,
-        now_value: true,
-        goals_scored: true,
-        assists: true,
-        fpl_player_team: {
-          select: {
-            short_name: true,
-            home_fixtures: {
-              where: {
-                season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
-              },
-              select: {
-                fpl_team_a: {
-                  select: {
-                    short_name: true,
-                  },
-                },
-                id: true,
-                event: true,
-              },
-            },
-            away_fixtures: {
-              where: {
-                season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
-              },
-              select: {
-                fpl_team_h: {
-                  select: {
-                    short_name: true,
-                  },
-                },
-                id: true,
-                event: true,
-              },
-            },
-          },
-        },
-        fpl_gameweek_player_stats: {
-          select: {
-            value: true,
-          },
-        },
-      },
-      where: {
-        season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
-        player_id: {
-          in: [
-            310, 347, 380, 418, 339, 3, 350, 9, 99, 186, 199, 385, 58, 4, 108,
-          ],
-        },
-      },
-      orderBy: {
-        total_points: "desc",
-      },
-    });
+    const allPlayers: FPLPlayerData2[] = await getPlayerDataBySeason(
+      "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+      [310, 347, 380, 418, 339, 3, 350, 9, 99, 186, 199, 385, 58, 4, 108]
+    );
     console.timeEnd("player-data");
     // get 2 goalkeeps
     const gks = allPlayers
