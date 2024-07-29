@@ -3,6 +3,7 @@
 import { picksStore } from "@/app/store";
 import { DownloadIcon } from "@radix-ui/react-icons";
 import { useQueryClient } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "../../ui/button";
@@ -21,8 +22,11 @@ import { Label } from "../../ui/label";
 export default function DraftSave() {
   const drafts = picksStore((state) => state.drafts);
   const picks = picksStore((state) => state.picks);
+  const gameweek = picksStore((state) => state.currentGameweek);
+
   const [open, setOpen] = useState(false);
-  const [draftName, setDraftName] = useState("GW 27 draft");
+  const [draftName, setDraftName] = useState(`GW ${gameweek} draft`);
+  const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
 
   const [draftDescription, setDraftDescription] = useState(
@@ -56,7 +60,7 @@ export default function DraftSave() {
             </Label>
             <Input
               id="name"
-              defaultValue="GW 27 draft"
+              value={draftName}
               className="col-span-3"
               onChange={(e) => setDraftName(e.target.value)}
             />
@@ -80,6 +84,7 @@ export default function DraftSave() {
             onClick={async () => {
               // console.log(drafts.changes);
               // console.log("Saving draft...", drafts.changes);
+              setLoading(true);
               await fetch("/api/drafts/create", {
                 method: "POST",
                 headers: {
@@ -96,13 +101,22 @@ export default function DraftSave() {
                   bank: picks?.overall.bank,
                 }),
               });
+
               queryClient.invalidateQueries({
                 queryKey: ["draftsget"],
               });
+              setLoading(false);
               setOpen(false);
             }}
           >
-            Save changes
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </>
+            ) : (
+              "Save Changes"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
