@@ -41,11 +41,8 @@ export async function getPlayerData(
       team_code: true,
       element_type: true,
       total_points: true,
-      expected_assists: true,
       expected_assists_per_90: true,
-      expected_goals: true,
       expected_goals_per_90: true,
-      expected_goal_involvements: true,
       expected_goal_involvements_per_90: true,
       now_value: true,
       fpl_player_team: {
@@ -112,11 +109,8 @@ export async function getPlayerDataBySeason(
       team_code: true,
       element_type: true,
       total_points: true,
-      expected_assists: true,
       expected_assists_per_90: true,
-      expected_goals: true,
       expected_goals_per_90: true,
-      expected_goal_involvements: true,
       expected_goal_involvements_per_90: true,
       now_value: true,
       goals_scored: true,
@@ -180,11 +174,6 @@ export async function getGameweekData(gameweek: number) {
   return picks;
 }
 
-/**
- *
- * @param gameweek Gameweek data to fetch
- * @returns
- */
 export async function getGameweekOverallData(gameweek: number) {
   return await prisma.fPLGameweekOverallStats.findFirst({
     where: {
