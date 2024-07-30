@@ -340,6 +340,8 @@ export async function createDraft(request: {
   await prisma.fPLDraftTransfers.createMany({
     data,
   });
+
+  return draft.id;
 }
 
 export async function getDraftTransfers(draftId: string, teamId: string) {

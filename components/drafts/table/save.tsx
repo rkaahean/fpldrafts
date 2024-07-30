@@ -21,6 +21,8 @@ import { Label } from "../../ui/label";
 
 export default function DraftSave() {
   const drafts = picksStore((state) => state.drafts);
+  const setDrafts = picksStore((state) => state.setDrafts);
+
   const picks = picksStore((state) => state.picks);
   const gameweek = picksStore((state) => state.currentGameweek);
 
@@ -85,7 +87,7 @@ export default function DraftSave() {
               // console.log(drafts.changes);
               // console.log("Saving draft...", drafts.changes);
               setLoading(true);
-              await fetch("/api/drafts/create", {
+              const response = await fetch("/api/drafts/create", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -100,6 +102,15 @@ export default function DraftSave() {
                   ),
                   bank: picks?.overall.bank,
                 }),
+              }).then((res) => res.json());
+
+              // setting the current drafts with the id
+              setDrafts({
+                id: response.id,
+                name: draftName,
+                changes: drafts.changes,
+                description: draftDescription,
+                bank: picks?.overall.bank,
               });
 
               queryClient.invalidateQueries({

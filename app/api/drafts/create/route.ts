@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   const decoded = jwtDecode<{ email: string }>(token);
 
   const { userId, teamId } = await getUserTeamFromEmail(decoded.email);
-  const data = await createDraft({ ...request, teamId });
+  const draftId = await createDraft({ ...request, teamId });
 
-  return Response.json({ data });
+  return Response.json({ id: draftId });
 }
