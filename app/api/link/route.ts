@@ -16,6 +16,14 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  await updateFPLTeamData(team.id, parseInt(request.teamNumber));
-  return Response.json({ data: {} });
+  try {
+    await updateFPLTeamData(team.id, parseInt(request.teamNumber));
+  } catch (e) {
+    console.log("Ran into error", e);
+  }
+  return Response.json({
+    data: {
+      teamId: team.id,
+    },
+  });
 }
