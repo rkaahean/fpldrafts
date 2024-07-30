@@ -30,7 +30,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
   return (
     <motion.div
       className={cn(
-        "flex flex-row w-16 h-16 lg:w-32 lg:h-32 2xl:w-36 2xl:h-36 border rounded-md p-2",
+        "flex flex-row w-20 h-24 lg:w-32 lg:h-32 2xl:w-36 2xl:h-36 border rounded-md p-2",
         player?.player_id == props.data.player_id
           ? "bg-muted"
           : "bg-bgsecondary",
@@ -59,7 +59,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
             }}
           >
             <div className="flex flex-row justify-center">
-              <DoubleArrowDownIcon className="w-3 h-3" />
+              <DoubleArrowDownIcon className="w-2 h-2 lg:w-3 lg:h-3" />
             </div>
           </button>
           <button
@@ -78,7 +78,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
             }}
           >
             <div className="flex flex-row justify-center">
-              <Cross2Icon className="w-3 h-3" />
+              <Cross2Icon className="w-2 h-2 lg:w-3 lg:h-3" />
             </div>
           </button>
         </div>
@@ -149,7 +149,7 @@ function PlayerFixtureTicker({
 
 function PlayerStatsTicker({ data }: { data: PlayerData }) {
   return (
-    <div className="h-1/6 grid grid-cols-3 text-[10px] 2xl:text-xs w-full">
+    <div className="h-1/6 grid grid-cols-3 text-[6px] lg:text-xs w-full">
       <div className="flex flex-col text-center justify-center">
         <div>{`£${data.selling_price / 10}`}</div>
       </div>
@@ -173,17 +173,17 @@ function PlayerDescription({
 }) {
   return (
     <div className="flex flex-col h-5/6 items-center justify-around">
-      <div>
+      <div className="w-8 h-8 lg:h-16 lg:w-16">
         <Image
           src={`https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${data.team_code}-110.webp`}
           alt="Player"
-          width={33}
-          height={33}
+          width={40}
+          height={40}
           priority
-          className="w-auto h-auto"
+          className="w-full h-full object-contain"
         />
       </div>
-      <div className="text-xs h-fit font-semibold 2xl:text-sm tracking-tighter truncate text-ellipsis">
+      <div className="text-[8px] lg:text-xs h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
         {data.web_name}
       </div>
     </div>
