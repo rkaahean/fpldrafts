@@ -149,7 +149,7 @@ function PlayerFixtureTicker({
 
 function PlayerStatsTicker({ data }: { data: PlayerData }) {
   return (
-    <div className="h-1/6 grid grid-cols-3 text-[6px] lg:text-xs w-full">
+    <div className="h-1/6 grid grid-cols-3 text-[6px] lg:text-[11px] w-full">
       <div className="flex flex-col text-center justify-center">
         <div>{`£${data.selling_price / 10}`}</div>
       </div>
