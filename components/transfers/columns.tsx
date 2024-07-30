@@ -12,6 +12,20 @@ import { toast } from "../ui/use-toast";
 // You can use a Zod schema here if you want.
 
 export const columns: ColumnDef<FPLPlayerData2>[] = [
+  // {
+  //   id: "team_crest",
+  //   cell: ({ row }) => {
+  //     return (
+  //       <Image
+  //         src={`https://resources.premierleague.com/premierleague/badges/t${row.original.team_code}.png`}
+  //         alt="crest"
+  //         width={128}
+  //         height={128}
+  //         priority
+  //       />
+  //     );
+  //   },
+  // },
   {
     accessorKey: "web_name",
     header: "Name",
