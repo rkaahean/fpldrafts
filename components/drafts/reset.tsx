@@ -48,7 +48,6 @@ export function ResetCurrentGameweek() {
 
 export function ResetAll() {
   const drafts = picksStore((state) => state.drafts);
-  const gameweek = picksStore((state) => state.currentGameweek);
 
   const setDrafts = picksStore((state) => state.setDrafts);
   const resetTransfers = picksStore((state) => state.resetTransfers);

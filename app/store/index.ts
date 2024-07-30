@@ -209,8 +209,8 @@ export const picksStore = create<State>()((set, get) => ({
           ...drafts,
           changes: draftTransfers,
         },
-        transfersIn: structuredClone(TRANSFER_INIT_VALUE),
-        transfersOut: structuredClone(TRANSFER_INIT_VALUE),
+        // transfersIn: structuredClone(TRANSFER_INIT_VALUE),
+        // transfersOut: structuredClone(TRANSFER_INIT_VALUE),
       });
     }
   },
