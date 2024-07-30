@@ -45,7 +45,7 @@ export default function DraftSave() {
           title="Save Draft"
           disabled={drafts.changes.length == 0}
         >
-          <DownloadIcon />
+          <DownloadIcon className="w-2 h-2 lg:w-4 lg:h-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

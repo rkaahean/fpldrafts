@@ -30,7 +30,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
   return (
     <motion.div
       className={cn(
-        "flex flex-row w-20 h-24 lg:w-32 lg:h-32 2xl:w-36 2xl:h-36 border rounded-md p-2",
+        "flex flex-row w-16 h-16 lg:w-32 lg:h-32 2xl:w-36 2xl:h-36 border rounded-md p-2",
         player?.player_id == props.data.player_id
           ? "bg-muted"
           : "bg-bgsecondary",
@@ -115,7 +115,7 @@ function PlayerFixtureTicker({
   }
 
   return (
-    <div className="w-3/12 grid grid-rows-4 text-[8px] lg:text-xs tracking-tighter">
+    <div className="w-3/12 grid grid-rows-4 text-[6px] lg:text-xs tracking-tighter">
       {formattedFixtures.map((fixture, idx) => {
         if (Array.isArray(fixture)) {
           return (
@@ -173,7 +173,7 @@ function PlayerDescription({
 }) {
   return (
     <div className="flex flex-col h-5/6 items-center justify-around">
-      <div className="w-8 h-8 lg:h-16 lg:w-16">
+      <div className="w-4 h-4 lg:h-16 lg:w-16">
         <Image
           src={`https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${data.team_code}-110.webp`}
           alt="Player"

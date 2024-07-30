@@ -19,7 +19,7 @@ export default function DraftChanges() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="ghost" size="xs">
-          <LoopIcon />
+          <LoopIcon className="w-2 h-2 lg:w-4 lg:h-4" />
         </Button>
       </SheetTrigger>
       <SheetContent className="overflow-scroll">

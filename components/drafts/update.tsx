@@ -48,7 +48,7 @@ export default function DraftUpdate() {
                 });
               }}
             >
-              <UpdateIcon />
+              <UpdateIcon className="w-2 h-2 lg:w-4 lg:h-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
