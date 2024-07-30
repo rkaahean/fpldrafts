@@ -30,7 +30,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
   return (
     <motion.div
       className={cn(
-        "flex flex-row w-16 h-16 lg:w-32 lg:h-32 2xl:w-36 2xl:h-36 border rounded-md p-2",
+        "flex flex-row w-16 h-16 lg:w-32 lg:h-32 2xl:w-36 2xl:h-36 border rounded-md p-0.5 lg:p-2",
         player?.player_id == props.data.player_id
           ? "bg-muted"
           : "bg-bgsecondary",
@@ -149,7 +149,7 @@ function PlayerFixtureTicker({
 
 function PlayerStatsTicker({ data }: { data: PlayerData }) {
   return (
-    <div className="h-1/6 grid grid-cols-3 text-[6px] lg:text-[11px] w-full">
+    <div className="h-fit lg:h-1/6 grid grid-cols-3 text-[6px] lg:text-[11px] w-full">
       <div className="flex flex-col text-center justify-center">
         <div>{`£${data.selling_price / 10}`}</div>
       </div>
@@ -172,8 +172,8 @@ function PlayerDescription({
   };
 }) {
   return (
-    <div className="flex flex-col h-5/6 items-center justify-around">
-      <div className="w-4 h-4 lg:h-16 lg:w-16">
+    <div className="flex flex-col lg:h-5/6 items-center justify-around">
+      <div className="w-6 h-6 lg:h-16 lg:w-16">
         <Image
           src={`https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${data.team_code}-110.webp`}
           alt="Player"
@@ -183,7 +183,7 @@ function PlayerDescription({
           className="w-full h-full object-contain"
         />
       </div>
-      <div className="text-[8px] lg:text-xs h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
+      <div className="text-[6px] lg:text-xs h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
         {data.web_name}
       </div>
     </div>
