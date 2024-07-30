@@ -45,6 +45,7 @@ export default function DraftUpdate() {
                 toast({
                   title: "Draft updated.",
                   description: `${drafts.name} has been updated.`,
+                  variant: "success",
                 });
               }}
             >
