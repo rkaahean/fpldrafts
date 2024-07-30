@@ -9,7 +9,7 @@ import { Button } from "../ui/button";
 export default function Navbar(props: { image: string }) {
   const router = useRouter();
   return (
-    <div className="flex flex-col h-screen py-5 items-center gap-5 pl-2">
+    <div className="flex flex-row lg:flex-col py-2 justify-center lg:items-center gap-5 pl-2">
       <Avatar>
         <AvatarImage src={props.image} />
         <AvatarFallback>CN</AvatarFallback>
