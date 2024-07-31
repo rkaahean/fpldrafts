@@ -28,13 +28,7 @@ export default function ClientTable(props: any) {
   return (
     <div className="h-full flex flex-col">
       <Heading text={"Players"} />
-      <DataTable
-        columns={columns}
-        data={filteredData}
-        name="players"
-        isFilterable
-        isPaginated
-      />
+      <DataTable columns={columns} data={filteredData} name="players" />
     </div>
   );
 }

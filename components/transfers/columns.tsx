@@ -7,6 +7,7 @@ import { FPLPlayerDataToPlayerData } from "@/lib/utils";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "../ui/use-toast";
+import { priceFilter } from "./table";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -34,6 +35,7 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
     accessorKey: "now_value",
     header: "£",
     cell: ({ row }) => row.original.now_value / 10,
+    filterFn: priceFilter,
   },
   {
     accessorKey: "total_points",
