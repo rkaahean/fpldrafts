@@ -111,7 +111,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div>
+    <div className="h-full rounded-sm">
       {isFilterable && (
         <div className="flex items-center pb-1 gap-2">
           <Input
@@ -142,7 +142,8 @@ export function DataTable<TData, TValue>({
           </ToggleGroup>
         </div>
       )}
-      <div>
+
+      <div className="bg-bgsecondary rounded-sm h-full">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -195,27 +196,27 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
+        {isPaginated && (
+          <div className="flex items-center justify-around space-x-2 py-2">
+            <Button
+              variant="secondary"
+              size="xs"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="secondary"
+              size="xs"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              Next
+            </Button>
+          </div>
+        )}
       </div>
-      {isPaginated && (
-        <div className="flex items-center justify-around space-x-2 py-4">
-          <Button
-            variant="secondary"
-            size="xs"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="secondary"
-            size="xs"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
-      )}
     </div>
   );
 }
