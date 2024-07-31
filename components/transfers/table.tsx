@@ -160,7 +160,7 @@ export function DataTable<TData, TValue>({
         <div className="pb-3">
           <div className="flex flex-row justify-between mb-2">
             <Label>Max Price</Label>
-            <div className="text-xs">{`£${[maxPrice] / 10}`} </div>
+            <div className="text-xs">{`£${maxPrice / 10}`} </div>
           </div>
           <Slider
             defaultValue={[maxPrice]}
