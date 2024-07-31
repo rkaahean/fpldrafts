@@ -24,6 +24,10 @@ const config = {
         foreground: "var(--foreground)",
         highlight: "var(--highlight)",
         bgsecondary: "var(--bgsecondary)",
+        player: {
+          DEFAULT: "var(--player)",
+          foreground: "var(--player-foreground)",
+        },
         primary: {
           DEFAULT: "var(--primary)",
           foreground: "var(--primary-foreground)",

@@ -30,10 +30,8 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
   return (
     <motion.div
       className={cn(
-        "flex flex-row w-16 h-16 lg:w-32 lg:h-32 2xl:w-36 2xl:h-36 border rounded-md p-0.5 lg:p-2",
-        player?.player_id == props.data.player_id
-          ? "bg-muted"
-          : "bg-bgsecondary",
+        "flex flex-row w-16 h-16 lg:w-32 lg:h-32 2xl:w-36 2xl:h-36 border rounded-md p-0.5 lg:p-2 text-player-foreground",
+        player?.player_id == props.data.player_id ? "bg-muted" : "bg-player",
         isSelectedForTransfer ? "bg-destructive" : ""
       )}
       initial={{ opacity: 0, scale: 0.5 }}

@@ -46,10 +46,13 @@
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
 
+    --player: #bbf7d0;
+    --player-foreground: #022c22;
+
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: #e5e5e5;
+    --primary: #dcfce7;
     --primary-foreground: #1e3a8a;
 
     --secondary: #57534e;
