@@ -130,7 +130,7 @@ export default function Gameweek() {
   if (data && data.data && session) {
     return (
       <ReactQueryProvider>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 h-full">
           <div className="flex flex-row justify-between">
             <button
               onClick={() => setCurrentGameweek(currentGameweek - 1)}
@@ -158,7 +158,7 @@ export default function Gameweek() {
               <ArrowRightIcon />
             </button>
           </div>
-          <div className="h-full">
+          <div className="w-full">
             {["GK", "DEF", "MID", "FWD", "subs"].map((position: string) => (
               <PitchRow
                 key={position}

@@ -1,4 +1,3 @@
-import { FPLPlayerData } from "@/app/api";
 import { PlayerData } from "@/app/store/utils";
 import Player from "./Player";
 
