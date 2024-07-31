@@ -3,7 +3,7 @@
 import { picksStore } from "@/app/store";
 import { DraftTransfer } from "@/app/store/utils";
 import { FPLDraftTransfers, FPLDrafts } from "@prisma/client";
-import { DownloadIcon, TrashIcon } from "@radix-ui/react-icons";
+import { TrashIcon } from "@radix-ui/react-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { useSession } from "next-auth/react";
@@ -52,33 +52,35 @@ export const columns: ColumnDef<DraftsData>[] = [
       const { data: session } = useSession();
       const setDrafts = picksStore((state) => state.setDrafts);
       return (
-        <div className="flex h-full items-center justify-center w-full">
-          <Button
-            size="table"
-            variant="ghost"
-            onClick={async () => {
-              const drafts: { data: DraftTransfer[] } = await fetch(
-                `/api/drafts/get?id=${row.original.id}`,
-                {
-                  method: "GET",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${session?.accessToken}`,
-                  },
-                }
-              ).then((res) => res.json());
-              setDrafts({
-                id: row.original.id,
-                name: row.original.name,
-                description: row.original.description || "",
-                changes: drafts.data,
-                bank: row.original.bank,
-              });
-            }}
-          >
-            <DownloadIcon className="w-3 h-3" />
-          </Button>
-        </div>
+        // <div className="flex h-full items-center justify-center w-full">
+        <Button
+          size="table"
+          variant="success"
+          className="h-4 p-1 text-[11px]"
+          onClick={async () => {
+            const drafts: { data: DraftTransfer[] } = await fetch(
+              `/api/drafts/get?id=${row.original.id}`,
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${session?.accessToken}`,
+                },
+              }
+            ).then((res) => res.json());
+            setDrafts({
+              id: row.original.id,
+              name: row.original.name,
+              description: row.original.description || "",
+              changes: drafts.data,
+              bank: row.original.bank,
+            });
+          }}
+        >
+          {/* <DownloadIcon className="w-3 h-3" /> */}
+          Load
+        </Button>
+        // </div>
       );
     },
   },

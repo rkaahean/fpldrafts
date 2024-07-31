@@ -120,7 +120,7 @@ export default function Fixtures() {
   return (
     <div>
       <Heading text={"Fixtures"} />
-      <div className="rounded-sm border">
+      <div className="rounded-sm">
         <Table>
           <TableHeader>
             <TableRow className="grid grid-cols-7 h-6">

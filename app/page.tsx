@@ -19,8 +19,8 @@ export default async function Home() {
     <div className="flex flex-col lg:flex-row lg:h-screen">
       <Navbar image={session.user!.image!} />
       <div className="flex flex-col lg:grid lg:grid-cols-4 gap-2 w-full h-fit lg:h-screen">
-        <div className="lg:col-span-1 lg:max-h-screen gap-1 py-2 lg:pl-1">
-          <div className="h-fit lg:h-3/4 relative lg:overflow-scroll">
+        <div className="lg:col-span-1 lg:max-h-screen gap-1 py-2 lg:pl-1 lg:pr-2">
+          <div className="h-fit lg:h-full relative lg:overflow-scroll">
             <Selector />
           </div>
           {/* <PlayerComparison /> */}

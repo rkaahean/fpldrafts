@@ -41,7 +41,7 @@
     --background: #262626;
     --foreground: #e7e5e4;
 
-    --bgsecondary: #0c0a09;
+    --bgsecondary: #1c1917;
 
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
@@ -63,6 +63,9 @@
 
     --destructive: #b91c1c;
     --destructive-foreground: 210 40% 98%;
+
+    --success: #166534;
+    --success-foreground: #dcfce7;
 
     --border: #57534e;
     --input: 217.2 32.6% 17.5%;

@@ -58,6 +58,8 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const isPaginationVisible = isPaginated && table.getPageCount() > 1;
+
   return (
     <div className="relative h-full">
       {isFilterable && (
@@ -90,7 +92,7 @@ export function DataTable<TData, TValue>({
           </ToggleGroup>
         </div>
       )}
-      <div className="rounded-sm border">
+      <div className="rounded-sm h-full bg-bgsecondary">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -144,8 +146,8 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      {isPaginated && (
-        <div className="absolute bottom-0 flex items-center justify-between space-x-2 py-4 w-full">
+      {isPaginationVisible && (
+        <div className="absolute bottom-0 flex items-center justify-around space-x-2 py-4 w-full">
           <Button
             variant="outline"
             size="xs"

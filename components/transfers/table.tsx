@@ -102,7 +102,7 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 12,
+        pageSize: 27,
       },
       columnVisibility: {
         element_type: false,
@@ -142,7 +142,7 @@ export function DataTable<TData, TValue>({
           </ToggleGroup>
         </div>
       )}
-      <div className="rounded-sm border">
+      <div>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -197,9 +197,9 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       {isPaginated && (
-        <div className="flex items-center justify-center space-x-2 py-4">
+        <div className="flex items-center justify-around space-x-2 py-4">
           <Button
-            variant="outline"
+            variant="secondary"
             size="xs"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
@@ -207,7 +207,7 @@ export function DataTable<TData, TValue>({
             Previous
           </Button>
           <Button
-            variant="outline"
+            variant="secondary"
             size="xs"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
