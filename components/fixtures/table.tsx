@@ -118,9 +118,9 @@ export default function Fixtures() {
   const formattedData = transformData(data?.data!);
 
   return (
-    <div>
+    <div className="h-full flex flex-col">
       <Heading text={"Fixtures"} />
-      <div className="rounded-sm">
+      <div className="rounded-sm bg-bgsecondary flex-grow">
         <Table>
           <TableHeader>
             <TableRow className="grid grid-cols-7 h-6">

@@ -102,7 +102,7 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 27,
+        pageSize: 29,
       },
       columnVisibility: {
         element_type: false,
@@ -111,112 +111,118 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="h-full rounded-sm">
-      {isFilterable && (
-        <div className="flex items-center pb-1 gap-2">
-          <Input
-            placeholder={`Filter ${name}...`}
-            value={
-              (table.getColumn("web_name")?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table.getColumn("web_name")?.setFilterValue(event.target.value)
-            }
-            className="w-1/2 max-w-sm"
-          />
-          <ToggleGroup
-            type="single"
-            onValueChange={(value) => {
-              const column = table.getColumn("element_type")!;
-              column.setFilterValue(null);
-
-              if (value) {
-                column.setFilterValue(value);
+    <div className="flex flex-col rounded-sm h-full justify-between bg-bgsecondary">
+      <div>
+        {isFilterable && (
+          <div className="flex items-center pb-1 gap-2 bg-background">
+            <Input
+              placeholder={`Filter ${name}...`}
+              value={
+                (table.getColumn("web_name")?.getFilterValue() as string) ?? ""
               }
-            }}
-          >
-            <ToggleGroupItem value="1">GK</ToggleGroupItem>
-            <ToggleGroupItem value="2">DEF</ToggleGroupItem>
-            <ToggleGroupItem value="3">MID</ToggleGroupItem>
-            <ToggleGroupItem value="4">FWD</ToggleGroupItem>
-          </ToggleGroup>
-        </div>
-      )}
+              onChange={(event) =>
+                table.getColumn("web_name")?.setFilterValue(event.target.value)
+              }
+              className="w-1/2 max-w-sm"
+            />
+            <ToggleGroup
+              type="single"
+              onValueChange={(value) => {
+                const column = table.getColumn("element_type")!;
+                column.setFilterValue(null);
 
-      <div className="bg-bgsecondary rounded-sm h-full">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  onClick={() => {
-                    const isSelected = row.getIsSelected();
-                    row.toggleSelected(!isSelected);
-                  }}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-xs">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-        {isPaginated && (
-          <div className="flex items-center justify-around space-x-2 py-2">
-            <Button
-              variant="secondary"
-              size="xs"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
+                if (value) {
+                  column.setFilterValue(value);
+                }
+              }}
             >
-              Previous
-            </Button>
-            <Button
-              variant="secondary"
-              size="xs"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              Next
-            </Button>
+              <ToggleGroupItem value="1">GK</ToggleGroupItem>
+              <ToggleGroupItem value="2">DEF</ToggleGroupItem>
+              <ToggleGroupItem value="3">MID</ToggleGroupItem>
+              <ToggleGroupItem value="4">FWD</ToggleGroupItem>
+            </ToggleGroup>
           </div>
         )}
+
+        <div className="bg-bgsecondary rounded-sm">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    onClick={() => {
+                      const isSelected = row.getIsSelected();
+                      row.toggleSelected(!isSelected);
+                    }}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} className="text-xs">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
+
+      {isPaginated && (
+        <div className="flex items-center justify-around space-x-2 py-2">
+          <Button
+            variant="secondary"
+            size="xs"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <div className="text-xs">{`${
+            table.getState().pagination.pageIndex + 1
+          }  / ${table.getPageCount()}`}</div>
+          <Button
+            variant="secondary"
+            size="xs"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { picksStore } from "@/app/store";
 
+import Heading from "../text/heading";
 import { columns } from "./columns";
 import { DataTable } from "./table";
 
@@ -25,12 +26,15 @@ export default function ClientTable(props: any) {
   }
 
   return (
-    <DataTable
-      columns={columns}
-      data={filteredData}
-      name="players"
-      isFilterable
-      isPaginated
-    />
+    <div className="h-full flex flex-col">
+      <Heading text={"Players"} />
+      <DataTable
+        columns={columns}
+        data={filteredData}
+        name="players"
+        isFilterable
+        isPaginated
+      />
+    </div>
   );
 }
