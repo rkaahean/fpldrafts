@@ -6,6 +6,7 @@ import { removeTransfer } from "@/app/store/utils";
 import { FPLPlayerDataToPlayerData } from "@/lib/utils";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
+import Image from "next/image";
 import { toast } from "../ui/use-toast";
 import { priceFilter } from "./table";
 
@@ -13,20 +14,22 @@ import { priceFilter } from "./table";
 // You can use a Zod schema here if you want.
 
 export const columns: ColumnDef<FPLPlayerData2>[] = [
-  // {
-  //   id: "team_crest",
-  //   cell: ({ row }) => {
-  //     return (
-  //       <Image
-  //         src={`https://resources.premierleague.com/premierleague/badges/t${row.original.team_code}.png`}
-  //         alt="crest"
-  //         width={128}
-  //         height={128}
-  //         priority
-  //       />
-  //     );
-  //   },
-  // },
+  {
+    id: "team_crest",
+    cell: ({ row }) => {
+      return (
+        <div className="w-4 h-4">
+          <Image
+            src={`https://resources.premierleague.com/premierleague/badges/t${row.original.team_code}.png`}
+            alt="crest"
+            width={128}
+            height={128}
+            priority
+          />
+        </div>
+      );
+    },
+  },
   {
     accessorKey: "web_name",
     header: "Name",

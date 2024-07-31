@@ -10,8 +10,10 @@ import { fetchGameweekData } from "@/app/api/utils";
 import { filterData } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import PitchRow from "./PitchRow";
 
+import Pitch from "../../images/pitch.svg";
 export default function Gameweek() {
   const picksSelectors = picksStore((state) => ({
     setBase: state.setBase,
@@ -130,7 +132,7 @@ export default function Gameweek() {
   if (data && data.data && session) {
     return (
       <ReactQueryProvider>
-        <div className="flex flex-col gap-1 h-full">
+        <div className="flex flex-col gap-1 h-full relative">
           <div className="flex flex-row justify-between">
             <button
               onClick={() => setCurrentGameweek(currentGameweek - 1)}
@@ -158,7 +160,21 @@ export default function Gameweek() {
               <ArrowRightIcon />
             </button>
           </div>
-          <div className="w-full">
+
+          <div>
+            <div className="absolute h-[95%] w-full -z-10">
+              <Image
+                src={Pitch}
+                alt=""
+                fill
+                layout="fill"
+                objectFit="cover"
+                // className="inset-0"
+              />
+            </div>
+          </div>
+
+          <div className="w-full z-0">
             {["GK", "DEF", "MID", "FWD", "subs"].map((position: string) => (
               <PitchRow
                 key={position}
