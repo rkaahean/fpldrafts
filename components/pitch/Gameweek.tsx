@@ -163,14 +163,7 @@ export default function Gameweek() {
 
           <div>
             <div className="absolute h-[95%] w-full -z-10">
-              <Image
-                src={Pitch}
-                alt=""
-                fill
-                layout="fill"
-                objectFit="cover"
-                // className="inset-0"
-              />
+              <Image src={Pitch} alt="" layout="fill" objectFit="cover" />
             </div>
           </div>
 
