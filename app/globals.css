@@ -38,7 +38,7 @@
   }
 
   .dark {
-    --background: #262626;
+    --background: #052e16;
     --foreground: #dcfce7;
 
     --bgsecondary: #1c1917;
@@ -58,7 +58,7 @@
     --muted: #ea580c;
     --muted-foreground: #a8a29e;
 
-    --accent: #7e22ce;
+    --accent: #16a34a;
     --accent-foreground: 210 40% 98%;
 
     --destructive: #b91c1c;
