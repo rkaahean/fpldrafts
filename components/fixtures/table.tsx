@@ -208,12 +208,10 @@ function getFixtureColorFromDifficulty(strength: number): string {
       return "bg-green-300";
     case 2:
       return "bg-green-500 text-black";
-
     case 3:
       return "bg-neutral-400 text-black";
     case 4:
       return "bg-rose-500";
-
     case 5:
       return "bg-rose-950";
     default:
