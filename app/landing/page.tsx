@@ -1,8 +1,5 @@
-"use client";
-
-import { signIn } from "next-auth/react";
-
-import { Button } from "@/components/ui/button";
+import { auth } from "@/auth/main";
+import SignIn from "@/components/auth/signIn";
 import {
   Card,
   CardContent,
@@ -17,11 +14,16 @@ import {
   SaveIcon,
   UserRoundIcon,
 } from "lucide-react";
+import { redirect } from "next/navigation";
 
-import { Icons } from "@/components/icons/";
-import { motion } from "framer-motion";
+export default async function Landing() {
+  const session = await auth();
 
-export default function SignIn() {
+  if (session && session.hasTeam) {
+    redirect("/");
+  } else if (session) {
+    redirect("/link");
+  }
   const features = [
     {
       icon: <SaveIcon />,
@@ -54,14 +56,14 @@ export default function SignIn() {
     <main className="flex flex-col min-h-screen min-w-screen bg-background gap-8">
       <div className="pt-8 px-4">
         <div className="flex flex-col items-center justify-center tracking-tight gap-8">
-          <motion.div className="text-center lg:text-left">
+          <div className="text-center lg:text-left">
             <h1 className="text-2xl lg:text-8xl font-semibold">
               Welcome to FPL drafts.
             </h1>
             <div className="text-sm lg:text-lg text-muted-foreground">
               A free tool to plan to plan and structure your FPL strategy.
             </div>
-          </motion.div>
+          </div>
           <div className="flex flex-col w-full max-w-md items-center bg-player py-8 px-4 border-1 border-bgsecondary rounded-lg">
             <div className="flex gap-6 flex-col">
               {features.map((feature, index) => (
@@ -96,22 +98,7 @@ export default function SignIn() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-col w-full gap-4">
-                <Button
-                  onClick={async () => {
-                    await signIn("google", {
-                      callbackUrl: `/`,
-                    });
-                  }}
-                  className="bg-foreground hover:bg-foreground h-12 w-full"
-                  variant="ghost"
-                >
-                  <div className="flex flex-row gap-2 items-center justify-center">
-                    <Icons.google className="bg-background" />
-                    <div className="text-black text-sm">
-                      Continue with Google
-                    </div>
-                  </div>
-                </Button>
+                <SignIn />
               </div>
             </CardContent>
           </Card>
