@@ -50,8 +50,8 @@ export default function SignIn() {
   ];
 
   return (
-    <main className="flex flex-col lg:grid lg:grid-cols-2 min-h-screen min-w-screen">
-      <div className="bg-bgsecondary pt-8 px-4 lg:px-8 lg:min-h-screen">
+    <main className="flex flex-col lg:grid lg:grid-cols-2 min-h-screen min-w-screen bg-background ">
+      <div className="pt-8 px-4 lg:px-8 lg:min-h-screen">
         <div className="flex flex-col items-center justify-center lg:min-h-screen tracking-tight gap-8 lg:gap-16">
           <div className="text-center lg:text-left">
             <h1 className="text-2xl lg:text-3xl font-semibold">
@@ -80,7 +80,7 @@ export default function SignIn() {
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-col items-center justify-center px-4 lg:p-8 lg:min-h-screen bg-bgsecondary flex-grow">
+      <div className="w-full flex flex-col items-center justify-center px-4 lg:p-8 lg:min-h-screen flex-grow">
         <div className="w-full max-w-md lg:max-w-lg">
           <Card className="w-full">
             <CardHeader>
