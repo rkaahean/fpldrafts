@@ -3,6 +3,7 @@
 import { FPLFixtures, getAllFixtures } from "@/app/api";
 import { picksStore } from "@/app/store";
 import { useQuery } from "@tanstack/react-query";
+import clsx from "clsx";
 import { Loader2 } from "lucide-react";
 import Heading from "../text/heading";
 import { Skeleton } from "../ui/skeleton";
@@ -39,6 +40,7 @@ export default function Fixtures() {
     team_id: string;
     short_name: string;
     is_home: boolean;
+    difficulty: number;
   };
 
   type Team = {
@@ -57,9 +59,11 @@ export default function Fixtures() {
       const event = fixture.event;
       const homeShortName = fixture.fpl_team_h.short_name;
       const homeFullName = fixture.fpl_team_h.name;
+      const homeFixtureDifficulty = fixture.team_h_difficulty;
 
       const awayShortName = fixture.fpl_team_a.short_name;
       const awayFullName = fixture.fpl_team_a.name;
+      const awayFixtureDifficulty = fixture.team_a_difficulty;
 
       // Add the fixture to the home team
       if (!teams[homeTeamId]) {
@@ -75,6 +79,7 @@ export default function Fixtures() {
         team_id: awayTeamId,
         short_name: awayShortName,
         is_home: true,
+        difficulty: homeFixtureDifficulty,
       });
 
       // Add the fixture to the away team
@@ -91,6 +96,7 @@ export default function Fixtures() {
         team_id: homeTeamId,
         short_name: homeShortName,
         is_home: false,
+        difficulty: awayFixtureDifficulty,
       });
     });
 
@@ -143,7 +149,7 @@ export default function Fixtures() {
                   <td className="col-span-2 w-full flex h-full items-center px-1">
                     <div>{data.full_name}</div>
                   </td>
-                  {gameweeks.map((gw, index) => {
+                  {gameweeks.map((gw) => {
                     const allFixtures = data.fixtures.filter(
                       (gameweekFixture) => gameweekFixture.event == gw
                     );
@@ -151,7 +157,14 @@ export default function Fixtures() {
                       return <TableCell key={0}>-</TableCell>;
                     } else if (allFixtures.length == 1) {
                       return (
-                        <TableCell key={allFixtures[0].event}>
+                        <TableCell
+                          key={allFixtures[0].event}
+                          className={clsx(
+                            getFixtureColorFromDifficulty(
+                              allFixtures[0].difficulty
+                            )
+                          )}
+                        >
                           {allFixtures[0].is_home
                             ? allFixtures[0].short_name
                             : allFixtures[0].short_name.toLowerCase()}
@@ -187,4 +200,23 @@ export default function Fixtures() {
       </div>
     </div>
   );
+}
+
+function getFixtureColorFromDifficulty(strength: number): string {
+  switch (strength) {
+    case 1:
+      return "bg-green-300";
+    case 2:
+      return "bg-green-500 text-black";
+
+    case 3:
+      return "bg-neutral-400 text-black";
+    case 4:
+      return "bg-rose-500";
+
+    case 5:
+      return "bg-rose-950";
+    default:
+      return "";
+  }
 }

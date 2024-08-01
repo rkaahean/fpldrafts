@@ -504,6 +504,8 @@ export async function getAllFixtures(
       event: true,
       team_h_id: true,
       team_a_id: true,
+      team_h_difficulty: true,
+      team_a_difficulty: true,
       fpl_team_h: {
         select: {
           short_name: true,
