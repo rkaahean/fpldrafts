@@ -1,5 +1,4 @@
 import { Toaster } from "@/components/ui/toaster";
-import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
@@ -23,10 +22,7 @@ export default function RootLayout({
       <html lang="en" className="dark">
         <body className={GeistSans.className}>
           <SessionProvider>
-            <main>
-              {children}
-              <Analytics />
-            </main>
+            <main>{children}</main>
           </SessionProvider>
           <Toaster />
           <SpeedInsights />
