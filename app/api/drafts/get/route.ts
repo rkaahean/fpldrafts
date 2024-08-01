@@ -24,10 +24,17 @@ export async function GET(req: NextRequest) {
   const token = jwt.split(" ")[1];
   const decoded = jwtDecode<{ email: string }>(token);
 
-  const { teamId } = await getUserTeamFromEmail(decoded.email);
+  const { teamId } = await getUserTeamFromEmail(
+    decoded.email,
+    process.env.FPL_SEASON_ID!
+  );
 
   if (draftId) {
-    let data = await getDraftTransfers(draftId, teamId);
+    let data = await getDraftTransfers(
+      draftId,
+      teamId,
+      process.env.FPL_SEASON_ID!
+    );
     let newData = data!.FPLDraftTransfers.map((player) => {
       // if no profit, sell at current price
       return {

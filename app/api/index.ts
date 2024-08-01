@@ -1,7 +1,7 @@
 import prisma from "../../lib/db";
 import { DraftTransfer } from "../store/utils";
 
-export async function getUserTeamFromEmail(email: string) {
+export async function getUserTeamFromEmail(email: string, seasonId: string) {
   const user_data = await prisma.user.findFirst({
     select: {
       id: true,
@@ -10,7 +10,7 @@ export async function getUserTeamFromEmail(email: string) {
           id: true,
         },
         where: {
-          fpl_season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+          fpl_season_id: seasonId,
         },
       },
     },
@@ -344,7 +344,11 @@ export async function createDraft(request: {
   return draft.id;
 }
 
-export async function getDraftTransfers(draftId: string, teamId: string) {
+export async function getDraftTransfers(
+  draftId: string,
+  teamId: string,
+  seasonId: string
+) {
   return await prisma.fPLDrafts.findUnique({
     select: {
       id: true,
@@ -378,7 +382,7 @@ export async function getDraftTransfers(draftId: string, teamId: string) {
                   short_name: true,
                   home_fixtures: {
                     where: {
-                      season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+                      season_id: seasonId,
                     },
                     select: {
                       fpl_team_a: {
@@ -392,7 +396,7 @@ export async function getDraftTransfers(draftId: string, teamId: string) {
                   },
                   away_fixtures: {
                     where: {
-                      season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+                      season_id: seasonId,
                     },
                     select: {
                       fpl_team_h: {
@@ -436,7 +440,7 @@ export async function getDraftTransfers(draftId: string, teamId: string) {
                   short_name: true,
                   home_fixtures: {
                     where: {
-                      season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+                      season_id: seasonId,
                     },
                     select: {
                       fpl_team_a: {
@@ -450,7 +454,7 @@ export async function getDraftTransfers(draftId: string, teamId: string) {
                   },
                   away_fixtures: {
                     where: {
-                      season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+                      season_id: seasonId,
                     },
                     select: {
                       fpl_team_h: {
@@ -492,7 +496,7 @@ export async function deleteDraft(draftId: string) {
 export async function getAllFixtures(
   gameweek: number,
   count: number,
-  season_id: string
+  seasonId: string
 ) {
   return await prisma.fPLFixtures.findMany({
     select: {
@@ -518,7 +522,7 @@ export async function getAllFixtures(
         gte: gameweek,
         lte: gameweek + count,
       },
-      season_id,
+      season_id: seasonId,
     },
     orderBy: {
       event: "asc",

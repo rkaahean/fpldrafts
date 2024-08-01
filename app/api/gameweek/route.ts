@@ -12,8 +12,6 @@ import {
 } from "..";
 
 export const GET = auth(async function GET(req: NextRequest) {
-  // console.log(prisma);
-  console.time("gameweek");
   const { searchParams } = new URL(req.url);
 
   const gameweek = parseInt(searchParams.get("gameweek")!);
@@ -29,9 +27,10 @@ export const GET = auth(async function GET(req: NextRequest) {
   const token = jwt.split(" ")[1];
   const decoded = jwtDecode<{ email: string }>(token);
 
-  console.time("user-team-email");
-  const { teamId } = await getUserTeamFromEmail(decoded.email);
-  console.timeEnd("user-team-email");
+  const { teamId } = await getUserTeamFromEmail(
+    decoded.email,
+    process.env.FPL_SEASON_ID!
+  );
 
   // get team and user from token
 
@@ -58,12 +57,10 @@ export const GET = auth(async function GET(req: NextRequest) {
 
     let playerData: any[] = [];
 
-    console.time("player-data");
     const allPlayers: FPLPlayerData2[] = await getPlayerDataBySeason(
-      "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+      process.env.FPL_SEASON_ID!,
       [310, 347, 380, 418, 339, 3, 350, 9, 99, 186, 199, 385, 58, 4, 108]
     );
-    console.timeEnd("player-data");
     // get 2 goalkeeps
     const gks = allPlayers
       .filter((player) => player.element_type == 1)
@@ -113,7 +110,6 @@ export const GET = auth(async function GET(req: NextRequest) {
         },
       };
     });
-    console.timeEnd("gameweek");
     return Response.json({
       data: playerData,
       overall: {

@@ -15,7 +15,10 @@ export async function POST(req: NextRequest) {
   const token = jwt.split(" ")[1];
   const decoded = jwtDecode<{ email: string }>(token);
 
-  const { userId, teamId } = await getUserTeamFromEmail(decoded.email);
+  const { teamId } = await getUserTeamFromEmail(
+    decoded.email,
+    process.env.FPL_SEASON_ID!
+  );
   const draftId = await createDraft({ ...request, teamId });
 
   return Response.json({ id: draftId });

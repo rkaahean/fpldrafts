@@ -19,7 +19,7 @@ function getData() {
 async function parseFixtureData(data: any): Promise<JSONResponse> {
   // get id, team, team_code, web_name, element_type
 
-  const teams = await getPlayerTeams("dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865");
+  const teams = await getPlayerTeams(process.env.FPL_SEASON_ID!);
   const formattedPicks: JSONResponse = data.map((fixture: any) => {
     const [team_h] = teams.filter((team) => team.team_id == fixture.team_h);
     const [team_a] = teams.filter((team) => team.team_id == fixture.team_a);
@@ -31,7 +31,7 @@ async function parseFixtureData(data: any): Promise<JSONResponse> {
       return null; // Skip this fixture
     }
     return {
-      season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+      season_id: process.env.FPL_SEASON_ID!,
       code: fixture.code,
       fixture_id: fixture.id,
       event: fixture.event,

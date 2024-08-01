@@ -52,7 +52,7 @@ async function parsePicksData(
         player_id: {
           in: elementIds,
         },
-        season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+        season_id: process.env.FPL_SEASON_ID!,
       },
       select: {
         id: true,
@@ -144,7 +144,7 @@ export async function updateFPLTeamData(
             (transfer: { element_in: number }) => transfer.element_in
           ),
         },
-        season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+        season_id: process.env.FPL_SEASON_ID!,
       },
       select: {
         id: true,
@@ -159,7 +159,7 @@ export async function updateFPLTeamData(
             (transfer: { element_out: number }) => transfer.element_out
           ),
         },
-        season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+        season_id: process.env.FPL_SEASON_ID!,
       },
       select: {
         id: true,

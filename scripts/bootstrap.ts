@@ -16,7 +16,7 @@ function getData() {
         await prisma.fPLPlayerTeam.upsert({
           where: {
             season_id_code: {
-              season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+              season_id: process.env.FPL_SEASON_ID!,
               code: team.code,
             },
           },
@@ -29,7 +29,7 @@ function getData() {
       // Step 1: Fetch existing player IDs
       const existingPlayers = await prisma.fPLPlayer.findMany({
         select: { player_id: true },
-        where: { season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865" },
+        where: { season_id: process.env.FPL_SEASON_ID! },
       });
       const existingPlayerIds = new Set(
         existingPlayers.map((p) => p.player_id)
@@ -63,7 +63,7 @@ function getData() {
               where: {
                 player_id_season_id: {
                   player_id: player.player_id,
-                  season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+                  season_id: process.env.FPL_SEASON_ID!,
                 },
               },
               update: player,
@@ -92,7 +92,7 @@ function parseBoostrapData(data: any): {
   const players: FPLPlayer[] = elements.map((player: any) => {
     return {
       player_id: player.id,
-      season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+      season_id: process.env.FPL_SEASON_ID!,
       web_name: player.web_name,
       team: player.team,
       element_type: player.element_type,
@@ -117,7 +117,7 @@ function parseBoostrapData(data: any): {
 
   const teamsData: FPLPlayerTeam[] = teams.map((team: any) => {
     return {
-      season_id: "dca2d9c1-d28e-4e9f-87ae-2e6b53fb7865",
+      season_id: process.env.FPL_SEASON_ID!,
       name: team.name,
       short_name: team.short_name,
       code: team.code,
