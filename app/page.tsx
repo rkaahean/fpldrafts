@@ -1,6 +1,6 @@
 import { auth } from "@/auth/main";
 import Drafts from "@/components/drafts/table/overview";
-import Fixtures from "@/components/fixtures/table";
+import Fixtures from "@/components/fixtures/server";
 import Navbar from "@/components/navbar/main";
 import Team from "@/components/pitch/team";
 import Selector from "@/components/transfers/server";

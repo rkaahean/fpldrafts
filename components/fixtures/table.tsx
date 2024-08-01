@@ -1,8 +1,7 @@
 "use client";
 
-import { FPLFixtures, getAllFixtures } from "@/app/api";
+import { FPLFixtures } from "@/app/api";
 import { picksStore } from "@/app/store";
-import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import { Loader2 } from "lucide-react";
 import Heading from "../text/heading";
@@ -16,24 +15,24 @@ import {
   TableRow,
 } from "../ui/table";
 
-export default function Fixtures() {
+export default function FixturesClient(props: { fixtures: FPLFixtures[] }) {
   const gameweek = picksStore((state) => state.currentGameweek);
-  const { data, isLoading } = useQuery({
-    queryKey: [gameweek],
-    queryFn: async () => {
-      const response: {
-        data: NonNullable<Awaited<ReturnType<typeof getAllFixtures>>>;
-      } = await fetch("/api/fixtures", {
-        method: "POST",
-        body: JSON.stringify({
-          gameweek,
-          count: 5,
-        }),
-      }).then((res) => res.json());
+  // const { data, isLoading } = useQuery({
+  //   queryKey: [gameweek],
+  //   queryFn: async () => {
+  //     const response: {
+  //       data: NonNullable<Awaited<ReturnType<typeof getAllFixtures>>>;
+  //     } = await fetch("/api/fixtures", {
+  //       method: "POST",
+  //       body: JSON.stringify({
+  //         gameweek,
+  //         count: 5,
+  //       }),
+  //     }).then((res) => res.json());
 
-      return response;
-    },
-  });
+  //     return response;
+  //   },
+  // });
 
   type TransformedFixture = {
     event: number;
@@ -110,7 +109,7 @@ export default function Fixtures() {
   for (let i = gameweek; i <= gameweek + maxGameweek; i++) {
     gameweeks.push(i);
   }
-  if (!data) {
+  if (!props.fixtures) {
     return (
       <div className="flex flex-col w-full h-full">
         <Heading text={"Fixtures"} />
@@ -121,7 +120,9 @@ export default function Fixtures() {
     );
   }
 
-  const formattedData = transformData(data?.data!);
+  const formattedData = transformData(
+    props.fixtures.filter((fixture) => fixture.event >= gameweek)
+  );
 
   return (
     <div className="h-full flex flex-col">
