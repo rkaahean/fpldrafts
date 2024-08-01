@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 import { Icons } from "@/components/icons/";
+import { motion } from "framer-motion";
 
 export default function SignIn() {
   const features = [
@@ -50,27 +51,30 @@ export default function SignIn() {
   ];
 
   return (
-    <main className="flex flex-col min-h-screen min-w-screen bg-background gap-10">
+    <main className="flex flex-col min-h-screen min-w-screen bg-background gap-8">
       <div className="pt-8 px-4">
         <div className="flex flex-col items-center justify-center tracking-tight gap-8">
-          <div className="text-center lg:text-left">
-            <h1 className="text-2xl lg:text-3xl font-semibold">
-              Welcome to FPL Planner.
+          <motion.div className="text-center lg:text-left">
+            <h1 className="text-2xl lg:text-8xl font-semibold">
+              Welcome to FPL drafts.
             </h1>
-            <CardDescription className="text-sm lg:text-md">
-              A free tool to plan your FPL drafts.
-            </CardDescription>
-          </div>
-          <div className="flex flex-col w-full max-w-md items-center">
+            <div className="text-sm lg:text-lg text-muted-foreground">
+              A free tool to plan to plan and structure your FPL strategy.
+            </div>
+          </motion.div>
+          <div className="flex flex-col w-full max-w-md items-center bg-player py-8 px-4 border-1 border-bgsecondary rounded-lg">
             <div className="flex gap-6 flex-col">
               {features.map((feature, index) => (
-                <div key={index} className="flex flex-row gap-4 items-start">
-                  <div className="feature-icon">{feature.icon}</div>
+                <div
+                  key={index}
+                  className="flex flex-row gap-8 items-start text-black"
+                >
+                  <div className="feature-icon w-8 h-8">{feature.icon}</div>
                   <div className="feature-content flex flex-col">
-                    <h3 className="feature-title font-medium">
+                    <h3 className="feature-title font-normal text-xl tracking-tighter">
                       {feature.title}
                     </h3>
-                    <p className="feature-description text-sm text-muted-foreground">
+                    <p className="feature-description text-black/50">
                       {feature.description}
                     </p>
                   </div>
@@ -82,7 +86,7 @@ export default function SignIn() {
       </div>
       <div className="w-full flex flex-col items-center justify-center px-4">
         <div className="w-full max-w-md lg:max-w-lg">
-          <Card className="w-full">
+          <Card className="w-full border-0 bg-background">
             <CardHeader>
               <CardTitle className="text-xl">Create an account</CardTitle>
               <CardDescription className="text-sm">
