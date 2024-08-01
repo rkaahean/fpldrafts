@@ -43,7 +43,6 @@ export default function Gameweek() {
     queryKey: ["gameweekData", currentGameweek, session?.accessToken],
     placeholderData: keepPreviousData,
     queryFn: async () => {
-      console.log("Going to fetch gameweek data...");
       const response = await fetchGameweekData(
         currentGameweek,
         session?.accessToken!
@@ -62,8 +61,6 @@ export default function Gameweek() {
     // staleTime: 60 * 60 * 1000 * 24,
     queryFn: async () => {
       const data: FPLGameweekPicksData = gameweekData;
-
-      console.log("Setting gameweek state...");
 
       let base: FPLGameweekPicksData;
       if (data.data.length > 0) {
@@ -98,26 +95,23 @@ export default function Gameweek() {
         for (let draftChange of gameweekDraft) {
           // swap players in the team
           draftData = await swapPlayers(draftData, draftChange);
+          console.log(
+            "Swapping",
+            draftChange.in.price,
+            draftChange.out.price,
+            "Bank",
+            draftData.overall.bank,
+            remainingTransferOutSum
+          );
         }
 
-        // if loading a draft from DB
-        if (drafts.id) {
-          setPicks({
-            data: draftData.data,
-            overall: {
-              ...draftData.overall,
-              bank: drafts.bank! + remainingTransferOutSum,
-            },
-          });
-        } else {
-          setPicks({
-            data: draftData.data,
-            overall: {
-              ...draftData.overall,
-              bank: draftData.overall.bank! + remainingTransferOutSum,
-            },
-          });
-        }
+        setPicks({
+          data: draftData.data,
+          overall: {
+            ...draftData.overall,
+            bank: draftData.overall.bank! + remainingTransferOutSum,
+          },
+        });
 
         draftData.overall.bank =
           draftData.overall.bank + remainingTransferOutSum;

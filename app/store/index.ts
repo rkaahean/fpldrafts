@@ -311,7 +311,6 @@ export async function swapPlayers(
       position: data.data[outPlayerIndex].position,
       selling_price: substitutedIn.price,
     };
-    console.log("Compeleted new player data loading", inPlayer);
   } else {
     // Happens when players being switched up within the team
     inPlayer = {
