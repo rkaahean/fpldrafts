@@ -162,7 +162,8 @@ export default function Fixtures() {
                           className={clsx(
                             getFixtureColorFromDifficulty(
                               allFixtures[0].difficulty
-                            )
+                            ),
+                            "items-center justify-center flex flex-row w-full h-full"
                           )}
                         >
                           {allFixtures[0].is_home
