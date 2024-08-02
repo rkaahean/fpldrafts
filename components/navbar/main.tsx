@@ -16,8 +16,8 @@ export default function Navbar(props: { image: string }) {
       </Avatar>
       <Button
         variant="link"
-        onClick={() => {
-          signOut({ redirect: false });
+        onClick={async () => {
+          await signOut();
           router.push("/landing");
         }}
       >
