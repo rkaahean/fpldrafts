@@ -9,8 +9,17 @@ import Gameweek from "./Gameweek";
 
 export default function Team() {
   return (
-    <div className="w-full h-fit lg:min-h-full flex flex-row justify-start gap-1">
-      {!isMobile && (
+    <div className="w-full h-fit lg:min-h-full flex flex-col lg:flex-row justify-start gap-1">
+      {isMobile ? (
+        <nav className="flex flex-row justify-center gap-4">
+          <RemoveAll />
+          {/* <ResetAll /> */}
+          {/* <ResetCurrentGameweek /> */}
+          <DraftSave />
+          {/* <DraftChanges /> */}
+          <DraftUpdate />
+        </nav>
+      ) : (
         <nav className="flex flex-col justify-center gap-4">
           <RemoveAll />
           {/* <ResetAll /> */}

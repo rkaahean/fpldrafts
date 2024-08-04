@@ -19,12 +19,17 @@ export default async function Home() {
   }
 
   const mobileContent = (
-    <div className="flex flex-col bg-grainy px-4 gap-12">
-      <Navbar image={session.user!.image!} />
-      <Team />
-      <Selector />
-      <Drafts />
-      <Fixtures />
+    <div className="flex flex-col bg-grainy px-4 gap-4">
+      <div>
+        <Navbar image={session.user!.image!} />
+      </div>
+
+      <div className="flex flex-col gap-8">
+        <Team />
+        <Selector />
+        <Drafts />
+        <Fixtures />
+      </div>
     </div>
   );
 
