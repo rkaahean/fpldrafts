@@ -57,7 +57,7 @@ export default async function Landing() {
       <div className="pt-8 px-4">
         <div className="flex flex-col items-center justify-center tracking-tight gap-8">
           <div className="text-center lg:text-left">
-            <h1 className="text-2xl lg:text-8xl font-semibold">
+            <h1 className="text-xl lg:text-8xl font-semibold">
               Welcome to FPL drafts.
             </h1>
             <div className="text-sm lg:text-lg text-muted-foreground">
