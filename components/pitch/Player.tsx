@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Cross2Icon, DoubleArrowDownIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { isMobile } from "react-device-detect";
 
 export default function Player(props: { data: PlayerData; gameweek: number }) {
   const subIn = picksStore((store) => store.setSubstituteIn);
@@ -82,7 +83,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
         </div>
         <div className="flex flex-col h-full w-full">
           <PlayerDescription data={props.data} />
-          <PlayerStatsTicker data={props.data} />
+          {!isMobile && <PlayerStatsTicker data={props.data} />}
         </div>
       </div>
     </motion.div>
@@ -113,7 +114,7 @@ function PlayerFixtureTicker({
   }
 
   return (
-    <div className="w-3/12 grid grid-rows-4 text-[6px] lg:text-xs tracking-tighter">
+    <div className="w-3/12 grid grid-rows-4 text-[8px] lg:text-xs tracking-tighter">
       {formattedFixtures.map((fixture, idx) => {
         if (Array.isArray(fixture)) {
           return (
@@ -171,7 +172,7 @@ function PlayerDescription({
 }) {
   return (
     <div className="flex flex-col lg:h-5/6 items-center justify-around">
-      <div className="w-6 h-6 lg:h-16 lg:w-16">
+      <div className="w-[30px] h-[30px] lg:h-16 lg:w-16">
         <Image
           src={`https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${data.team_code}-110.webp`}
           alt="Player"
@@ -181,7 +182,7 @@ function PlayerDescription({
           className="w-full h-full object-contain"
         />
       </div>
-      <div className="text-[6px] lg:text-xs h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
+      <div className="text-[8px] lg:text-xs h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
         {data.web_name}
       </div>
     </div>

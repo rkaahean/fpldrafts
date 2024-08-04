@@ -64,14 +64,3 @@ export default async function Home() {
     />
   );
 }
-
-// export function isMobileServer(): boolean {
-//   const headersList = headers();
-//   const userAgent = headersList.get("user-agent") || "";
-
-//   const parser = new UAParser(userAgent);
-//   const result = parser.getResult();
-//   const isMobile = result.device.type === "mobile";
-
-//   return isMobile;
-// }

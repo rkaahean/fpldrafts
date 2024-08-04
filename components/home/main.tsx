@@ -16,7 +16,6 @@ export default function DeviceWrapper({
 
   useEffect(() => {
     setIsClient(true);
-    console.log("IS mobile", isMobile); // This will only log on the client
   }, []);
 
   if (!isClient) return null; // or a loading indicator
