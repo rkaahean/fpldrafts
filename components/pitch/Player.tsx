@@ -31,7 +31,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
   return (
     <motion.div
       className={cn(
-        "flex flex-row w-16 h-16 lg:w-32 lg:h-32 2xl:w-36 2xl:h-36 border rounded-md p-0.5 lg:p-2 text-player-foreground",
+        "flex flex-row w-[72px] h-[72px] lg:w-32 lg:h-32 2xl:w-36 2xl:h-36 border rounded-md p-0.5 lg:p-2 text-player-foreground",
         player?.player_id == props.data.player_id ? "bg-muted" : "bg-player",
         isSelectedForTransfer ? "bg-destructive" : ""
       )}
@@ -58,7 +58,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
             }}
           >
             <div className="flex flex-row justify-center">
-              <DoubleArrowDownIcon className="w-2 h-2 lg:w-3 lg:h-3" />
+              <DoubleArrowDownIcon className="w-3 h-3" />
             </div>
           </button>
           <button
@@ -77,7 +77,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
             }}
           >
             <div className="flex flex-row justify-center">
-              <Cross2Icon className="w-2 h-2 lg:w-3 lg:h-3" />
+              <Cross2Icon className="w-3 h-3" />
             </div>
           </button>
         </div>
@@ -182,7 +182,7 @@ function PlayerDescription({
           className="w-full h-full object-contain"
         />
       </div>
-      <div className="text-[8px] lg:text-xs h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
+      <div className="text-[10px] lg:text-xs h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
         {data.web_name}
       </div>
     </div>
