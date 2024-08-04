@@ -11,7 +11,7 @@ export default function Navbar(props: { image: string }) {
   return (
     <div className="flex flex-row lg:flex-col py-2 justify-center lg:items-center gap-5 pl-2">
       <Avatar>
-        <AvatarImage src={props.image} />
+        <AvatarImage src={props.image} alt="profile_image" />
         <AvatarFallback>CN</AvatarFallback>
       </Avatar>
       <Button

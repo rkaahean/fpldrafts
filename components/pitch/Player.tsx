@@ -31,7 +31,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
   return (
     <motion.div
       className={cn(
-        "flex flex-row w-[72px] h-[72px] lg:w-32 lg:h-32 2xl:w-36 2xl:h-36 border rounded-md p-0.5 lg:p-2 text-player-foreground",
+        "flex flex-row w-[68px] h-[72px] sm:w-20 h:20 lg:w-32 lg:h-32 2xl:w-36 2xl:h-36 border rounded-md p-0.5 lg:p-2 text-player-foreground",
         player?.player_id == props.data.player_id ? "bg-muted" : "bg-player",
         isSelectedForTransfer ? "bg-destructive" : ""
       )}
@@ -58,7 +58,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
             }}
           >
             <div className="flex flex-row justify-center">
-              <DoubleArrowDownIcon className="w-3 h-3" />
+              <DoubleArrowDownIcon className="w-[10px] h-[10px] lg:w-3 lg:h-3" />
             </div>
           </button>
           <button
@@ -77,12 +77,25 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
             }}
           >
             <div className="flex flex-row justify-center">
-              <Cross2Icon className="w-3 h-3" />
+              <Cross2Icon className="w-[10px] h-[10px] lg:w-3 lg:h-3" />
             </div>
           </button>
         </div>
-        <div className="flex flex-col h-full w-full">
-          <PlayerDescription data={props.data} />
+        <div className="flex flex-col h-full w-full justify-between items-center">
+          {/* <PlayerDescription data={props.data} /> */}
+          <div className="w-8 h-8 lg:h-16 lg:w-16">
+            <Image
+              src={`https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${props.data.team_code}-110.webp`}
+              alt="Player"
+              width={40}
+              height={40}
+              priority
+              className="w-full h-full object-contain"
+            />
+          </div>
+          <div className="text-[9px] lg:text-xs h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
+            {props.data.web_name}
+          </div>
           {!isMobile && <PlayerStatsTicker data={props.data} />}
         </div>
       </div>
@@ -172,7 +185,7 @@ function PlayerDescription({
 }) {
   return (
     <div className="flex flex-col lg:h-5/6 items-center justify-around">
-      <div className="w-[30px] h-[30px] lg:h-16 lg:w-16">
+      <div className="w-6 h-6 lg:h-16 lg:w-16">
         <Image
           src={`https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${data.team_code}-110.webp`}
           alt="Player"
@@ -182,7 +195,7 @@ function PlayerDescription({
           className="w-full h-full object-contain"
         />
       </div>
-      <div className="text-[10px] lg:text-xs h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
+      <div className="text-[9px] lg:text-xs h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
         {data.web_name}
       </div>
     </div>
