@@ -126,7 +126,7 @@ export default function Gameweek() {
   if (data && data.data && session) {
     return (
       <ReactQueryProvider>
-        <div className="flex flex-col gap-1 h-full relative">
+        <div className="flex flex-col gap-2 lg:gap-1 h-full relative">
           <div className="flex flex-row justify-between">
             <button
               onClick={() => setCurrentGameweek(currentGameweek - 1)}
@@ -191,7 +191,7 @@ function GameweekStat({
   value: number | string;
 }) {
   return (
-    <div className="text-xs flex flex-col w-10">
+    <div className="text-[10px] lg:text-xs flex flex-col w-10">
       <div className="font-light">{title}</div>
       <div className="font-black">{value}</div>
     </div>
