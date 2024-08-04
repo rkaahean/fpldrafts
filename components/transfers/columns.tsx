@@ -22,8 +22,8 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
           <Image
             src={`https://resources.premierleague.com/premierleague/badges/t${row.original.team_code}.png`}
             alt="crest"
-            width={128}
-            height={128}
+            width={16}
+            height={16}
             priority
           />
         </div>
