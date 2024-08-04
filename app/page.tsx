@@ -19,7 +19,7 @@ export default async function Home() {
   }
 
   const mobileContent = (
-    <div className="flex flex-col bg-grainy px-4 gap-4">
+    <div className="flex flex-col bg-grainy px-4 gap-6">
       <Navbar image={session.user!.image!} />
       <Team />
       <Selector />
