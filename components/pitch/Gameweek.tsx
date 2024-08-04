@@ -14,6 +14,7 @@ import Image from "next/image";
 import PitchRow from "./PitchRow";
 
 import Pitch from "../../images/pitch.svg";
+import { Button } from "../ui/button";
 export default function Gameweek() {
   const picksSelectors = picksStore((state) => ({
     setBase: state.setBase,
@@ -128,12 +129,12 @@ export default function Gameweek() {
       <ReactQueryProvider>
         <div className="flex flex-col gap-2 lg:gap-1 h-full relative">
           <div className="flex flex-row justify-between">
-            <button
+            <Button
               onClick={() => setCurrentGameweek(currentGameweek - 1)}
               title="Previous Gameweek"
             >
-              <ArrowLeftIcon />
-            </button>
+              <ArrowLeftIcon className="w-4 h-4 lg:w-6 lg:h-6" />
+            </Button>
             <div className="flex flex-row justify-around w-full">
               <GameweekStat title="Gameweek" value={currentGameweek} />
               <GameweekStat
@@ -147,12 +148,12 @@ export default function Gameweek() {
               <GameweekStat title="ITB" value={`${picks.overall.bank! / 10}`} />
               <GameweekStat title="Rank" value={data.overall.overall_rank} />
             </div>
-            <button
+            <Button
               onClick={() => setCurrentGameweek(currentGameweek + 1)}
               title="Next Gameweek"
             >
-              <ArrowRightIcon />
-            </button>
+              <ArrowRightIcon className="w-4 h-4 lg:w-6 lg:h-6" />
+            </Button>
           </div>
 
           <div>
