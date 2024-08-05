@@ -48,7 +48,7 @@ const ToggleGroupItem = React.forwardRef<
           size: context.size || size,
         }),
         className,
-        "font-semibold text-xs"
+        "font-semibold text-xs h-8"
       )}
       {...props}
     >

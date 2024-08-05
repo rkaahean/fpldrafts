@@ -12,6 +12,14 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { FPLPlayerData2 } from "@/app/api";
 import { chartsStore } from "@/app/store/charts";
 import { PlayerData } from "@/app/store/utils";
@@ -24,6 +32,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Updater } from "@tanstack/react-query";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -125,6 +134,13 @@ export function DataTable<TData, TValue>({
     table.getColumn("now_value")?.setFilterValue(maxPrice);
   }, [maxPrice, table]);
 
+  const teamCodeToShortName = data.reduce((acc, team: any) => {
+    acc[team.team_code] = team.fpl_player_team.short_name;
+    return acc;
+  }, {} as Record<number, string>);
+
+  console.log(teamCodeToShortName);
+
   return (
     <div className="flex flex-col rounded-sm h-full justify-between bg-bgsecondary">
       <div className="flex flex-col gap-1 bg-background overflow-scroll">
@@ -157,17 +173,57 @@ export function DataTable<TData, TValue>({
           </ToggleGroup>
         </div>
 
-        <div className="pb-3">
-          <div className="flex flex-row justify-between mb-2">
-            <Label>Max Price</Label>
-            <div className="text-xs">{`£${maxPrice / 10}`} </div>
+        <div className="flex flex-row w-full gap-4">
+          <div className="pb-3 w-2/3">
+            <div className="flex flex-row justify-between mb-2">
+              <Label>Max Price</Label>
+              <div className="text-xs">{`£${maxPrice / 10}`} </div>
+            </div>
+            <Slider
+              defaultValue={[maxPrice]}
+              max={155}
+              min={35}
+              step={5}
+              onValueChange={(value) => setMaxPrice(value[0])}
+            />
           </div>
-          <Slider
-            defaultValue={[maxPrice]}
-            max={150}
-            step={5}
-            onValueChange={(value) => setMaxPrice(value[0])}
-          />
+
+          <div className="flex-grow">
+            <Select>
+              <SelectTrigger>
+                <SelectValue placeholder="Team" />
+              </SelectTrigger>
+              <SelectContent>
+                {/* <SelectItem value="light">Light</SelectItem>
+                <SelectItem value="dark">Dark</SelectItem>
+                <SelectItem value="system">System</SelectItem> */}
+                {Object.entries(teamCodeToShortName).map(
+                  ([code, name], index) => {
+                    return (
+                      <SelectItem
+                        value={code}
+                        className="flex flex-row w-full"
+                        key={index}
+                      >
+                        <div className="flex flex-row w-full gap-2">
+                          <div className="w-4 h-4">
+                            <Image
+                              src={`https://resources.premierleague.com/premierleague/badges/t${code}.png`}
+                              alt="crest"
+                              width={16}
+                              height={16}
+                              priority
+                            />
+                          </div>
+                          <div>{name}</div>
+                        </div>
+                      </SelectItem>
+                    );
+                  }
+                )}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         <div className="bg-bgsecondary rounded-sm">
