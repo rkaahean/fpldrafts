@@ -6,7 +6,9 @@ import Navbar from "@/components/navbar/main";
 import Team from "@/components/pitch/team";
 import Selector from "@/components/transfers/server";
 
+import { jwtDecode } from "jwt-decode";
 import { redirect } from "next/navigation";
+import { getLatestGameweek, getUserTeamFromEmail } from "./api";
 
 export default async function Home() {
   const session = await auth();
@@ -18,6 +20,14 @@ export default async function Home() {
     redirect("/link");
   }
 
+  // current gameweek
+  const decoded = jwtDecode<{ email: string }>(session.accessToken);
+  const { teamId } = await getUserTeamFromEmail(
+    decoded.email,
+    process.env.FPL_SEASON_ID!
+  );
+  const maxGameweek = await getLatestGameweek(teamId);
+
   const mobileContent = (
     <div className="flex flex-col bg-grainy px-4 gap-4">
       <div>
@@ -25,7 +35,7 @@ export default async function Home() {
       </div>
 
       <div className="flex flex-col gap-8">
-        <Team />
+        <Team gameweek={maxGameweek._max ? 1 : maxGameweek._max + 1} />
         <Selector />
         <Drafts />
         <Fixtures />
@@ -56,7 +66,7 @@ export default async function Home() {
           </div>
         </div>
         <div className="col-span-2 py-2 px-2 pr-2 h-screen">
-          <Team />
+          <Team gameweek={maxGameweek._max ? 1 : maxGameweek._max + 1} />
         </div>
       </div>
     </div>

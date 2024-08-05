@@ -7,7 +7,7 @@ import DraftSave from "../drafts/table/save";
 import DraftUpdate from "../drafts/update";
 import Gameweek from "./Gameweek";
 
-export default function Team() {
+export default function Team(props: { gameweek: number }) {
   return (
     <div className="w-full h-fit lg:min-h-full flex flex-col lg:flex-row justify-start gap-1">
       {isMobile ? (
@@ -30,7 +30,7 @@ export default function Team() {
         </nav>
       )}
       <div className="flex flex-col flex-grow">
-        <Gameweek />
+        <Gameweek gameweek={props.gameweek} />
       </div>
     </div>
   );

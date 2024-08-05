@@ -13,9 +13,10 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import PitchRow from "./PitchRow";
 
+import { useEffect } from "react";
 import Pitch from "../../images/pitch.svg";
 import { Button } from "../ui/button";
-export default function Gameweek() {
+export default function Gameweek(props: { gameweek: number }) {
   const picksSelectors = picksStore((state) => ({
     setBase: state.setBase,
     setCurrentGameweek: state.setCurrentGameweek,
@@ -37,6 +38,11 @@ export default function Gameweek() {
     picks,
     transfers,
   } = picksSelectors;
+
+  // set the current gameweek
+  useEffect(() => {
+    setCurrentGameweek(props.gameweek);
+  }, [props.gameweek, setCurrentGameweek]);
 
   const { data: session } = useSession();
 
