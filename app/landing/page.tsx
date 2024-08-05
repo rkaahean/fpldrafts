@@ -57,7 +57,7 @@ export default async function Landing() {
       <div className="pt-8 px-4">
         <div className="flex flex-col items-center justify-center tracking-tight gap-8">
           <div className="text-center lg:text-left">
-            <h1 className="text-xl lg:text-8xl font-semibold">
+            <h1 className="text-4xl lg:text-8xl font-semibold">
               Welcome to FPL drafts.
             </h1>
             <div className="text-sm lg:text-lg text-muted-foreground">
@@ -73,10 +73,10 @@ export default async function Landing() {
                 >
                   <div className="feature-icon w-8 h-8">{feature.icon}</div>
                   <div className="feature-content flex flex-col">
-                    <h3 className="feature-title font-normal text-xl tracking-tighter">
+                    <h3 className="feature-title font-normal text-md lg:text-xl tracking-tighter">
                       {feature.title}
                     </h3>
-                    <p className="feature-description text-black/50">
+                    <p className="feature-description text-black/50 text-xs lg:text-base">
                       {feature.description}
                     </p>
                   </div>
