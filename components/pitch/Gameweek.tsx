@@ -14,7 +14,7 @@ import Image from "next/image";
 import PitchRow from "./PitchRow";
 
 import { useEffect } from "react";
-import Pitch from "../../images/pitch.svg";
+import Pitch from "../../public/pitch.svg";
 import { Button } from "../ui/button";
 export default function Gameweek(props: { gameweek: number }) {
   const picksSelectors = picksStore((state) => ({

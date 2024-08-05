@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://fpldrafts.com
+
+# Sitemaps
+Sitemap: https://fpldrafts.com/sitemap.xml

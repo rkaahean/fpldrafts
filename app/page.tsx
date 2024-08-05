@@ -7,8 +7,14 @@ import Team from "@/components/pitch/team";
 import Selector from "@/components/transfers/server";
 
 import { jwtDecode } from "jwt-decode";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getLatestGameweek, getUserTeamFromEmail } from "./api";
+
+export const metadata: Metadata = {
+  title: "Home",
+  description: "An overview of your FPL team.",
+};
 
 export default async function Home() {
   const session = await auth();
