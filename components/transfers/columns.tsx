@@ -137,7 +137,7 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
             }
           }}
         >
-          <PlusIcon className="w-3 h-3 text-green-500 hover:text-white transition-all hover:bg-green-500 rounded-full" />
+          <PlusIcon className="w-[14px] h-[14px] text-accent hover:text-primary transition-all hover:bg-accent rounded-full" />
         </button>
       );
     },
