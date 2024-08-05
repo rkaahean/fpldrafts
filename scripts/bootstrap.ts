@@ -10,7 +10,7 @@ function getData() {
     .then(async (data) => {
       const { players, teams } = data;
 
-      console.log("Players", players);
+      console.log("Updating player teams...");
       // upsert player team data.
       teams.map(async (team) => {
         await prisma.fPLPlayerTeam.upsert({
@@ -27,6 +27,7 @@ function getData() {
 
       // upsert fpl player data
       // Step 1: Fetch existing player IDs
+      console.log("Finding existing players...");
       const existingPlayers = await prisma.fPLPlayer.findMany({
         select: { player_id: true },
         where: { season_id: process.env.FPL_SEASON_ID! },
@@ -36,8 +37,8 @@ function getData() {
       );
 
       // Step 2: Separate players to create and update
-      const playersToCreate = [];
-      const playersToUpdate = [];
+      const playersToCreate: FPLPlayer[] = [];
+      const playersToUpdate: FPLPlayer[] = [];
 
       for (const player of data.players) {
         if (existingPlayerIds.has(player.player_id)) {
@@ -49,16 +50,17 @@ function getData() {
 
       // Step 3: Bulk create new players
       if (playersToCreate.length > 0) {
+        console.log("Creating new players...", playersToCreate.length);
         await prisma.fPLPlayer.createMany({
           data: playersToCreate,
         });
       }
 
       // Step 4: Bulk update existing players
-
+      console.log("Updating existing players...", playersToUpdate.length);
       await prisma.$transaction(
         async (tx) => {
-          for (const player of players) {
+          for (const player of playersToUpdate) {
             await tx.fPLPlayer.upsert({
               where: {
                 player_id_season_id: {
@@ -88,6 +90,7 @@ function parseBoostrapData(data: any): {
   const elements = data["elements"];
   const teams = data["teams"];
 
+  console.log("Parsing bootstrap data into teams and players...");
   // get player info
   const players: FPLPlayer[] = elements.map((player: any) => {
     return {

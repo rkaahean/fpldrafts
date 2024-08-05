@@ -3,12 +3,14 @@ const prisma = new PrismaClient();
 
 type JSONResponse = Omit<FPLFixtures, "id">[];
 function getData() {
+  console.log("Fetching updated fixtures from FPL...");
   return fetch(`https://fantasy.premierleague.com/api/fixtures`)
     .then((res) => res.json())
     .then(async (data) => {
       return await parseFixtureData(data);
     })
     .then(async (data) => {
+      console.log("Uploading new fixture information to DB...", data.length);
       await prisma.fPLFixtures.createMany({
         data,
         skipDuplicates: true,
@@ -19,6 +21,7 @@ function getData() {
 async function parseFixtureData(data: any): Promise<JSONResponse> {
   // get id, team, team_code, web_name, element_type
 
+  console.log("Parsing fixture data from FPL...");
   const teams = await getPlayerTeams(process.env.FPL_SEASON_ID!);
   const formattedPicks: JSONResponse = data.map((fixture: any) => {
     const [team_h] = teams.filter((team) => team.team_id == fixture.team_h);

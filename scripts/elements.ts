@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 function getData() {
+  console.log("Fetching player information from DB...");
   const players = prisma.fPLPlayer.findMany({
     orderBy: {
       total_points: "desc",
@@ -10,6 +11,7 @@ function getData() {
 
   return players
     .then((players) => {
+      console.log("Fetching player information from FPL...");
       return Promise.all(
         players.map(async (player) => {
           try {
@@ -27,9 +29,7 @@ function getData() {
       );
     })
     .then(async (playersData) => {
-      // for all players
-
-      // console.log(playersData);
+      console.log("Upadting Gameweek Player Stats...");
       const formattedData = playersData
         .filter((value) => Object.keys(value).length != 0)
         .map((player) => {
@@ -50,7 +50,6 @@ function getData() {
             });
           }
         });
-      // console.log(formattedData);
       await prisma.fPLGameweekPlayerStats.createMany({
         data: formattedData.flat(),
         skipDuplicates: true,
