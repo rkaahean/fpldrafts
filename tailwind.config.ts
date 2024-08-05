@@ -38,7 +38,7 @@ const config = {
         },
         destructive: {
           DEFAULT: "var(--destructive)",
-          foreground: "hsl(var(--destructive-foreground))",
+          foreground: "var(--destructive-foreground)",
         },
         success: {
           DEFAULT: "var(--success)",

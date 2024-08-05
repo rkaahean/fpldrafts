@@ -1,13 +1,6 @@
 import { auth } from "@/auth/main";
 import SignIn from "@/components/auth/signIn";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   CalendarIcon,
   LayoutListIcon,
   PoundSterlingIcon,
@@ -87,22 +80,7 @@ export default async function Landing() {
         </div>
       </div>
       <div className="w-full flex flex-col items-center justify-center px-4">
-        <div className="w-full max-w-md lg:max-w-lg">
-          <Card className="w-full border-0 bg-background">
-            <CardHeader>
-              <CardTitle className="text-xl">Create an account</CardTitle>
-              <CardDescription className="text-sm">
-                An account helps store your FPL drafts. This has nothing to do
-                with the actual FPL account.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col w-full gap-4">
-                <SignIn />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <SignIn />
       </div>
     </main>
   );
