@@ -534,6 +534,11 @@ export async function getAllFixtures(
 
 export type FPLFixtures = Awaited<ReturnType<typeof getAllFixtures>>[number];
 
+/**
+ *
+ * @param teamId
+ * @returns Latest gameweek so far for given team
+ */
 export async function getLatestGameweek(teamId: string) {
   return prisma.fPLGameweekPicks.aggregate({
     _max: {
