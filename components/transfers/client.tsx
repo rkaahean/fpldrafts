@@ -2,7 +2,7 @@
 
 import { picksStore } from "@/app/store";
 
-import Heading from "../text/heading";
+import Heading from "../ui/text/heading";
 import { columns } from "./columns";
 import { DataTable } from "./table";
 

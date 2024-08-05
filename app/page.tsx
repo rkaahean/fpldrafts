@@ -44,29 +44,30 @@ export default async function Home() {
   );
 
   const desktopContent = (
-    <div className="flex flex-row h-screen bg-grainy">
-      <Navbar image={session.user!.image!} />
-      <div className="grid grid-cols-4 gap-2 w-full h-fit">
-        <div className="col-span-1 min-h-screen gap-1 py-2 pl-1 pr-2">
-          <Selector />
-
-          {/* <div className="h-fit lg:h-full relative lg:overflow-scroll">
+    <div className="flex flex-col">
+      <div className="flex flex-row h-screen bg-grainy">
+        <Navbar image={session.user!.image!} />
+        <div className="grid grid-cols-4 gap-2 w-full h-fit">
+          <div className="col-span-1 min-h-full gap-1 py-2 pl-1 pr-2">
+            <Selector />
+            {/* <div className="h-fit lg:h-full relative lg:overflow-scroll">
               <Selector />
             </div> */}
-          {/* <PlayerComparison /> */}
-        </div>
-        <div className="col-span-1 h-full py-2">
-          <div className="flex flex-col h-full gap-2">
-            <div className="h-1/3">
-              <Drafts />
-            </div>
-            <div className="h-2/3">
-              <Fixtures />
+            {/* <PlayerComparison /> */}
+          </div>
+          <div className="col-span-1 h-full py-2">
+            <div className="flex flex-col h-full gap-2">
+              <div className="h-1/3">
+                <Drafts />
+              </div>
+              <div className="h-2/3">
+                <Fixtures />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="col-span-2 py-2 px-2 pr-2 h-screen">
-          <Team gameweek={maxGameweek._max ? 1 : maxGameweek._max + 1} />
+          <div className="col-span-2 py-2 px-2 pr-2 min-h-full">
+            <Team gameweek={maxGameweek._max ? 1 : maxGameweek._max + 1} />
+          </div>
         </div>
       </div>
     </div>

@@ -3,8 +3,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import Heading from "../../text/heading";
 import { Skeleton } from "../../ui/skeleton";
+import Heading from "../../ui/text/heading";
 import { DraftsData, columns } from "./columns";
 import { DataTable } from "./table";
 

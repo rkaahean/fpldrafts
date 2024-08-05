@@ -4,7 +4,6 @@ import { FPLFixtures } from "@/app/api";
 import { picksStore } from "@/app/store";
 import clsx from "clsx";
 import { Loader2 } from "lucide-react";
-import Heading from "../text/heading";
 import { Skeleton } from "../ui/skeleton";
 import {
   Table,
@@ -14,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import Heading from "../ui/text/heading";
 
 export default function FixturesClient(props: { fixtures: FPLFixtures[] }) {
   const gameweek = picksStore((state) => state.currentGameweek);
