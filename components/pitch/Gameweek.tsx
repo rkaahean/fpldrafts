@@ -160,7 +160,7 @@ export default function Gameweek(props: { gameweek: number }) {
             </div>
           </div>
 
-          <div className="w-full z-0">
+          <div className="w-full z-0 flex flex-col">
             {["GK", "DEF", "MID", "FWD", "subs"].map((position: string) => (
               <PitchRow
                 key={position}

@@ -1,9 +1,7 @@
 import { FPLPlayerData } from "@/app/api";
 import { PlayerData } from "@/app/store/utils";
 import { clsx, type ClassValue } from "clsx";
-import { headers } from "next/headers";
 import { twMerge } from "tailwind-merge";
-import UAParser from "ua-parser-js";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -76,7 +74,7 @@ export function FPLPlayerDataToPlayerData(player: FPLPlayerData) {
   // sort by position to display in order
 }
 
-export function elemnentTypeToPosition(type: number): string {
+export function elementTypeToPosition(type: number): string {
   switch (type) {
     case 1:
       return "GK";

@@ -1,8 +1,8 @@
 import { toast } from "@/components/ui/use-toast";
-import { elemnentTypeToPosition } from "@/lib/utils";
 import { create } from "zustand";
 import { FPLGameweekPicksData, FPLPlayerData } from "../api";
 import { DraftState, DraftTransfer, PlayerData } from "./utils";
+import { elementTypeToPosition } from "@/lib/utils";
 
 interface State {
   currentGameweek: number;
@@ -230,7 +230,7 @@ export const picksStore = create<State>()((set, get) => ({
       // if there are transfers of in type, but no transfers of out type
       if (transfersIn[e_type].length > 0 && transfersOut[e_type].length == 0) {
         isvalid = false;
-        reason = `Select a ${elemnentTypeToPosition(
+        reason = `Select a ${elementTypeToPosition(
           transfersIn[e_type][0].element_type
         )} in team to transfer in ${transfersIn[e_type][0].web_name}.`;
         break;

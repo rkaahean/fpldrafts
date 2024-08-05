@@ -1,6 +1,6 @@
 import { picksStore } from "@/app/store";
 import { PlayerData, updateTransfer } from "@/app/store/utils";
-import { cn } from "@/lib/utils";
+import { cn, elementTypeToPosition } from "@/lib/utils";
 import { Cross2Icon, DoubleArrowDownIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -29,77 +29,85 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
   const player = isSubstitute ? substitutedIn : substitutedOut;
 
   return (
-    <motion.div
-      className={cn(
-        "flex flex-row w-[68px] h-[72px] sm:w-20 h:20 lg:w-32 lg:h-32 2xl:w-36 2xl:h-36 border rounded-md p-0.5 lg:p-2 text-player-foreground",
-        player?.player_id == props.data.player_id ? "bg-muted" : "bg-player",
-        isSelectedForTransfer ? "bg-destructive" : ""
+    <div>
+      {isSubstitute && (
+        <div className="text-xs text-black text-center tracking-tight font-bold">
+          {elementTypeToPosition(props.data.element_type)}
+        </div>
       )}
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.2 }}
-    >
-      <PlayerFixtureTicker
-        fixtures={props.data.fixtures}
-        gameweek={props.gameweek}
-      />
 
-      <div className="w-9/12 text-xs flex flex-col h-full items-end">
-        <div className="h-1/12">
-          <button
-            className="text-xs w-4 h-4 rounded-sm"
-            onClick={() => {
-              if (isSubstitute) {
-                subIn(props.data);
-              } else {
-                subOut(props.data);
-              }
-              makeSubs();
-            }}
-          >
-            <div className="flex flex-row justify-center">
-              <DoubleArrowDownIcon className="w-[10px] h-[10px] lg:w-3 lg:h-3" />
-            </div>
-          </button>
-          <button
-            className="text-xs w-4 h-4 rounded-sm"
-            onClick={() => {
-              // if not already selected, push into state
-              updateTransfer(
-                transfersOut,
-                props.data,
-                addToBank,
-                removeFromBank
-              );
-              // because transferrring in, reset subs
-              resetSubs();
-              setTransferOut(transfersOut);
-            }}
-          >
-            <div className="flex flex-row justify-center">
-              <Cross2Icon className="w-[10px] h-[10px] lg:w-3 lg:h-3" />
-            </div>
-          </button>
-        </div>
-        <div className="flex flex-col h-full w-full justify-between items-center">
-          {/* <PlayerDescription data={props.data} /> */}
-          <div className="w-8 h-8 lg:h-16 lg:w-16">
-            <Image
-              src={`https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${props.data.team_code}-110.webp`}
-              alt="Player"
-              width={40}
-              height={40}
-              priority
-              className="w-full h-full object-contain"
-            />
+      <motion.div
+        className={cn(
+          "flex flex-row w-[68px] h-[72px] sm:w-20 h:20 lg:w-32 lg:h-32 2xl:w-36 2xl:h-36 border rounded-md p-0.5 lg:p-2 text-player-foreground",
+          player?.player_id == props.data.player_id ? "bg-muted" : "bg-player",
+          isSelectedForTransfer ? "bg-destructive" : ""
+        )}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.2 }}
+      >
+        <PlayerFixtureTicker
+          fixtures={props.data.fixtures}
+          gameweek={props.gameweek}
+        />
+
+        <div className="w-9/12 text-xs flex flex-col h-full items-end">
+          <div className="h-1/12">
+            <button
+              className="text-xs w-4 h-4 rounded-sm"
+              onClick={() => {
+                if (isSubstitute) {
+                  subIn(props.data);
+                } else {
+                  subOut(props.data);
+                }
+                makeSubs();
+              }}
+            >
+              <div className="flex flex-row justify-center">
+                <DoubleArrowDownIcon className="w-[10px] h-[10px] lg:w-3 lg:h-3" />
+              </div>
+            </button>
+            <button
+              className="text-xs w-4 h-4 rounded-sm"
+              onClick={() => {
+                // if not already selected, push into state
+                updateTransfer(
+                  transfersOut,
+                  props.data,
+                  addToBank,
+                  removeFromBank
+                );
+                // because transferrring in, reset subs
+                resetSubs();
+                setTransferOut(transfersOut);
+              }}
+            >
+              <div className="flex flex-row justify-center">
+                <Cross2Icon className="w-[10px] h-[10px] lg:w-3 lg:h-3" />
+              </div>
+            </button>
           </div>
-          <div className="text-[9px] lg:text-xs h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
-            {props.data.web_name}
+          <div className="flex flex-col h-full w-full justify-between items-center">
+            {/* <PlayerDescription data={props.data} /> */}
+            <div className="w-8 h-8 lg:h-16 lg:w-16">
+              <Image
+                src={`https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${props.data.team_code}-110.webp`}
+                alt="Player"
+                width={40}
+                height={40}
+                priority
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div className="text-[9px] lg:text-xs h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
+              {props.data.web_name}
+            </div>
+            {!isMobile && <PlayerStatsTicker data={props.data} />}
           </div>
-          {!isMobile && <PlayerStatsTicker data={props.data} />}
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }
 
