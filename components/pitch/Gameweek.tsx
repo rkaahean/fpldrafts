@@ -149,7 +149,7 @@ export default function Gameweek(props: { gameweek: number }) {
                   drafts.changes.filter(
                     (transfer) => transfer.gameweek == currentGameweek
                   ).length
-                } / 1`}
+                } / 5`}
               />
               <GameweekStat title="ITB" value={`${picks.overall.bank! / 10}`} />
               <GameweekStat title="Rank" value={data.overall.overall_rank} />
