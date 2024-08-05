@@ -148,7 +148,6 @@ export const picksStore = create<State>()((set, get) => ({
           return;
         }
 
-        console.log(subOutType, subInType, numFwd);
         // if subbing out a defender
         if (subOutType == 2 && numDef == 3) {
           toast({
@@ -286,8 +285,6 @@ export async function swapPlayers(
   transfer: DraftTransfer
 ): Promise<FPLGameweekPicksData> {
   const { in: substitutedIn, out: substitutedOut } = transfer;
-
-  console.log("Swapping player", substitutedIn, substitutedOut);
 
   const inPlayerIndex = data.data.findIndex(
     (player) => player.fpl_player.player_id === substitutedIn.data.player_id

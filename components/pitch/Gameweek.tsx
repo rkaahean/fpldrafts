@@ -102,14 +102,6 @@ export default function Gameweek(props: { gameweek: number }) {
         for (let draftChange of gameweekDraft) {
           // swap players in the team
           draftData = await swapPlayers(draftData, draftChange);
-          console.log(
-            "Swapping",
-            draftChange.in.price,
-            draftChange.out.price,
-            "Bank",
-            draftData.overall.bank,
-            remainingTransferOutSum
-          );
         }
 
         setPicks({
