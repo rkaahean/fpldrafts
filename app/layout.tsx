@@ -8,7 +8,7 @@ import "./globals.css";
 import ReactQueryProvider from "./provider";
 
 export const metadata: Metadata = {
-  title: "FPL Planner",
+  title: "FPL Drafts.",
   description: "Plan your FPL transfers.",
 };
 
