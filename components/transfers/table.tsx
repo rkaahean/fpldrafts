@@ -52,7 +52,12 @@ export function DataTable<TData, TValue>({
   data,
   name,
 }: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
+    {
+      id: "now_value",
+      value: 150,
+    },
+  ]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({
     // "0": true,
     // "1": true,
@@ -101,9 +106,6 @@ export function DataTable<TData, TValue>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectionOrder, setPlayer1, setPlayer2]);
 
-  const [maxPrice, setMaxPrice] = useState(150);
-  const [teamCode, setTeamCode] = useState<string>("");
-
   const table = useReactTable({
     data,
     columns,
@@ -124,26 +126,8 @@ export function DataTable<TData, TValue>({
         element_type: false,
         team_code: false,
       },
-      columnFilters: [
-        {
-          id: "now_value",
-          value: maxPrice,
-        },
-        {
-          id: "team_code",
-          value: teamCode,
-        },
-      ],
     },
   });
-
-  useEffect(() => {
-    table.getColumn("now_value")?.setFilterValue(maxPrice);
-  }, [maxPrice, table]);
-
-  useEffect(() => {
-    table.getColumn("team_code")?.setFilterValue(teamCode);
-  }, [teamCode, table]);
 
   const teamCodeToShortName = data.reduce((acc, team: any) => {
     acc[team.team_code] = team.fpl_player_team.short_name;
@@ -186,24 +170,40 @@ export function DataTable<TData, TValue>({
           <div className="pb-3 w-1/2">
             <div className="flex flex-row justify-between mb-2">
               <Label>Max Price</Label>
-              <div className="text-xs">{`£${maxPrice / 10}`} </div>
+              <div className="text-xs">
+                {`£${
+                  (table.getColumn("now_value")?.getFilterValue() as number) /
+                  10
+                }`}
+              </div>
             </div>
             <Slider
-              defaultValue={[maxPrice]}
+              defaultValue={[150]}
               max={155}
               min={35}
               step={5}
-              onValueChange={(value) => setMaxPrice(value[0])}
+              onValueChange={(value) =>
+                table.getColumn("now_value")?.setFilterValue(value[0])
+              }
             />
           </div>
 
           <div className="flex-grow pr-2 ring-0">
-            <Select onValueChange={(e) => setTeamCode(e)} value={teamCode}>
+            <Select
+              onValueChange={(e) =>
+                table.getColumn("team_code")!.setFilterValue(e)
+              }
+              value={table.getColumn("team_code")?.getFilterValue()! as string}
+            >
               <div className="flex flex-row gap-2">
                 <SelectTrigger className="">
                   <SelectValue placeholder="Team" />
                 </SelectTrigger>
-                <button onClick={() => setTeamCode("")}>
+                <button
+                  onClick={() =>
+                    table.getColumn("team_code")!.setFilterValue("EMPTY_FILTER")
+                  }
+                >
                   <Cross1Icon />
                 </button>
               </div>
@@ -324,6 +324,9 @@ export const priceFilter: FilterFn<FPLPlayerData2> = (row, columnId, value) => {
 };
 
 export const teamFilter: FilterFn<FPLPlayerData2> = (row, columnId, value) => {
+  if (value == "EMPTY_FILTER" || !value) {
+    return true;
+  }
   const rowValue = row.getValue(columnId) as string;
   return rowValue == value;
 };

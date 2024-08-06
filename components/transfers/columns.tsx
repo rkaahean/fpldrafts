@@ -35,6 +35,7 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
     header: "Name",
   },
   {
+    id: "now_value",
     accessorKey: "now_value",
     header: "£",
     cell: ({ row }) => row.original.now_value / 10,
@@ -88,12 +89,15 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
       return (
         <button
           onClick={async () => {
+            console.log("START");
+
             table.getColumn("web_name")?.setFilterValue("");
             const formatted = FPLPlayerDataToPlayerData({
               position: 1,
               fpl_player: row.original,
               selling_price: row.original.now_value,
             });
+            console.log("Making transfer");
             // if not already selected, push into state
             if (!isSelectedForTransfer) {
               transfersIn[row.original.element_type].push({

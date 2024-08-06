@@ -1,8 +1,8 @@
 import { toast } from "@/components/ui/use-toast";
+import { elementTypeToPosition } from "@/lib/utils";
 import { create } from "zustand";
 import { FPLGameweekPicksData, FPLPlayerData } from "../api";
 import { DraftState, DraftTransfer, PlayerData } from "./utils";
-import { elementTypeToPosition } from "@/lib/utils";
 
 interface State {
   currentGameweek: number;
