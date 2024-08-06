@@ -134,7 +134,7 @@ export default function Gameweek(props: { gameweek: number }) {
       transferCount = 1;
     }
     // if there's a draft, get number of changes in last gameweek
-    else if (drafts.id) {
+    else if (drafts.changes.length > 0) {
       const numTransfers = drafts.changes.filter(
         (transfer) =>
           transfer.gameweek >= currentGameweek - 5 &&

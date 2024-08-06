@@ -150,8 +150,6 @@ export function DataTable<TData, TValue>({
     return acc;
   }, {} as Record<number, string>);
 
-  console.log(teamCodeToShortName);
-
   return (
     <div className="flex flex-col rounded-sm h-full justify-between bg-bgsecondary">
       <div className="flex flex-col gap-1 bg-background overflow-scroll">
