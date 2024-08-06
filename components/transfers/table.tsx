@@ -196,7 +196,7 @@ export function DataTable<TData, TValue>({
               value={table.getColumn("team_code")?.getFilterValue()! as string}
             >
               <div className="flex flex-row gap-2">
-                <SelectTrigger className="">
+                <SelectTrigger>
                   <SelectValue placeholder="Team" />
                 </SelectTrigger>
                 <button
