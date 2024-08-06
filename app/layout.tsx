@@ -1,4 +1,3 @@
-import Footer from "@/components/ui/footer";
 import { Toaster } from "@/components/ui/toaster";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GeistSans } from "geist/font/sans";
@@ -24,7 +23,6 @@ export default function RootLayout({
         <body className={GeistSans.className}>
           <SessionProvider>
             <main>{children}</main>
-            <Footer />
           </SessionProvider>
           <Toaster />
           <SpeedInsights />
