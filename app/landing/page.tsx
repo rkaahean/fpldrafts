@@ -1,6 +1,5 @@
 import { auth } from "@/auth/main";
 import SignIn from "@/components/auth/signIn";
-import Footer from "@/components/ui/footer";
 import {
   CalendarIcon,
   LayoutListIcon,
@@ -47,7 +46,7 @@ export default async function Landing() {
   ];
 
   return (
-    <main className="flex flex-col min-h-screen min-w-screen bg-background gap-4">
+    <main className="flex flex-col min-h-screen min-w-screen bg-background gap-8 items-center">
       <div className="px-4">
         <div className="flex flex-col items-center justify-center tracking-tight gap-8">
           <div className="text-center lg:text-left">
@@ -80,10 +79,9 @@ export default async function Landing() {
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-col items-center justify-center px-4">
-        <SignIn />
-      </div>
-      <Footer />
+      {/* <div className="w-full flex flex-col items-center justify-center px-4"> */}
+      <SignIn />
+      {/* </div> */}
     </main>
   );
 }

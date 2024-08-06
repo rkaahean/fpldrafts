@@ -23,19 +23,21 @@ export default function SignIn() {
   if (!isClient) return null; // or a loading indicator
   if (isMobile) {
     return (
-      <Card className="w-full border-0 bg-destructive text-destructive-foreground">
-        <CardHeader>
-          <CardTitle className="text-xl">
-            <div>
-              <div>Not available on mobile</div>
-            </div>
-          </CardTitle>
-          <CardDescription className="text-sm">
-            FPL drafts for mobile is a work in progress. Try accessing this page
-            from a web-browser.
-          </CardDescription>
-        </CardHeader>
-      </Card>
+      <div className="px-4">
+        <Card className="w-full border-0 bg-destructive text-destructive-foreground">
+          <CardHeader>
+            <CardTitle className="text-xl">
+              <div>
+                <div>Not available on mobile</div>
+              </div>
+            </CardTitle>
+            <CardDescription className="text-sm">
+              FPL drafts for mobile is a work in progress. Try accessing this
+              page from a web-browser.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
     );
   }
   return (

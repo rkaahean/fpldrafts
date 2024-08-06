@@ -10,7 +10,6 @@ import { jwtDecode } from "jwt-decode";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getLatestGameweek, getUserTeamFromEmail } from "./api";
-import Footer from "@/components/ui/footer";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -77,7 +76,6 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 

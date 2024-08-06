@@ -1,7 +1,6 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { isMobile } from "react-device-detect";
 import { Button } from "./button";
 
 export default function Header() {
@@ -11,18 +10,16 @@ export default function Header() {
         <a>About</a>
       </Button>
 
-      {!isMobile && (
-        <Button
-          onClick={async () => {
-            await signIn("google", {
-              callbackUrl: `/`,
-            });
-          }}
-          variant="outline"
-        >
-          Sign In
-        </Button>
-      )}
+      <Button
+        onClick={async () => {
+          await signIn("google", {
+            callbackUrl: `/`,
+          });
+        }}
+        variant="outline"
+      >
+        Sign In
+      </Button>
     </div>
   );
 }
