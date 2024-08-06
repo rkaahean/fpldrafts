@@ -18,17 +18,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     async session({ session, token }) {
-      // if (parseInt(session.expires) <= Date.now() / 1000) {
-      //   // Session has expired, invalidate it
-      //   return null;
-      // }
-
-      // if (!token) {
-      //   return null;
-      // }
-
-      // Session is still valid, proceed as usual
-      // get user's current fpl team
       const userWithTeam = await prisma.fPLTeam.findFirst({
         where: {
           user_id: token.sub,
@@ -55,10 +44,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: token.email!,
         },
       });
-
-      // if (token && token.exp! > Date.now() / 100) {
-      //   return null;
-      // }
 
       if (!dbUser) {
         return null;
