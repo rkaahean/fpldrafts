@@ -1,7 +1,6 @@
 import { auth } from "@/auth/main";
 import SignIn from "@/components/auth/signIn";
 import Footer from "@/components/ui/footer";
-import Header from "@/components/ui/header";
 import {
   CalendarIcon,
   LayoutListIcon,
@@ -49,7 +48,6 @@ export default async function Landing() {
 
   return (
     <main className="flex flex-col min-h-screen min-w-screen bg-background gap-4">
-      <Header />
       <div className="px-4">
         <div className="flex flex-col items-center justify-center tracking-tight gap-8">
           <div className="text-center lg:text-left">
