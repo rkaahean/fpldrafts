@@ -138,16 +138,18 @@ export default function Gameweek(props: { gameweek: number }) {
       const numTransfers = drafts.changes.filter(
         (transfer) =>
           transfer.gameweek >= currentGameweek - 5 &&
-          transfer.gameweek <= currentGameweek - 1
+          transfer.gameweek <= currentGameweek - 1 &&
+          transfer.gameweek > 1
       ).length;
-      transferCount = 5 - numTransfers;
+      transferCount = currentGameweek - numTransfers - 1;
+      transferCount = transferCount > 5 ? 5 : transferCount;
       transferCount = transferCount <= 0 ? 1 : transferCount;
     }
     // if drafts not set, just get the transfers made in previous gameweek, and add 1.
     // min of 1, max of 5.
     else {
       transferCount =
-        currentGameweek > 5 ? 5 : currentGameweek - data.transfers! - 1;
+        (currentGameweek > 5 ? 5 : currentGameweek) - data.transfers! - 1;
       transferCount = transferCount <= 0 ? 1 : transferCount;
     }
 
