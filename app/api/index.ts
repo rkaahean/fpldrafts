@@ -292,6 +292,7 @@ export type FPLGameweekPicksData = {
     selling_price: number;
   })[];
   overall: NonNullable<Awaited<ReturnType<typeof getGameweekOverallData>>>;
+  transfers?: number;
 };
 export type FPLPlayerData = Pick<
   FPLGameweekPicksData["data"][number],

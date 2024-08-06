@@ -123,6 +123,34 @@ export default function Gameweek(props: { gameweek: number }) {
   });
 
   if (data && data.data && session) {
+    let transferCount: string | number = 1;
+
+    // if its the first gameweek, then infinite
+    if (currentGameweek == 1) {
+      transferCount = "∞";
+    }
+    // for other gameweeks, its a minimum of 1.
+    else if (currentGameweek == 2) {
+      transferCount = 1;
+    }
+    // if there's a draft, get number of changes in last gameweek
+    else if (drafts.id) {
+      const numTransfers = drafts.changes.filter(
+        (transfer) =>
+          transfer.gameweek >= currentGameweek - 5 &&
+          transfer.gameweek <= currentGameweek - 1
+      ).length;
+      transferCount = 5 - numTransfers;
+      transferCount = transferCount <= 0 ? 1 : transferCount;
+    }
+    // if drafts not set, just get the transfers made in previous gameweek, and add 1.
+    // min of 1, max of 5.
+    else {
+      transferCount =
+        currentGameweek > 5 ? 5 : currentGameweek - data.transfers! - 1;
+      transferCount = transferCount <= 0 ? 1 : transferCount;
+    }
+
     return (
       <ReactQueryProvider>
         <div className="flex flex-col gap-2 lg:gap-1 h-full relative">
@@ -142,7 +170,7 @@ export default function Gameweek(props: { gameweek: number }) {
                   drafts.changes.filter(
                     (transfer) => transfer.gameweek == currentGameweek
                   ).length
-                } / 5`}
+                } / ${transferCount}`}
               />
               <GameweekStat title="ITB" value={`${picks.overall.bank! / 10}`} />
               <GameweekStat title="Rank" value={data.overall.overall_rank} />

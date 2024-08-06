@@ -1,4 +1,5 @@
 import { auth } from "@/auth/main";
+import prisma from "@/lib/db";
 import { jwtDecode } from "jwt-decode";
 import { NextRequest, NextResponse } from "next/server";
 import {
@@ -125,6 +126,7 @@ export const GET = auth(async function GET(req: NextRequest) {
         ),
         overall_rank: 0,
       },
+      transfers: 0,
     });
   }
 
@@ -164,5 +166,13 @@ export const GET = auth(async function GET(req: NextRequest) {
   return Response.json({
     data: await Promise.all(newData),
     overall,
+    transfers: await prisma.fPLGameweekTransfers.findMany({
+      where: {
+        gameweek: {
+          gte: gameweek - 5,
+          lte: gameweek - 1,
+        },
+      },
+    }),
   });
 });
