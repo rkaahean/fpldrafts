@@ -31,6 +31,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Cross1Icon } from "@radix-ui/react-icons";
 import { Updater } from "@tanstack/react-query";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -101,6 +102,7 @@ export function DataTable<TData, TValue>({
   }, [selectionOrder, setPlayer1, setPlayer2]);
 
   const [maxPrice, setMaxPrice] = useState(150);
+  const [teamCode, setTeamCode] = useState<string>("");
 
   const table = useReactTable({
     data,
@@ -116,15 +118,20 @@ export function DataTable<TData, TValue>({
     },
     initialState: {
       pagination: {
-        pageSize: 24,
+        pageSize: 22,
       },
       columnVisibility: {
         element_type: false,
+        team_code: false,
       },
       columnFilters: [
         {
           id: "now_value",
           value: maxPrice,
+        },
+        {
+          id: "team_code",
+          value: teamCode,
         },
       ],
     },
@@ -133,6 +140,10 @@ export function DataTable<TData, TValue>({
   useEffect(() => {
     table.getColumn("now_value")?.setFilterValue(maxPrice);
   }, [maxPrice, table]);
+
+  useEffect(() => {
+    table.getColumn("team_code")?.setFilterValue(teamCode);
+  }, [teamCode, table]);
 
   const teamCodeToShortName = data.reduce((acc, team: any) => {
     acc[team.team_code] = team.fpl_player_team.short_name;
@@ -174,7 +185,7 @@ export function DataTable<TData, TValue>({
         </div>
 
         <div className="flex flex-row w-full gap-4">
-          <div className="pb-3 w-2/3">
+          <div className="pb-3 w-1/2">
             <div className="flex flex-row justify-between mb-2">
               <Label>Max Price</Label>
               <div className="text-xs">{`£${maxPrice / 10}`} </div>
@@ -188,15 +199,18 @@ export function DataTable<TData, TValue>({
             />
           </div>
 
-          <div className="flex-grow">
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Team" />
-              </SelectTrigger>
+          <div className="flex-grow pr-2 ring-0">
+            <Select onValueChange={(e) => setTeamCode(e)} value={teamCode}>
+              <div className="flex flex-row gap-2">
+                <SelectTrigger className="">
+                  <SelectValue placeholder="Team" />
+                </SelectTrigger>
+                <button onClick={() => setTeamCode("")}>
+                  <Cross1Icon />
+                </button>
+              </div>
+
               <SelectContent>
-                {/* <SelectItem value="light">Light</SelectItem>
-                <SelectItem value="dark">Dark</SelectItem>
-                <SelectItem value="system">System</SelectItem> */}
                 {Object.entries(teamCodeToShortName).map(
                   ([code, name], index) => {
                     return (
@@ -309,4 +323,9 @@ export function DataTable<TData, TValue>({
 export const priceFilter: FilterFn<FPLPlayerData2> = (row, columnId, value) => {
   const rowValue = row.getValue(columnId) as number;
   return rowValue <= value;
+};
+
+export const teamFilter: FilterFn<FPLPlayerData2> = (row, columnId, value) => {
+  const rowValue = row.getValue(columnId) as string;
+  return rowValue == value;
 };

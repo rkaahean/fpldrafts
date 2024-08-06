@@ -8,7 +8,7 @@ import { PlusIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import { toast } from "../ui/use-toast";
-import { priceFilter } from "./table";
+import { priceFilter, teamFilter } from "./table";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -39,6 +39,12 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
     header: "£",
     cell: ({ row }) => row.original.now_value / 10,
     filterFn: priceFilter,
+  },
+  {
+    id: "team_code",
+    accessorKey: "team_code",
+    header: "team_code",
+    filterFn: teamFilter,
   },
   {
     accessorKey: "total_points",
