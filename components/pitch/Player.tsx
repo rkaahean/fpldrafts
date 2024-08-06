@@ -31,7 +31,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
   return (
     <div>
       {isSubstitute && (
-        <div className="text-xs text-black text-center tracking-tight font-bold">
+        <div className="text-[10px] lg:text-xs text-background text-center tracking-tight font-bold">
           {elementTypeToPosition(props.data.element_type)}
         </div>
       )}

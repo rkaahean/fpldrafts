@@ -129,6 +129,7 @@ export default function Gameweek(props: { gameweek: number }) {
           <div className="flex flex-row justify-between">
             <Button
               onClick={() => setCurrentGameweek(currentGameweek - 1)}
+              variant="secondary"
               title="Previous Gameweek"
             >
               <ArrowLeftIcon className="w-4 h-4 lg:w-6 lg:h-6" />
@@ -149,6 +150,7 @@ export default function Gameweek(props: { gameweek: number }) {
             <Button
               onClick={() => setCurrentGameweek(currentGameweek + 1)}
               title="Next Gameweek"
+              variant="secondary"
             >
               <ArrowRightIcon className="w-4 h-4 lg:w-6 lg:h-6" />
             </Button>
