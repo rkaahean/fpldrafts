@@ -17,7 +17,6 @@ export default function Layout({
     <>
       <main>
         <Header />
-
         {children}
         <Footer />
       </main>
