@@ -22,7 +22,7 @@ export default function DraftChanges() {
           variant="ghost"
           className="h-6 px-2 py-1 text-xs rounded-sm 2xl:h-10 2xl:px-4 2xl:py-2"
         >
-          <LoopIcon className="w-4 h-4 2xl:w-8 2xl:h-8" />
+          <LoopIcon className="w-4 h-4 2xl:w-6 2xl:h-6" />
         </Button>
       </SheetTrigger>
       <SheetContent className="overflow-scroll">

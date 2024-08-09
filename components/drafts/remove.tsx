@@ -39,7 +39,7 @@ export function RemoveAll() {
                 setTransferOut(transfersOut);
               }}
             >
-              <Cross1Icon className="w-4 h-4 2xl:w-8 2xl:h-8" />
+              <Cross1Icon className="w-4 h-4 2xl:w-6 2xl:h-6" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
