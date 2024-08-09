@@ -225,7 +225,7 @@ function GameweekStat({
   value: number | string;
 }) {
   return (
-    <div className="text-[10px] lg:text-xs flex flex-col w-10">
+    <div className="text-xs 2xl:text-base flex flex-col w-10 2xl:w-14">
       <div className="font-light">{title}</div>
       <div className="font-black">{value}</div>
     </div>

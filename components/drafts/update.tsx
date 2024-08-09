@@ -23,7 +23,7 @@ export default function DraftUpdate() {
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              size="xs"
+              className="h-6 px-2 py-1 text-xs rounded-sm 2xl:h-10 2xl:px-4 2xl:py-2"
               variant="ghost"
               disabled={!drafts.id}
               onClick={async () => {
@@ -49,7 +49,7 @@ export default function DraftUpdate() {
                 });
               }}
             >
-              <UpdateIcon className="w-4 h-4" />
+              <UpdateIcon className="w-4 h-4 2xl:w-8 2xl:h-8" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>

@@ -136,8 +136,8 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="flex flex-col rounded-sm h-full justify-between bg-bgsecondary">
-      <div className="flex flex-col gap-1 bg-background overflow-scroll">
-        <div className="flex items-center gap-2 mb-1">
+      <div className="flex flex-col gap-1 2xl:gap-3 bg-background overflow-scroll">
+        <div className="flex items-center mb-1 justify-between">
           <Input
             placeholder={`Filter ${name}...`}
             value={
@@ -168,9 +168,9 @@ export function DataTable<TData, TValue>({
 
         <div className="flex flex-row w-full gap-4">
           <div className="pb-3 w-1/2">
-            <div className="flex flex-row justify-between mb-2">
+            <div className="flex flex-row justify-between mb-2 2xl:mb-3">
               <Label>Max Price</Label>
-              <div className="text-xs">
+              <div className="text-xs 2xl:text-base">
                 {`£${
                   (table.getColumn("now_value")?.getFilterValue() as number) /
                   10
@@ -204,7 +204,7 @@ export function DataTable<TData, TValue>({
                     table.getColumn("team_code")!.setFilterValue("EMPTY_FILTER")
                   }
                 >
-                  <Cross1Icon />
+                  <Cross1Icon className="w-4 h-4 2xl:w-6 2xl:h-6" />
                 </button>
               </div>
 
@@ -217,13 +217,13 @@ export function DataTable<TData, TValue>({
                         className="flex flex-row w-full"
                         key={index}
                       >
-                        <div className="flex flex-row w-full gap-2">
-                          <div className="w-4 h-4">
+                        <div className="flex flex-row w-full gap-2 lg:gap-4 items-center">
+                          <div className="w-4 h-4 lg:w-6 lg:h-6">
                             <Image
                               src={`https://resources.premierleague.com/premierleague/badges/t${code}.png`}
                               alt="crest"
-                              width={16}
-                              height={16}
+                              width={20}
+                              height={20}
                               priority
                             />
                           </div>
@@ -270,7 +270,7 @@ export function DataTable<TData, TValue>({
                     }}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="text-xs">
+                      <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

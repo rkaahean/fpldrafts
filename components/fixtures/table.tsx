@@ -17,22 +17,6 @@ import Heading from "../ui/text/heading";
 
 export default function FixturesClient(props: { fixtures: FPLFixtures[] }) {
   const gameweek = picksStore((state) => state.currentGameweek);
-  // const { data, isLoading } = useQuery({
-  //   queryKey: [gameweek],
-  //   queryFn: async () => {
-  //     const response: {
-  //       data: NonNullable<Awaited<ReturnType<typeof getAllFixtures>>>;
-  //     } = await fetch("/api/fixtures", {
-  //       method: "POST",
-  //       body: JSON.stringify({
-  //         gameweek,
-  //         count: 5,
-  //       }),
-  //     }).then((res) => res.json());
-
-  //     return response;
-  //   },
-  // });
 
   type TransformedFixture = {
     event: number;
@@ -130,8 +114,8 @@ export default function FixturesClient(props: { fixtures: FPLFixtures[] }) {
       <div className="rounded-sm bg-bgsecondary flex-grow">
         <Table>
           <TableHeader>
-            <TableRow className="grid grid-cols-7 h-6">
-              <TableHead className="col-span-2"></TableHead>
+            <TableRow className="grid grid-cols-7 h-6 2xl:h-10">
+              <TableHeader className="col-span-2"></TableHeader>
               {Array.from({ length: maxGameweek + 1 }, (_, i) => i).map(
                 (number) => {
                   return (
@@ -146,8 +130,11 @@ export default function FixturesClient(props: { fixtures: FPLFixtures[] }) {
           <TableBody>
             {formattedData.map((data, row) => {
               return (
-                <TableRow className="grid grid-cols-7 h-6 text-xs" key={row}>
-                  <td className="col-span-2 w-full flex h-full items-center px-1">
+                <TableRow
+                  className="grid grid-cols-7 h-6 2xl:h-8 truncate"
+                  key={row}
+                >
+                  <td className="col-span-2 w-full flex h-full items-center px-1 text-xs 2xl:text-base">
                     <div>{data.full_name}</div>
                   </td>
                   {gameweeks.map((gw) => {
@@ -182,7 +169,7 @@ export default function FixturesClient(props: { fixtures: FPLFixtures[] }) {
                             return (
                               <div
                                 key={gw + index}
-                                className="col-span-1 text-[10px]"
+                                className="col-span-1 text-[10px] lg:text-sm 2xl:text-lg"
                               >
                                 {fixture.is_home
                                   ? fixture.short_name

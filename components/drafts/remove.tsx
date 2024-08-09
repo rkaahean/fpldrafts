@@ -26,7 +26,7 @@ export function RemoveAll() {
           <TooltipTrigger asChild>
             <Button
               variant="ghost"
-              size="xs"
+              className="h-6 px-2 py-1 text-xs rounded-sm 2xl:h-10 2xl:px-4 2xl:py-2"
               onClick={() => {
                 picks?.data.map((player) =>
                   updateTransfer(
@@ -39,7 +39,7 @@ export function RemoveAll() {
                 setTransferOut(transfersOut);
               }}
             >
-              <Cross1Icon className="w-4 h-4" />
+              <Cross1Icon className="w-4 h-4 2xl:w-8 2xl:h-8" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>

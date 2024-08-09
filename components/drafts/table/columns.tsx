@@ -56,7 +56,7 @@ export const columns: ColumnDef<DraftsData>[] = [
         <Button
           size="table"
           variant="success"
-          className="h-4 p-1 text-[11px]"
+          className="h-4 lg:h-6 p-1 text-[11px] 2xl:text-lg"
           onClick={async () => {
             const drafts: { data: DraftTransfer[] } = await fetch(
               `/api/drafts/get?id=${row.original.id}`,
@@ -90,29 +90,28 @@ export const columns: ColumnDef<DraftsData>[] = [
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const queryClient = useQueryClient();
       return (
-        <div className="flex h-full items-center justify-center w-full">
-          <Button
-            size="table"
-            variant="ghost"
-            onClick={async () => {
-              // delete
-              await fetch("/api/drafts/delete", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  draftId: row.original.id,
-                }),
-              }).then((res) => res.json());
-              queryClient.invalidateQueries({
-                queryKey: ["draftsget"],
-              });
-            }}
-          >
-            <TrashIcon className="w-3 h-3" />
-          </Button>
-        </div>
+        <Button
+          size="table"
+          variant="ghost"
+          className="h-4 lg:h-6 p-1 hover:bg-destructive"
+          onClick={async () => {
+            // delete
+            await fetch("/api/drafts/delete", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                draftId: row.original.id,
+              }),
+            }).then((res) => res.json());
+            queryClient.invalidateQueries({
+              queryKey: ["draftsget"],
+            });
+          }}
+        >
+          <TrashIcon className="w-4 h-4s 2xl:w-6 2xl:h-6" />
+        </Button>
       );
     },
   },

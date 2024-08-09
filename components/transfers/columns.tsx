@@ -18,12 +18,12 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
     id: "team_crest",
     cell: ({ row }) => {
       return (
-        <div className="w-4 h-4">
+        <div className="w-4 h-4 2xl:h-6 2xl:w-6">
           <Image
             src={`https://resources.premierleague.com/premierleague/badges/t${row.original.team_code}.png`}
             alt="crest"
-            width={16}
-            height={16}
+            width={20}
+            height={20}
             priority
           />
         </div>
@@ -147,7 +147,7 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
             }
           }}
         >
-          <PlusIcon className="w-[14px] h-[14px] text-accent hover:text-primary transition-all hover:bg-accent rounded-full" />
+          <PlusIcon className="w-[14px] h-[14px] 2xl:w-6 2xl:h-6 text-accent hover:text-primary transition-all hover:bg-accent rounded-full" />
         </button>
       );
     },

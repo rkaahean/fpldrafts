@@ -41,14 +41,14 @@ export default function DraftSave() {
       <DialogTrigger asChild>
         <Button
           variant="ghost"
-          size="xs"
+          className="h-6 px-2 py-1 text-xs rounded-sm 2xl:h-10 2xl:px-4 2xl:py-2"
           title="Save Draft"
           disabled={drafts.changes.length == 0}
         >
-          <DownloadIcon className="w-4 h-4" />
+          <DownloadIcon className="w-4 h-4 2xl:w-8 2xl:h-8" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] 2xl:max-w-[800px]">
         <DialogHeader>
           <DialogTitle>Save draft</DialogTitle>
           <DialogDescription>
@@ -82,7 +82,7 @@ export default function DraftSave() {
         <DialogFooter>
           <Button
             type="submit"
-            className="h-8 w-24 text-xs"
+            className="h-8 w-24 text-xs 2xl:h-12 2xl:w-32 2xl:text-base"
             onClick={async () => {
               // console.log(drafts.changes);
               // console.log("Saving draft...", drafts.changes);

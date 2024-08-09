@@ -62,7 +62,7 @@ export default async function Home() {
             {/* <PlayerComparison /> */}
           </div>
           <div className="col-span-1 h-full py-2">
-            <div className="flex flex-col h-full gap-2">
+            <div className="flex flex-col h-full 2xl:h-[95vh] gap-2">
               <div className="h-1/3">
                 <Drafts />
               </div>
