@@ -1,8 +1,5 @@
-"use client";
-
-import { signIn } from "next-auth/react";
-import { useEffect, useState } from "react";
-import { isMobile } from "react-device-detect";
+import { signIn } from "@/auth/main";
+import { headers } from "next/headers";
 import { Icons } from "../icons";
 import { Button } from "../ui/button";
 import {
@@ -14,13 +11,19 @@ import {
 } from "../ui/card";
 
 export default function SignIn() {
-  const [isClient, setIsClient] = useState(false);
+  // const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  // useEffect(() => {
+  //   setIsClient(true);
+  // }, []);
 
-  if (!isClient) return null; // or a loading indicator
+  // if (!isClient) return null; // or a loading indicator
+
+  const h = headers();
+  const isMobile =
+    h.get("User-Agent")?.includes("iOS") ||
+    h.get("User-Agent")?.includes("Android");
+
   if (isMobile) {
     return (
       <div className="px-4">
@@ -52,20 +55,24 @@ export default function SignIn() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-col w-full gap-4">
-            <Button
-              onClick={async () => {
+            <form
+              action={async () => {
+                "use server";
                 await signIn("google", {
-                  callbackUrl: `/`,
+                  redirectTo: "/",
                 });
               }}
-              className="bg-foreground hover:bg-foreground h-12 w-full"
-              variant="ghost"
             >
-              <div className="flex flex-row gap-2 items-center justify-center">
-                <Icons.google className="bg-background" />
-                <div className="text-black text-sm">Continue with Google</div>
-              </div>
-            </Button>
+              <Button
+                className="bg-foreground hover:bg-foreground h-12 w-full"
+                variant="ghost"
+              >
+                <div className="flex flex-row gap-2 items-center justify-center">
+                  <Icons.google className="bg-background" />
+                  <div className="text-black text-sm">Continue with Google</div>
+                </div>
+              </Button>
+            </form>
           </div>
         </CardContent>
       </Card>

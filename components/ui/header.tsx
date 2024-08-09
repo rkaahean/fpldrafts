@@ -1,18 +1,12 @@
-"use client";
-
-import { signIn } from "next-auth/react";
-import { useEffect, useState } from "react";
-import { isMobile } from "react-device-detect";
+import { signIn } from "@/auth/main";
+import { headers } from "next/headers";
 import { Button } from "./button";
 
 export default function Header() {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) return null; // or a loading indicator
+  const h = headers();
+  const isMobile =
+    h.get("User-Agent")?.includes("iOS") ||
+    h.get("User-Agent")?.includes("Android");
 
   return (
     <div className="flex flex-row w-full justify-end py-2 px-4 gap-4">
@@ -21,16 +15,16 @@ export default function Header() {
       </Button>
 
       {!isMobile && (
-        <Button
-          onClick={async () => {
+        <form
+          action={async () => {
+            "use server";
             await signIn("google", {
-              callbackUrl: `/`,
+              redirectTo: "/",
             });
           }}
-          variant="outline"
         >
-          Sign In
-        </Button>
+          <Button variant="outline">Sign In</Button>
+        </form>
       )}
     </div>
   );

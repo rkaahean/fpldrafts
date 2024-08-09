@@ -79,9 +79,7 @@ export default async function Landing() {
           </div>
         </div>
       </div>
-      {/* <div className="w-full flex flex-col items-center justify-center px-4"> */}
       <SignIn />
-      {/* </div> */}
     </main>
   );
 }
