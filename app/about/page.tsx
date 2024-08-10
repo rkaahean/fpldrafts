@@ -14,7 +14,7 @@ export default function About() {
             <Image src={DraftImage} alt="Draft Image" />
           </div>
           <div className="w-full lg:w-1/2 text-base lg:text-lg text-muted-foreground">
-            There's{" "}
+            There&apos;s{" "}
             <span className="text-highlight font-semibold">no restriction</span>{" "}
             on the number of drafts. Create multiple drafts each gameweek to
             plan for different scenarios.
