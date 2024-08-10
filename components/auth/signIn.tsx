@@ -11,14 +11,6 @@ import {
 } from "../ui/card";
 
 export default function SignIn() {
-  // const [isClient, setIsClient] = useState(false);
-
-  // useEffect(() => {
-  //   setIsClient(true);
-  // }, []);
-
-  // if (!isClient) return null; // or a loading indicator
-
   const h = headers();
   const isMobile =
     h.get("User-Agent")?.includes("iOS") ||
