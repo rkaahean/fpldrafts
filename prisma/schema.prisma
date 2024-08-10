@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters"]
 }
 
@@ -97,7 +97,6 @@ model FPLFixtures {
   @@index([team_a_id])
   @@index([season_id, team_h_id])
   @@index([season_id, team_a_id])
-
 }
 
 model FPLGameweekOverallStats {
@@ -176,6 +175,9 @@ model FPLTeam {
 
   fpl_gameweek_picks FPLGameweekPicks[]
   fpl_season         FPLSeason          @relation(fields: [fpl_season_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
