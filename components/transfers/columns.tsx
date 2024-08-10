@@ -4,9 +4,9 @@ import { FPLPlayerData2 } from "@/app/api";
 import { picksStore } from "@/app/store";
 import { removeTransfer } from "@/app/store/utils";
 import { FPLPlayerDataToPlayerData } from "@/lib/utils";
-import { PlusIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
+import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
 import { priceFilter, teamFilter } from "./table";
 
@@ -79,18 +79,17 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
 
       const makeTransfers = picksStore((store) => store.makeTransfers);
 
-      // console.log("TRANSFERS TABLE", transfersIn);
-
       const isSelectedForTransfer =
         transfersIn[row.original.element_type].filter(
           (transfer) => transfer.player_id == row.original.player_id
         ).length > 0;
 
       return (
-        <button
+        <Button
+          variant="secondary"
+          size="table"
+          className="h-3 lg:h-5 p-1 text-[11px] 2xl:text-lg rounded-sm"
           onClick={async () => {
-            console.log("START");
-
             table.getColumn("web_name")?.setFilterValue("");
             const formatted = FPLPlayerDataToPlayerData({
               position: 1,
@@ -147,8 +146,9 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
             }
           }}
         >
-          <PlusIcon className="w-[14px] h-[14px] 2xl:w-6 2xl:h-6 text-accent hover:text-primary transition-all hover:bg-accent rounded-full" />
-        </button>
+          Add
+          {/* <PlusIcon className="w-[14px] h-[14px] 2xl:w-6 2xl:h-6 text-accent hover:text-primary transition-all hover:bg-accent rounded-full" /> */}
+        </Button>
       );
     },
   },
