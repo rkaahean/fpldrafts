@@ -96,7 +96,6 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
               fpl_player: row.original,
               selling_price: row.original.now_value,
             });
-            console.log("Making transfer");
             // if not already selected, push into state
             if (!isSelectedForTransfer) {
               transfersIn[row.original.element_type].push({

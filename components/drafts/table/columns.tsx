@@ -27,10 +27,10 @@ export const columns: ColumnDef<DraftsData>[] = [
     accessorKey: "description",
     header: "Description",
   },
-  {
-    accessorKey: "base_gameweek",
-    header: "Base",
-  },
+  // {
+  //   accessorKey: "base_gameweek",
+  //   header: "Base",
+  // },
   {
     id: "bank",
     header: "Bank",
