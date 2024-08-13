@@ -198,6 +198,7 @@ export const picksStore = create<State>()((set, get) => ({
           price: 0,
         },
         gameweek,
+        type: "substitute",
       });
 
       // Update the state with the modified data array
@@ -255,6 +256,7 @@ export const picksStore = create<State>()((set, get) => ({
             price: out_transfer.selling_price,
           },
           gameweek,
+          type: "transfer",
         });
       }
       // otherwise keep transferring elements

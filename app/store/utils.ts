@@ -36,6 +36,7 @@ export interface DraftTransfer {
     price: number;
   };
   gameweek: number;
+  type: "substitute" | "transfer";
 }
 
 export function updateTransfer(

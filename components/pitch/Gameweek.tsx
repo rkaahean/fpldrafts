@@ -139,7 +139,8 @@ export default function Gameweek(props: { gameweek: number }) {
         (transfer) =>
           transfer.gameweek >= currentGameweek - 5 &&
           transfer.gameweek <= currentGameweek - 1 &&
-          transfer.gameweek > 1
+          transfer.gameweek > 1 &&
+          transfer.type == "transfer"
       ).length;
       transferCount = currentGameweek - numTransfers - 1;
       transferCount = transferCount > 5 ? 5 : transferCount;
@@ -173,7 +174,9 @@ export default function Gameweek(props: { gameweek: number }) {
                 title="Transfers"
                 value={`${
                   drafts.changes.filter(
-                    (transfer) => transfer.gameweek == currentGameweek
+                    (transfer) =>
+                      transfer.gameweek == currentGameweek &&
+                      transfer.type == "transfer"
                   ).length
                 } / ${transferCount}`}
               />
