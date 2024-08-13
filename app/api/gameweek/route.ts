@@ -111,23 +111,25 @@ export const GET = auth(async function GET(req: NextRequest) {
         },
       };
     });
-    return Response.json({
-      data: playerData,
-      overall: {
-        bank:
-          1000 -
-          playerData.reduce(
+    return Response.json(
+      JSON.stringify({
+        data: playerData,
+        overall: {
+          bank:
+            1000 -
+            playerData.reduce(
+              (sm, price) => sm + price.fpl_player.selling_price,
+              0
+            ),
+          value: playerData.reduce(
             (sm, price) => sm + price.fpl_player.selling_price,
             0
           ),
-        value: playerData.reduce(
-          (sm, price) => sm + price.fpl_player.selling_price,
-          0
-        ),
-        overall_rank: 0,
-      },
-      transfers: 0,
-    });
+          overall_rank: 0,
+        },
+        transfers: 0,
+      })
+    );
   }
 
   // get overall gameweek data

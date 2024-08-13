@@ -67,7 +67,7 @@ export default function Gameweek(props: { gameweek: number }) {
     enabled: !!gameweekData,
     // staleTime: 60 * 60 * 1000 * 24,
     queryFn: async () => {
-      const data: FPLGameweekPicksData = gameweekData;
+      const data: FPLGameweekPicksData = JSON.parse(gameweekData);
 
       let base: FPLGameweekPicksData;
       if (data.data.length > 0) {
