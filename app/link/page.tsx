@@ -1,6 +1,6 @@
 import { auth } from "@/auth/main";
-import { redirect } from "next/navigation";
 import TeamLinkComponent from "./client";
+import { redirect } from "next/navigation";
 
 export default async function TeamLink() {
   const session = await auth();

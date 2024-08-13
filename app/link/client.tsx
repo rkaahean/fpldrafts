@@ -34,7 +34,7 @@ export default function TeamLinkComponent() {
 
   return (
     <motion.div
-      className="flex flex-col h-screen w-screen items-center justify-center"
+      className="flex flex-col h-[80vh] w-screen items-center justify-center"
       initial={{ scale: 0.8 }}
       animate={{ scale: 1 }}
       transition={{
