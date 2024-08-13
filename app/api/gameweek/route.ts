@@ -163,16 +163,18 @@ export const GET = auth(async function GET(req: NextRequest) {
     };
   });
 
-  return Response.json({
-    data: await Promise.all(newData),
-    overall,
-    transfers: await prisma.fPLGameweekTransfers.findMany({
-      where: {
-        gameweek: {
-          gte: gameweek - 5,
-          lte: gameweek - 1,
+  return Response.json(
+    JSON.stringify({
+      data: await Promise.all(newData),
+      overall,
+      transfers: await prisma.fPLGameweekTransfers.findMany({
+        where: {
+          gameweek: {
+            gte: gameweek - 5,
+            lte: gameweek - 1,
+          },
         },
-      },
-    }),
-  });
+      }),
+    })
+  );
 });
