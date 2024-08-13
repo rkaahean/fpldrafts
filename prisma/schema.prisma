@@ -192,12 +192,15 @@ model FPLSeason {
 }
 
 model FPLDrafts {
-  id                String              @id @default(uuid())
-  name              String
-  description       String?
-  fpl_team_id       String
-  base_gameweek     Int
-  bank              Int
+  id            String  @id @default(uuid())
+  name          String
+  description   String?
+  fpl_team_id   String
+  base_gameweek Int
+  bank          Int
+
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt @default(now())
   FPLDraftTransfers FPLDraftTransfers[]
 }
 
