@@ -38,13 +38,13 @@ export const columns: ColumnDef<DraftsData>[] = [
       return <div>{row.original.bank / 10}</div>;
     },
   },
-  {
-    id: "num_changes",
-    header: "Changes",
-    cell: ({ row }) => {
-      return <div>{row.original.FPLDraftTransfers.length}</div>;
-    },
-  },
+  // {
+  //   id: "num_changes",
+  //   header: "Changes",
+  //   cell: ({ row }) => {
+  //     return <div>{row.original.FPLDraftTransfers.length}</div>;
+  //   },
+  // },
   {
     id: "actions",
     cell: ({ row }) => {
