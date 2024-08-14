@@ -401,6 +401,8 @@ export async function getDraftTransfers(
                       },
                       id: true,
                       event: true,
+                      team_a_difficulty: true,
+                      team_h_difficulty: true,
                     },
                   },
                   away_fixtures: {
@@ -415,6 +417,8 @@ export async function getDraftTransfers(
                       },
                       id: true,
                       event: true,
+                      team_a_difficulty: true,
+                      team_h_difficulty: true,
                     },
                   },
                 },
