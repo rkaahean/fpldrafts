@@ -104,7 +104,9 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
             <div className="text-[9px] lg:text-xs 2xl:text-lg h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
               {`${props.data.web_name}`}
             </div>
-            <div className="text-[10px]">{`${props.data.fixtures[0].name.toUpperCase()}`}</div>
+            <div className="text-[10px]">{`${props.data.fixtures[
+              props.gameweek - 1
+            ].name.toUpperCase()}`}</div>
             {!isMobile && <PlayerStatsTicker data={props.data} />}
           </div>
         </div>
