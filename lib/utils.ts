@@ -33,7 +33,7 @@ export function filterData(
   );
 }
 
-export function FPLPlayerDataToPlayerData(player: FPLPlayerData) {
+export function FPLPlayerDataToPlayerData(player: FPLPlayerData): PlayerData {
   // console.log("Evaluating player", player);
   const home_fixtures = player.fpl_player.fpl_player_team.home_fixtures;
   const away_fixtures = player.fpl_player.fpl_player_team.away_fixtures;
@@ -45,6 +45,7 @@ export function FPLPlayerDataToPlayerData(player: FPLPlayerData) {
       name: fixture.fpl_team_a.short_name,
       event: fixture.event,
       strength: fixture.team_h_difficulty,
+      location: "H",
     });
   });
   away_fixtures.map((fixture) => {
@@ -53,6 +54,7 @@ export function FPLPlayerDataToPlayerData(player: FPLPlayerData) {
       name: fixture.fpl_team_h.short_name.toLowerCase(),
       event: fixture.event,
       strength: fixture.team_a_difficulty,
+      location: "A",
     });
   });
 

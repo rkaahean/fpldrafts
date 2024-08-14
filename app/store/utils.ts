@@ -11,6 +11,7 @@ export type PlayerData = {
   player_id: number;
   position: number;
   team_code: number;
+  team_name: string;
   web_name: string;
   expected_goal_involvements_per_90: number;
   total_points: number;
@@ -20,6 +21,7 @@ export type PlayerData = {
     name: string;
     event: number;
     strength?: number;
+    location: "H" | "A";
   }[];
   selling_price: number;
   now_value: number;

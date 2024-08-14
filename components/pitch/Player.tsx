@@ -30,6 +30,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
     ).length > 0;
   const player = isSubstitute ? substitutedIn : substitutedOut;
 
+  const firstFixture = props.data.fixtures[props.gameweek - 1];
   return (
     <div>
       {isSubstitute && (
@@ -53,8 +54,8 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
           gameweek={props.gameweek}
         />
 
-        <div className="w-9/12 text-xs flex flex-col h-full items-end p-0.5 lg:p-1">
-          <div className="h-1/12 flex flex-row gap-0 2xl:gap-3">
+        <div className="w-9/12 text-xs flex flex-col h-full items-end">
+          <div className="h-1/12 flex flex-row gap-0 2xl:gap-3 p-0 lg:px-1 lg:py-0.5">
             <button
               className="text-xs w-4 h-4 rounded-sm"
               onClick={() => {
@@ -104,9 +105,14 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
             <div className="text-[9px] lg:text-xs 2xl:text-lg h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
               {`${props.data.web_name}`}
             </div>
-            <div className="text-[10px]">{`${props.data.fixtures[
-              props.gameweek - 1
-            ].name.toUpperCase()}`}</div>
+            <div
+              className={clsx(
+                "text-[10px] w-full items-center flex flex-row justify-center"
+                // `${getFixtureColorFromDifficulty(firstFixture.strength!)}`
+              )}
+            >{`${firstFixture.name.toUpperCase()} (${
+              firstFixture.location
+            })`}</div>
             {!isMobile && <PlayerStatsTicker data={props.data} />}
           </div>
         </div>
