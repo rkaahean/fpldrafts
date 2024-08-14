@@ -104,6 +104,7 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
                 selling_price: row.original.now_value,
                 web_name: row.original.web_name,
                 // made up
+                team_name: formatted.team_name,
                 position: 1,
                 team_code: row.original.team_code,
                 expected_goal_involvements_per_90:
