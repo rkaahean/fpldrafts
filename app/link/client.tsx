@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/components/ui/use-toast";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -19,7 +20,7 @@ import { useState } from "react";
 
 export default function TeamLinkComponent() {
   const router = useRouter();
-  const [teamNumber, setTeamNumber] = useState("44421");
+  const [teamNumber, setTeamNumber] = useState("");
 
   const { data: session, status } = useSession();
 
@@ -57,7 +58,7 @@ export default function TeamLinkComponent() {
                 <Label htmlFor="teamid">Team Id</Label>
                 <Input
                   id="teamid"
-                  placeholder="44421"
+                  // placeholder="44421"
                   onChange={(e) => setTeamNumber(e.target.value)}
                 />
               </div>
@@ -66,7 +67,15 @@ export default function TeamLinkComponent() {
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button
+            disabled={teamNumber.length == 0}
             onClick={async () => {
+              if (isNaN(parseInt(teamNumber))) {
+                toast({
+                  title: "Enter a number.",
+                  variant: "destructive",
+                });
+                return;
+              }
               setLoading(true);
               await fetch("/api/link", {
                 method: "POST",
