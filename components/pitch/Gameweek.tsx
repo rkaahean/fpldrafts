@@ -1,7 +1,7 @@
 "use client";
 
 import { FPLGameweekPicksData } from "@/app/api";
-import ReactQueryProvider from "@/app/provider";
+import { ReactQueryProvider } from "@/app/provider";
 import { picksStore, swapPlayers } from "@/app/store";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";

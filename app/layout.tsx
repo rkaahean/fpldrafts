@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
 import Script from "next/script";
 import "./globals.css";
-import ReactQueryProvider from "./provider";
+import { CSPostHogProvider, ReactQueryProvider } from "./provider";
 
 export const metadata: Metadata = {
   title: "FPL Drafts.",
@@ -20,13 +20,15 @@ export default function RootLayout({
   return (
     <ReactQueryProvider>
       <html lang="en" className="dark">
-        <body className={GeistSans.className}>
-          <SessionProvider>
-            <main>{children}</main>
-          </SessionProvider>
-          <Toaster />
-          <SpeedInsights />
-        </body>
+        <CSPostHogProvider>
+          <body className={GeistSans.className}>
+            <SessionProvider>
+              <main>{children}</main>
+            </SessionProvider>
+            <Toaster />
+            <SpeedInsights />
+          </body>
+        </CSPostHogProvider>
         <Script
           async
           src="https://umami-production-3192.up.railway.app/script.js"
