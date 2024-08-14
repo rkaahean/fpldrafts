@@ -19,6 +19,7 @@ export type PlayerData = {
     id: string;
     name: string;
     event: number;
+    strength?: number;
   }[];
   selling_price: number;
   now_value: number;

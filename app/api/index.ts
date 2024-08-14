@@ -130,6 +130,8 @@ export async function getPlayerDataBySeason(
               },
               id: true,
               event: true,
+              team_h_difficulty: true,
+              team_a_difficulty: true,
             },
           },
           away_fixtures: {
@@ -144,6 +146,8 @@ export async function getPlayerDataBySeason(
               },
               id: true,
               event: true,
+              team_h_difficulty: true,
+              team_a_difficulty: true,
             },
           },
         },
@@ -214,6 +218,8 @@ export async function getGameweekPicksData(gameweek: number, team_id: string) {
                   },
                   id: true,
                   event: true,
+                  team_h_difficulty: true,
+                  team_a_difficulty: true,
                 },
                 where: {
                   event: {
@@ -230,6 +236,8 @@ export async function getGameweekPicksData(gameweek: number, team_id: string) {
                   },
                   id: true,
                   event: true,
+                  team_h_difficulty: true,
+                  team_a_difficulty: true,
                 },
                 where: {
                   event: {

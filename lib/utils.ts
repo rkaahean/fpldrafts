@@ -44,6 +44,7 @@ export function FPLPlayerDataToPlayerData(player: FPLPlayerData) {
       id: fixture.id,
       name: fixture.fpl_team_a.short_name,
       event: fixture.event,
+      strength: fixture.team_h_difficulty,
     });
   });
   away_fixtures.map((fixture) => {
@@ -51,6 +52,7 @@ export function FPLPlayerDataToPlayerData(player: FPLPlayerData) {
       id: fixture.id,
       name: fixture.fpl_team_h.short_name.toLowerCase(),
       event: fixture.event,
+      strength: fixture.team_a_difficulty,
     });
   });
 

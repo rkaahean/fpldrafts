@@ -191,7 +191,7 @@ export default function FixturesClient(props: { fixtures: FPLFixtures[] }) {
   );
 }
 
-function getFixtureColorFromDifficulty(strength: number): string {
+export function getFixtureColorFromDifficulty(strength: number): string {
   switch (strength) {
     case 1:
       return "bg-green-300";
@@ -202,8 +202,8 @@ function getFixtureColorFromDifficulty(strength: number): string {
     case 4:
       return "bg-rose-500";
     case 5:
-      return "bg-rose-950";
+      return "bg-rose-950 text-white";
     default:
-      return "";
+      return "bg-background";
   }
 }

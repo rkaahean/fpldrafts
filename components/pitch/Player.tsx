@@ -2,9 +2,11 @@ import { picksStore } from "@/app/store";
 import { PlayerData, updateTransfer } from "@/app/store/utils";
 import { cn, elementTypeToPosition } from "@/lib/utils";
 import { Cross2Icon, DoubleArrowDownIcon } from "@radix-ui/react-icons";
+import clsx from "clsx";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { isMobile } from "react-device-detect";
+import { getFixtureColorFromDifficulty } from "../fixtures/table";
 
 export default function Player(props: { data: PlayerData; gameweek: number }) {
   const subIn = picksStore((store) => store.setSubstituteIn);
@@ -38,7 +40,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
 
       <motion.div
         className={cn(
-          "flex flex-row w-[68px] h-[72px] sm:w-20 h:20 lg:w-32 lg:h-32 2xl:w-48 2xl:h-48 border rounded-md p-0.5 lg:p-2 text-player-foreground",
+          "flex flex-row w-[68px] h-[72px] sm:w-20 h:20 lg:w-32 lg:h-32 2xl:w-48 2xl:h-48 border rounded-lg text-player-foreground",
           player?.player_id == props.data.player_id ? "bg-muted" : "bg-player",
           isSelectedForTransfer ? "bg-destructive" : ""
         )}
@@ -51,7 +53,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
           gameweek={props.gameweek}
         />
 
-        <div className="w-9/12 text-xs flex flex-col h-full items-end">
+        <div className="w-9/12 text-xs flex flex-col h-full items-end p-0.5 lg:p-1">
           <div className="h-1/12 flex flex-row gap-0 2xl:gap-3">
             <button
               className="text-xs w-4 h-4 rounded-sm"
@@ -89,8 +91,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
             </button>
           </div>
           <div className="flex flex-col h-full w-full justify-between items-center">
-            {/* <PlayerDescription data={props.data} /> */}
-            <div className="w-8 h-8 lg:h-16 lg:w-16 2xl:h-24 2xl:w-24">
+            <div className="w-8 h-8 lg:h-14 lg:w-14 2xl:h-24 2xl:w-24">
               <Image
                 src={`https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${props.data.team_code}-110.webp`}
                 alt="Player"
@@ -101,8 +102,9 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
               />
             </div>
             <div className="text-[9px] lg:text-xs 2xl:text-lg h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
-              {props.data.web_name}
+              {`${props.data.web_name}`}
             </div>
+            <div className="text-[10px]">{`${props.data.fixtures[0].name.toUpperCase()}`}</div>
             {!isMobile && <PlayerStatsTicker data={props.data} />}
           </div>
         </div>
@@ -119,13 +121,14 @@ function PlayerFixtureTicker({
   gameweek: number;
 }) {
   const formattedFixtures = [];
-  for (let idx = gameweek; idx < gameweek + 4; idx++) {
+  for (let idx = gameweek + 1; idx < gameweek + 5; idx++) {
     const fixture = fixtures.filter((fixture) => fixture.event == idx);
     if (fixture.length === 0) {
       formattedFixtures.push({
         id: idx,
         event: idx,
         name: "-",
+        strength: 0,
       });
     } else if (fixture.length == 1) {
       formattedFixtures.push(fixture[0]);
@@ -156,9 +159,16 @@ function PlayerFixtureTicker({
           return (
             <div
               key={fixture.id}
-              className="flex flex-col text-center justify-center"
+              className={clsx(
+                "flex flex-col w-full items-center justify-center",
+                getFixtureColorFromDifficulty(fixture.strength!),
+                {
+                  "rounded-tl-md": idx == 0,
+                  "rounded-bl-md": idx == 3,
+                }
+              )}
             >
-              <div>{fixture.name}</div>
+              {fixture.name}
             </div>
           );
         }
