@@ -102,7 +102,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
                 className="w-full h-full object-contain"
               />
             </div>
-            <div className="text-[9px] lg:text-[10px] 2xl:text-lg h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
+            <div className="text-[9px] lg:text-xs 2xl:text-lg h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
               {`${props.data.web_name}`}
             </div>
             <div
