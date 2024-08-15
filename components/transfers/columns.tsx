@@ -88,7 +88,7 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
         <Button
           variant="secondary"
           size="table"
-          className="h-3 lg:h-5 p-1 text-[11px] 2xl:text-lg rounded-sm"
+          className="h-4 lg:h-5 p-1 text-[11px] 2xl:text-lg rounded-sm"
           onClick={async () => {
             table.getColumn("web_name")?.setFilterValue("");
             const formatted = FPLPlayerDataToPlayerData({

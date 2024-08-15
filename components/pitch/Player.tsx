@@ -92,7 +92,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
             </button>
           </div>
           <div className="flex flex-col h-full w-full justify-between items-center">
-            <div className="w-8 h-8 lg:h-14 lg:w-14 2xl:h-24 2xl:w-24">
+            <div className="w-6 h-6 lg:h-14 lg:w-14 2xl:h-24 2xl:w-24">
               <Image
                 src={`https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${props.data.team_code}-110.webp`}
                 alt="Player"
@@ -102,12 +102,12 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
                 className="w-full h-full object-contain"
               />
             </div>
-            <div className="text-[9px] lg:text-xs 2xl:text-lg h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
+            <div className="text-[9px] lg:text-[10px] 2xl:text-lg h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
               {`${props.data.web_name}`}
             </div>
             <div
               className={clsx(
-                "text-[10px] w-full items-center flex flex-row justify-center"
+                "text-[8px] lg:text-[10px] w-full items-center flex flex-row justify-center"
                 // `${getFixtureColorFromDifficulty(firstFixture.strength!)}`
               )}
             >{`${firstFixture.name.toUpperCase()} (${

@@ -61,7 +61,7 @@ export function DataTable<TData, TValue>({
   const isPaginationVisible = isPaginated && table.getPageCount() > 1;
 
   return (
-    <div className="relative h-full">
+    <div className="relative min-h-56 lg:h-full">
       {isFilterable && (
         <div className="flex items-center pb-1 gap-2">
           <Input

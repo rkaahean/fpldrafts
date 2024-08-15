@@ -1,5 +1,6 @@
 import { signIn } from "@/auth/main";
-import { headers } from "next/headers";
+
+import { isOnMobile } from "@/lib/serverUtils";
 import { Icons } from "../icons";
 import { Button } from "../ui/button";
 import {
@@ -11,10 +12,7 @@ import {
 } from "../ui/card";
 
 export default function SignIn() {
-  const h = headers();
-  const isMobile =
-    h.get("User-Agent")?.includes("iOS") ||
-    h.get("User-Agent")?.includes("Android");
+  const isMobile = isOnMobile();
 
   if (isMobile) {
     return (

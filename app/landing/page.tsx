@@ -93,7 +93,7 @@ export default async function Landing() {
           <AccordionItem value="item-1">
             <AccordionTrigger>How many drafts can you create?</AccordionTrigger>
             <AccordionContent>
-              As many as you wish. There's no limit.
+              As many as you wish. There&apos;s no limit.
             </AccordionContent>
           </AccordionItem>
 
@@ -112,15 +112,15 @@ export default async function Landing() {
               Is having an account mandatory for accessing the app?
             </AccordionTrigger>
             <AccordionContent>
-              I'm working on a demo mode where you can try out the app, and sign
-              in if you chose to later on. In the future, there will be a local
-              only mode to save drafts.
+              I&apos;m working on a demo mode where you can try out the app, and
+              sign in if you chose to later on. In the future, there will be a
+              local only mode to save drafts.
             </AccordionContent>
           </AccordionItem>
 
           <AccordionItem value="item-4">
             <AccordionTrigger>
-              What's the reason for needing my team ID?
+              What&apos;s the reason for needing my team ID?
             </AccordionTrigger>
             <AccordionContent>
               The app will automatically pull in your latest gameweek data. This
