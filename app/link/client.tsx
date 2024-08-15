@@ -89,8 +89,13 @@ export default function TeamLinkComponent() {
               })
                 .then((res) => res.json())
                 .then(() => new Promise((resolve) => setTimeout(resolve, 2000)))
-                .then(() => setLoading(false))
-                .then(() => router.push("/"));
+                .catch((error) => {
+                  console.error("Error on clicking link", error);
+                })
+                .finally(() => {
+                  setLoading(false);
+                  router.push("/");
+                });
             }}
           >
             {loading ? (
