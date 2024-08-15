@@ -200,7 +200,7 @@ export function getFixtureColorFromDifficulty(strength: number): string {
     case 3:
       return "bg-neutral-400 text-black";
     case 4:
-      return "bg-rose-500";
+      return "bg-rose-500 text-primary";
     case 5:
       return "bg-rose-950 text-white";
     default:
