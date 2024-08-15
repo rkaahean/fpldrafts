@@ -35,6 +35,9 @@ export default function PlayerComparison() {
         data: NonNullable<Awaited<ReturnType<typeof getPlayerData>>>;
       } = await fetch("/api/player", {
         method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
         body: JSON.stringify({
           id: player1,
         }),
@@ -44,6 +47,9 @@ export default function PlayerComparison() {
         data: NonNullable<Awaited<ReturnType<typeof getPlayerData>>>;
       } = await fetch("/api/player", {
         method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
         body: JSON.stringify({
           id: player2,
         }),

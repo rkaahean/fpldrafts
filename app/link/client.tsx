@@ -79,6 +79,9 @@ export default function TeamLinkComponent() {
               setLoading(true);
               await fetch("/api/link", {
                 method: "POST",
+                headers: {
+                  "Content-type": "application/json",
+                },
                 body: JSON.stringify({
                   teamNumber,
                   userId: session!.user?.id,
