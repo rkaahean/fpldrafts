@@ -26,7 +26,7 @@ export default function SignIn() {
                 <div>Not available on mobile</div>
               </div>
             </CardTitle>
-            <CardDescription className="text-sm">
+            <CardDescription className="text-sm text-primary">
               FPL drafts for mobile is a work in progress. Try accessing this
               page from a web-browser.
             </CardDescription>

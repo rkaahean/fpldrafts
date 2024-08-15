@@ -1,6 +1,13 @@
 import { auth } from "@/auth/main";
 import SignIn from "@/components/auth/signIn";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
+import {
   CalendarIcon,
   LayoutListIcon,
   PoundSterlingIcon,
@@ -80,6 +87,48 @@ export default async function Landing() {
         </div>
       </div>
       <SignIn />
+
+      <div className="w-full lg:w-1/2 text-primary mb-8 px-4 lg:p-0">
+        <Accordion type="single" collapsible>
+          <AccordionItem value="item-1">
+            <AccordionTrigger>How many drafts can you create?</AccordionTrigger>
+            <AccordionContent>
+              As many as you wish. There's no limit.
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="item-2">
+            <AccordionTrigger>
+              Why do you need my google sign in?
+            </AccordionTrigger>
+            <AccordionContent>
+              When you save a draft, it needs an account for the draft to be
+              linked with. This has nothing to do with your actual FPL account.
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="item-3">
+            <AccordionTrigger>
+              Is having an account mandatory for accessing the app?
+            </AccordionTrigger>
+            <AccordionContent>
+              I'm working on a demo mode where you can try out the app, and sign
+              in if you chose to later on. In the future, there will be a local
+              only mode to save drafts.
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="item-4">
+            <AccordionTrigger>
+              What's the reason for needing my team ID?
+            </AccordionTrigger>
+            <AccordionContent>
+              The app will automatically pull in your latest gameweek data. This
+              data is public on the FPL website.
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
     </main>
   );
 }
