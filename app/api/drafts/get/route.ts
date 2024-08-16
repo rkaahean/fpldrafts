@@ -63,6 +63,7 @@ export async function GET(req: NextRequest) {
       },
       where: {
         fpl_team_id: teamId,
+        deletedAt: null,
       },
     });
     return Response.json({ data });

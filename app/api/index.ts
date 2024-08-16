@@ -499,10 +499,9 @@ export async function getDraftTransfers(
 }
 
 export async function deleteDraft(draftId: string) {
-  return await prisma.fPLDrafts.delete({
-    where: {
-      id: draftId,
-    },
+  return await prisma.fPLDrafts.update({
+    where: { id: draftId },
+    data: { deletedAt: new Date() },
   });
 }
 
