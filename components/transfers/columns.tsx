@@ -52,15 +52,39 @@ export const columns: ColumnDef<DataType>[] = [
   },
   {
     accessorKey: "expected_goal_involvements_per_90",
-    header: "xGI/90",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          xGI/90
+        </button>
+      );
+    },
   },
   {
     accessorKey: "expected_goals_per_90",
-    header: "xG/90",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          xG/90
+        </button>
+      );
+    },
   },
   {
     accessorKey: "expected_assists_per_90",
-    header: "xA/90",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          xGA/90
+        </button>
+      );
+    },
   },
   {
     accessorKey: "goals_scored",
