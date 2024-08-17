@@ -61,15 +61,14 @@ function getData() {
       await prisma.$transaction(
         async (tx) => {
           for (const player of playersToUpdate) {
-            await tx.fPLPlayer.upsert({
+            await tx.fPLPlayer.update({
               where: {
                 player_id_season_id: {
                   player_id: player.player_id,
                   season_id: process.env.FPL_SEASON_ID!,
                 },
               },
-              update: player,
-              create: player,
+              data: player,
             });
           }
         },

@@ -46,6 +46,9 @@ model FPLPlayer {
   draft_transfer_out        FPLDraftTransfers[]      @relation("in_player")
   draft_transfer_in         FPLDraftTransfers[]      @relation("out_player")
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
   @@unique([player_id, season_id])
   @@index([player_id])
   @@index([season_id, player_id])
@@ -108,9 +111,12 @@ model FPLGameweekOverallStats {
   points               Int
   total_points         Int
   gameweek_rank        Int?
-  overall_rank         Int
+  overall_rank         Int?
   event_transfers      Int
   event_transfers_cost Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@unique([fpl_team_id, gameweek])
 }
@@ -127,6 +133,9 @@ model FPLGameweekPicks {
   // fpl team id is foreign key in FPL TEAM
   fpl_team        FPLTeam   @relation(fields: [fpl_team_id], references: [id])
   fpl_player      FPLPlayer @relation(fields: [fpl_player_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@unique([fpl_team_id, gameweek, position])
 }
@@ -200,8 +209,8 @@ model FPLDrafts {
   bank          Int
 
   createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt @default(now())
-  deletedAt         DateTime?            
+  updatedAt         DateTime            @default(now()) @updatedAt
+  deletedAt         DateTime?
   FPLDraftTransfers FPLDraftTransfers[]
 }
 

@@ -225,6 +225,7 @@ export async function getGameweekPicksData(gameweek: number, team_id: string) {
                   event: {
                     gte: gameweek,
                   },
+                  season_id: process.env.FPL_SEASON_ID!,
                 },
               },
               away_fixtures: {
@@ -243,6 +244,7 @@ export async function getGameweekPicksData(gameweek: number, team_id: string) {
                   event: {
                     gte: gameweek,
                   },
+                  season_id: process.env.FPL_SEASON_ID!,
                 },
               },
             },

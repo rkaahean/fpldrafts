@@ -181,7 +181,7 @@ export default function Gameweek(props: { gameweek: number }) {
                 } / ${transferCount}`}
               />
               <GameweekStat title="ITB" value={`${picks.overall.bank! / 10}`} />
-              <GameweekStat title="Rank" value={data.overall.overall_rank} />
+              <GameweekStat title="Rank" value={data.overall.overall_rank!} />
             </div>
             <Button
               onClick={() => setCurrentGameweek(currentGameweek + 1)}

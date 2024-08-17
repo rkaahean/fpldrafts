@@ -33,7 +33,9 @@ export default async function Home() {
     process.env.FPL_SEASON_ID!
   );
   const maxGameweek = await getLatestGameweek(teamId);
-
+  const newGameweek = maxGameweek._max.gameweek
+    ? maxGameweek._max.gameweek + 1
+    : 1;
   const mobileContent = (
     <div className="flex flex-col bg-grainy px-4 gap-4">
       <div>
@@ -41,7 +43,7 @@ export default async function Home() {
       </div>
 
       <div className="flex flex-col gap-8">
-        <Team gameweek={maxGameweek._max ? 1 : maxGameweek._max + 1} />
+        <Team gameweek={newGameweek} />
         <Selector />
         <Drafts />
         <Fixtures />
@@ -72,7 +74,7 @@ export default async function Home() {
             </div>
           </div>
           <div className="w-1/2 py-2 px-2 pr-2 min-h-full">
-            <Team gameweek={maxGameweek._max ? 1 : maxGameweek._max + 1} />
+            <Team gameweek={newGameweek} />
           </div>
         </div>
       </div>

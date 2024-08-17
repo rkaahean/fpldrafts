@@ -7,6 +7,9 @@ function getData() {
     orderBy: {
       total_points: "desc",
     },
+    where: {
+      season_id: process.env.FPL_SEASON_ID!,
+    },
   });
 
   return players

@@ -1,4 +1,5 @@
 import { FPLGameweekPicks, PrismaClient } from "@prisma/client";
+
 const prisma = new PrismaClient();
 
 type JSONResponsePicks = Omit<FPLGameweekPicks, "id">[];
@@ -194,9 +195,21 @@ export async function updateFPLTeamData(
 }
 
 try {
-  updateFPLTeamData("53ed0ea1-7298-4069-b609-f8108468c885", TEAM_ID).then(() =>
-    console.log("Completed upload...")
-  );
+  prisma.fPLTeam
+    .findMany({
+      where: {
+        fpl_season_id: process.env.FPL_SEASON_ID!,
+      },
+    })
+    .then((teams) => {
+      teams.map((team) => {
+        console.log("Updating team...", team.id);
+        updateFPLTeamData(team.id, team.team_id).then(() =>
+          console.log("Completed upload...")
+        );
+      });
+    });
+
   prisma.$disconnect();
 } catch (e) {
   console.error(e);
