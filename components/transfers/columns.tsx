@@ -48,7 +48,15 @@ export const columns: ColumnDef<DataType>[] = [
   },
   {
     accessorKey: "total_points",
-    header: "Points",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Points
+        </button>
+      );
+    },
   },
   {
     accessorKey: "expected_goal_involvements_per_90",
