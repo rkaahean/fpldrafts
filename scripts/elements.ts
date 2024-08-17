@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { FPLGameweekPlayerStats, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 function getData() {
@@ -33,7 +33,7 @@ function getData() {
     })
     .then(async (playersData) => {
       console.log("Upadting Gameweek Player Stats...");
-      const formattedData = playersData
+      const formattedData: Partial<FPLGameweekPlayerStats[]>[] = playersData
         .filter((value) => Object.keys(value).length != 0)
         .map((player) => {
           if (player) {
@@ -59,17 +59,17 @@ function getData() {
           for (const player of formattedData) {
             console.log(
               "Updating player for player stats: ",
-              player[0].fpl_player_id
+              player[0]!.fpl_player_id
             );
             await tx.fPLGameweekPlayerStats.upsert({
               where: {
-                fpl_player_id_gameweek: {
-                  fpl_player_id: player[0].fpl_player_id,
-                  gameweek: player[0].gameweek,
+                fpl_player_id_fixture_id: {
+                  fpl_player_id: player[0]!.fpl_player_id,
+                  fixture_id: player[0]!.fixture_id,
                 },
               },
-              create: player[0],
-              update: player[0],
+              create: player[0]!,
+              update: player[0]!,
             });
           }
         },

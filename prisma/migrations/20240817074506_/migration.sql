@@ -8,4 +8,4 @@
 DROP INDEX "FPLGameweekPlayerStats_fpl_player_id_fixture_id_key";
 
 -- CreateIndex
--- CREATE UNIQUE INDEX "FPLGameweekPlayerStats_fpl_player_id_gameweek_key" ON "FPLGameweekPlayerStats"("fpl_player_id", "gameweek");
+CREATE UNIQUE INDEX "FPLGameweekPlayerStats_fpl_player_id_gameweek_key" ON "FPLGameweekPlayerStats"("fpl_player_id", "gameweek");
