@@ -192,6 +192,7 @@ export async function getGameweekOverallData(gameweek: number, teamId: string) {
       value: true,
       overall_rank: true,
       bank: true,
+      total_points: true,
     },
   });
 }

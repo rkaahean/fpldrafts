@@ -168,7 +168,8 @@ export default function Gameweek(props: { gameweek: number }) {
             >
               <ArrowLeftIcon className="w-4 h-4 lg:w-6 lg:h-6" />
             </Button>
-            <div className="flex flex-row justify-around w-full">
+            <div className="flex flex-row justify-around w-full items-center">
+              <GameweekStat title="Points" value={data.overall.total_points} />
               <GameweekStat title="Gameweek" value={currentGameweek} />
               <GameweekStat
                 title="Transfers"
@@ -193,7 +194,7 @@ export default function Gameweek(props: { gameweek: number }) {
           </div>
 
           <div>
-            <div className="absolute h-[95%] w-full -z-10">
+            <div className="absolute h-[92vh] w-full -z-10">
               <Image src={Pitch} alt="" layout="fill" objectFit="cover" />
             </div>
           </div>
@@ -228,9 +229,9 @@ function GameweekStat({
   value: number | string;
 }) {
   return (
-    <div className="text-xs 2xl:text-base flex flex-col w-10 2xl:w-14">
-      <div className="font-light">{title}</div>
-      <div className="font-black">{value}</div>
+    <div className="text-xs 2xl:text-base flex flex-col w-10 lg:w-14 2xl:w-14">
+      <div className="font-light text-accent">{title}</div>
+      <div className="font-semibold text-base text-primary">{value}</div>
     </div>
   );
 }

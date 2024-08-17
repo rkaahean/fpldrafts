@@ -126,6 +126,7 @@ export const GET = auth(async function GET(req: NextRequest) {
             0
           ),
           overall_rank: 0,
+          total_points: 0,
         },
         transfers: 0,
       })
