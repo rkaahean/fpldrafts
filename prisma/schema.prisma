@@ -155,7 +155,7 @@ model FPLGameweekPlayerStats {
   value            Int
   fpl_player       FPLPlayer @relation(fields: [fpl_player_id], references: [id])
 
-  @@unique([fpl_player_id, fixture_id])
+  @@unique([fpl_player_id, gameweek])
   @@index([fpl_player_id, value])
 }
 

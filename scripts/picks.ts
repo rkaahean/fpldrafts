@@ -132,14 +132,15 @@ export async function updateFPLTeamData(
     console.log("Inserting overall stats...");
     await Promise.all(
       history.map(async (gameweekStat) => {
-        await prisma.fPLGameweekOverallStats.update({
+        await prisma.fPLGameweekOverallStats.upsert({
           where: {
             fpl_team_id_gameweek: {
               fpl_team_id: team_id,
               gameweek: gameweekStat.gameweek,
             },
           },
-          data: gameweekStat,
+          update: gameweekStat,
+          create: gameweekStat,
         });
       })
     );
@@ -212,10 +213,15 @@ try {
     })
     .then((teams) => {
       teams.map((team) => {
-        console.log("Updating team...", team.id);
-        updateFPLTeamData(team.id, team.team_id).then(() =>
-          console.log("Completed upload...")
-        );
+        try {
+          console.log("Updating team...", team.id);
+
+          updateFPLTeamData(team.id, team.team_id).then(() =>
+            console.log("Completed upload...")
+          );
+        } catch (e) {
+          console.log("Ran into an error updating team. Skipping...", e);
+        }
       });
     });
 

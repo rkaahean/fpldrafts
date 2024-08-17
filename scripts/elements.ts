@@ -53,10 +53,46 @@ function getData() {
             });
           }
         });
-      await prisma.fPLGameweekPlayerStats.createMany({
-        data: formattedData.flat(),
-        skipDuplicates: true,
-      });
+
+      await prisma.$transaction(
+        async (tx) => {
+          for (const player of formattedData) {
+            console.log(
+              "Updating player for player stats: ",
+              player[0].fpl_player_id
+            );
+            await tx.fPLGameweekPlayerStats.upsert({
+              where: {
+                fpl_player_id_gameweek: {
+                  fpl_player_id: player[0].fpl_player_id,
+                  gameweek: player[0].gameweek,
+                },
+              },
+              create: player[0],
+              update: player[0],
+            });
+          }
+        },
+        {
+          timeout: 1000000,
+        }
+      );
+
+      // await Promise.all(
+      //   formattedData.map(async (player) => {
+      //     console.log(player);
+      //     await prisma.fPLGameweekPlayerStats.upsert({
+      //       where: {
+      //         fpl_player_id_gameweek: {
+      //           fpl_player_id: player[0].fpl_player_id,
+      //           gameweek: player[0].gameweek,
+      //         },
+      //       },
+      //       create: player[0],
+      //       update: player[0],
+      //     });
+      //   })
+      // );
     });
 }
 
