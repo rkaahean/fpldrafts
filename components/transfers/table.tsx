@@ -318,12 +318,16 @@ export function DataTable<TData, TValue>({
     </div>
   );
 }
-export const priceFilter: FilterFn<FPLPlayerData2> = (row, columnId, value) => {
+
+export interface DataType extends FPLPlayerData2 {
+  is_in_team: boolean;
+}
+export const priceFilter: FilterFn<DataType> = (row, columnId, value) => {
   const rowValue = row.getValue(columnId) as number;
   return rowValue <= value;
 };
 
-export const teamFilter: FilterFn<FPLPlayerData2> = (row, columnId, value) => {
+export const teamFilter: FilterFn<DataType> = (row, columnId, value) => {
   if (value == "EMPTY_FILTER" || !value) {
     return true;
   }

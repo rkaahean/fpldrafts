@@ -15,14 +15,22 @@ export default function ClientTable(props: any) {
 
   let filteredData;
   if (picks) {
-    filteredData = props.data.filter(
-      (player: any) =>
-        picks.data.filter(
-          (pick) => pick.fpl_player.player_id == player.player_id
-        ).length == 0
-    );
+    filteredData = props.data.map((player: any) => {
+      return {
+        ...player,
+        is_in_team:
+          picks.data.filter(
+            (pick) => pick.fpl_player.player_id == player.player_id
+          ).length != 0,
+      };
+    });
   } else {
-    filteredData = props.data;
+    filteredData = props.data.map((player: any) => {
+      return {
+        ...player,
+        is_in_team: true,
+      };
+    });
   }
 
   return (

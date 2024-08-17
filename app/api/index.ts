@@ -57,6 +57,8 @@ export async function getPlayerData(
               },
               id: true,
               event: true,
+              team_a_difficulty: true,
+              team_h_difficulty: true,
             },
             where: {
               season_id,
@@ -71,6 +73,8 @@ export async function getPlayerData(
               },
               id: true,
               event: true,
+              team_a_difficulty: true,
+              team_h_difficulty: true,
             },
             where: {
               season_id,

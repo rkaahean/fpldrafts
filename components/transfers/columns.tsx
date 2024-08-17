@@ -1,6 +1,5 @@
 "use client";
 
-import { FPLPlayerData2 } from "@/app/api";
 import { picksStore } from "@/app/store";
 import { removeTransfer } from "@/app/store/utils";
 import { FPLPlayerDataToPlayerData } from "@/lib/utils";
@@ -8,12 +7,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
-import { priceFilter, teamFilter } from "./table";
+import { DataType, priceFilter, teamFilter } from "./table";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
-export const columns: ColumnDef<FPLPlayerData2>[] = [
+export const columns: ColumnDef<DataType>[] = [
   {
     id: "team_crest",
     cell: ({ row }) => {
@@ -72,6 +71,9 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
     header: "A",
   },
   {
+    id: "is_in_team",
+  },
+  {
     id: "player_add",
     cell: ({ row, table }) => {
       const transfersIn = picksStore((store) => store.transfersIn);
@@ -88,6 +90,7 @@ export const columns: ColumnDef<FPLPlayerData2>[] = [
         <Button
           variant="secondary"
           size="table"
+          disabled={row.original.is_in_team}
           className="h-4 lg:h-5 p-1 text-[11px] 2xl:text-lg rounded-sm"
           onClick={async () => {
             table.getColumn("web_name")?.setFilterValue("");
