@@ -27,7 +27,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       const userWithTeam = await prisma.fPLTeam.findFirst({
         where: {
-          user_id: token.sub,
+          user_id: token.id,
           fpl_season_id: process.env.FPL_SEASON_ID!,
         },
       });

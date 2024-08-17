@@ -131,7 +131,7 @@ model FPLGameweekPicks {
   is_captain      Boolean
   is_vice_captain Boolean
   // fpl team id is foreign key in FPL TEAM
-  fpl_team        FPLTeam   @relation(fields: [fpl_team_id], references: [id])
+  fpl_team        FPLTeam   @relation(fields: [fpl_team_id], references: [id], onDelete: Cascade)
   fpl_player      FPLPlayer @relation(fields: [fpl_player_id], references: [id])
 
   createdAt DateTime @default(now())

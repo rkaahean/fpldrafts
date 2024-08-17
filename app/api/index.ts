@@ -178,10 +178,11 @@ export async function getGameweekData(gameweek: number) {
   return picks;
 }
 
-export async function getGameweekOverallData(gameweek: number) {
+export async function getGameweekOverallData(gameweek: number, teamId: string) {
   return await prisma.fPLGameweekOverallStats.findFirst({
     where: {
       gameweek,
+      fpl_team_id: teamId,
     },
     select: {
       value: true,
