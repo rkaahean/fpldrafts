@@ -231,7 +231,7 @@ function GameweekStat({
   return (
     <div className="text-xs 2xl:text-base flex flex-col w-10 lg:w-14 2xl:w-14">
       <div className="font-light text-muted-foreground">{title}</div>
-      <div className="font-semibold text-base">{value}</div>
+      <div className="font-semibold text-sm">{value}</div>
     </div>
   );
 }
