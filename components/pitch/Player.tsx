@@ -188,13 +188,22 @@ function PlayerFixtureTicker({
 function PlayerStatsTicker({ data }: { data: PlayerData }) {
   return (
     <div className="h-fit lg:h-1/6 grid grid-cols-3 text-[6px] lg:text-[11px] 2xl:text-sm w-full">
-      <div className="flex flex-col text-center justify-center">
+      <div
+        className="flex flex-col text-center justify-center"
+        title="Selling Price"
+      >
         <div>{`£${data.selling_price / 10}`}</div>
       </div>
-      <div className="flex flex-col text-center justify-center">
+      <div
+        className="flex flex-col text-center justify-center"
+        title="Total Points"
+      >
         <div>{`${data.total_points}`}</div>
       </div>
-      <div className="flex flex-col text-center justify-center">
+      <div
+        className="flex flex-col text-center justify-center"
+        title="xGI / 90"
+      >
         <div>{`${data.expected_goal_involvements_per_90}`}</div>
       </div>
     </div>
