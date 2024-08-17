@@ -130,10 +130,19 @@ export async function updateFPLTeamData(
     });
 
     console.log("Inserting overall stats...");
-    await prisma.fPLGameweekOverallStats.createMany({
-      data: history,
-      skipDuplicates: true,
-    });
+    await Promise.all(
+      history.map(async (gameweekStat) => {
+        await prisma.fPLGameweekOverallStats.update({
+          where: {
+            fpl_team_id_gameweek: {
+              fpl_team_id: team_id,
+              gameweek: gameweekStat.gameweek,
+            },
+          },
+          data: gameweekStat,
+        });
+      })
+    );
   });
 
   console.log("Inserting transfer data...");

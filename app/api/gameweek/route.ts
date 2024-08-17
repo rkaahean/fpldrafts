@@ -134,6 +134,7 @@ export const GET = auth(async function GET(req: NextRequest) {
 
   // get overall gameweek data
   const overall = await getGameweekOverallData(gameweek - 1, teamId);
+  console.log(overall);
   // ex: if loading gw2 data, need to base it off gameweeek 1 picks
   let data = await getGameweekPicksData(gameweek - 1, teamId);
   // console.log("Getting data for team", teamId, overall, gameweek);
