@@ -129,7 +129,7 @@ function PlayerFixtureTicker({
   gameweek: number;
 }) {
   const formattedFixtures = [];
-  for (let idx = gameweek + 1; idx < gameweek + 5; idx++) {
+  for (let idx = gameweek; idx < gameweek + 5; idx++) {
     const fixture = fixtures.filter((fixture) => fixture.event == idx);
     if (fixture.length === 0) {
       formattedFixtures.push({
@@ -146,7 +146,7 @@ function PlayerFixtureTicker({
   }
 
   return (
-    <div className="w-3/12 grid grid-rows-4 text-[8px] lg:text-xs 2xl:text-base tracking-tighter">
+    <div className="w-3/12 grid grid-rows-5 text-[8px] lg:text-xs 2xl:text-base tracking-tighter">
       {formattedFixtures.map((fixture, idx) => {
         if (Array.isArray(fixture)) {
           return (
@@ -172,7 +172,7 @@ function PlayerFixtureTicker({
                 getFixtureColorFromDifficulty(fixture.strength!),
                 {
                   "rounded-tl-md": idx == 0,
-                  "rounded-bl-md": idx == 3,
+                  "rounded-bl-md": idx == 4,
                 }
               )}
             >
