@@ -103,6 +103,18 @@ export const columns: ColumnDef<DataType>[] = [
     header: "A",
   },
   {
+    accessorKey: "minutes",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Mins
+        </button>
+      );
+    },
+  },
+  {
     id: "is_in_team",
   },
   {

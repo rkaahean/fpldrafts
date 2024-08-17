@@ -45,6 +45,7 @@ export async function getPlayerData(
       expected_goals_per_90: true,
       expected_goal_involvements_per_90: true,
       now_value: true,
+      minutes: true,
       fpl_player_team: {
         select: {
           short_name: true,
@@ -119,6 +120,7 @@ export async function getPlayerDataBySeason(
       now_value: true,
       goals_scored: true,
       assists: true,
+      minutes: true,
       fpl_player_team: {
         select: {
           short_name: true,
