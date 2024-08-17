@@ -58,7 +58,7 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  const isPaginationVisible = isPaginated && table.getPageCount() > 1;
+  const isPaginationVisible = isPaginated;
 
   return (
     <div className="relative min-h-56 lg:h-full">
