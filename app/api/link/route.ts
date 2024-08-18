@@ -1,5 +1,6 @@
 import prisma from "@/lib/db";
-import { updateFPLTeamData } from "@/scripts/picks";
+import { updateFPLTeamData } from "@/scripts/utils";
+
 import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
