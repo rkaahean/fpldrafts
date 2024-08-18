@@ -107,7 +107,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
             </div>
             <div
               className={clsx(
-                "text-[8px] lg:text-[10px] w-full items-center flex flex-row justify-center"
+                "text-[8px] lg:text-[10px] 2xl:text-sm w-full items-center flex flex-row justify-center"
                 // `${getFixtureColorFromDifficulty(firstFixture.strength!)}`
               )}
             >{`${firstFixture.name.toUpperCase()} (${

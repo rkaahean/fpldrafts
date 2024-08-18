@@ -56,15 +56,15 @@ export default async function Home() {
       <div className="flex flex-row h-screen bg-grainy w-screen">
         <Navbar image={session.user!.image!} />
         <div className="flex flex-row w-full h-full">
-          <div className="w-[27wh] min-h-full gap-1 py-2 pl-1 pr-6">
+          <div className="w-[27%] min-h-full gap-1 py-2 pl-1 pr-6">
             <Selector />
             {/* <div className="h-fit lg:h-full relative lg:overflow-scroll">
               <Selector />
             </div> */}
             {/* <PlayerComparison /> */}
           </div>
-          <div className="w-[23wh] h-full py-2">
-            <div className="flex flex-col h-full 2xl:h-[95vh]">
+          <div className="w-[23%] h-full py-2">
+            <div className="flex flex-col h-full">
               <div className="h-1/3">
                 <Drafts />
               </div>
@@ -73,7 +73,7 @@ export default async function Home() {
               </div>
             </div>
           </div>
-          <div className="w-1/2 py-2 px-2 pr-2 min-h-full">
+          <div className="flex-grow py-2 px-2 pr-2 min-h-full">
             <Team gameweek={newGameweek} />
           </div>
         </div>
