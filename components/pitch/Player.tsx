@@ -34,7 +34,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
   return (
     <div>
       {isSubstitute && (
-        <div className="text-[10px] lg:text-xs 2xl:text-base text-background text-center tracking-tight font-bold">
+        <div className="text-[8px] lg:text-xs 2xl:text-base text-background text-center tracking-tight font-bold">
           {elementTypeToPosition(props.data.element_type)}
         </div>
       )}
@@ -146,7 +146,7 @@ function PlayerFixtureTicker({
   }
 
   return (
-    <div className="w-3/12 grid grid-rows-5 text-[8px] lg:text-xs 2xl:text-base tracking-tighter">
+    <div className="w-3/12 grid grid-rows-5 text-[7px] lg:text-xs 2xl:text-base tracking-tighter">
       {formattedFixtures.map((fixture, idx) => {
         if (Array.isArray(fixture)) {
           return (

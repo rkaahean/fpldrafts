@@ -160,8 +160,9 @@ export default function Gameweek(props: { gameweek: number }) {
     return (
       <ReactQueryProvider>
         <div className="flex flex-col gap-2 lg:gap-1 h-full relative">
-          <div className="flex flex-row justify-between">
+          <div className="flex flex-row justify-between gap-2">
             <Button
+              size="xs"
               onClick={() => setCurrentGameweek(currentGameweek - 1)}
               variant="secondary"
               title="Previous Gameweek"
@@ -185,6 +186,7 @@ export default function Gameweek(props: { gameweek: number }) {
               <GameweekStat title="Rank" value={data.overall.overall_rank!} />
             </div>
             <Button
+              size="xs"
               onClick={() => setCurrentGameweek(currentGameweek + 1)}
               title="Next Gameweek"
               variant="secondary"
@@ -194,7 +196,7 @@ export default function Gameweek(props: { gameweek: number }) {
           </div>
 
           <div>
-            <div className="absolute h-[92vh] w-full -z-10">
+            <div className="absolute h-[60vh] lg:h-[92vh] w-full -z-10">
               <Image src={Pitch} alt="" layout="fill" objectFit="cover" />
             </div>
           </div>
@@ -229,9 +231,9 @@ function GameweekStat({
   value: number | string;
 }) {
   return (
-    <div className="text-xs 2xl:text-base flex flex-col w-10 lg:w-14 2xl:w-14">
-      <div className="font-light text-muted-foreground">{title}</div>
-      <div className="font-semibold text-sm">{value}</div>
+    <div className="text-[8px] lg:text-xs flex flex-col w-10 lg:w-14 2xl:w-14">
+      <div className="font-light text-muted-foreground truncate">{title}</div>
+      <div className="font-semibold text-xs lg:text-sm">{value}</div>
     </div>
   );
 }
