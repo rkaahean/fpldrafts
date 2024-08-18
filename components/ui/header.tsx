@@ -1,6 +1,6 @@
 import { signIn } from "@/auth/main";
 
-import { isOnMobile } from "@/lib/serverUtils";
+import { isOnMobile } from "@/scripts/lib/serverUtils";
 import { Button } from "./button";
 
 export default function Header() {

@@ -7,7 +7,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 import { fetchGameweekData } from "@/app/api/utils";
-import { filterData } from "@/lib/utils";
+import { filterData } from "@/scripts/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";

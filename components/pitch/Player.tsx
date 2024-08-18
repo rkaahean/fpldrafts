@@ -1,6 +1,6 @@
 import { picksStore } from "@/app/store";
 import { PlayerData, updateTransfer } from "@/app/store/utils";
-import { cn, elementTypeToPosition } from "@/lib/utils";
+import { cn, elementTypeToPosition } from "@/scripts/lib/utils";
 import { Cross2Icon, DoubleArrowDownIcon } from "@radix-ui/react-icons";
 import clsx from "clsx";
 import { motion } from "framer-motion";

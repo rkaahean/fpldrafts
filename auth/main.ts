@@ -1,4 +1,4 @@
-import prisma from "@/lib/db";
+import prisma from "@/scripts/lib/db";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";

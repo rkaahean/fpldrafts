@@ -1,6 +1,5 @@
-import { FPLGameweekPicks, PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { FPLGameweekPicks } from "@prisma/client";
+import prisma from "./lib/db";
 
 type JSONResponsePicks = Omit<FPLGameweekPicks, "id">[];
 type JSONResponseHistory = NonNullable<

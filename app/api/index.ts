@@ -1,4 +1,4 @@
-import prisma from "../../lib/db";
+import prisma from "../../scripts/lib/db";
 import { DraftTransfer } from "../store/utils";
 
 export async function getUserTeamFromEmail(email: string, seasonId: string) {

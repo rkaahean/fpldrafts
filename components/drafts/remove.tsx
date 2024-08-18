@@ -1,6 +1,6 @@
 import { picksStore } from "@/app/store";
 import { updateTransfer } from "@/app/store/utils";
-import { FPLPlayerDataToPlayerData } from "@/lib/utils";
+import { FPLPlayerDataToPlayerData } from "@/scripts/lib/utils";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { Button } from "../ui/button";
 import {

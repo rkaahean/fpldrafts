@@ -2,7 +2,7 @@
 
 import { picksStore } from "@/app/store";
 import { removeTransfer } from "@/app/store/utils";
-import { FPLPlayerDataToPlayerData } from "@/lib/utils";
+import { FPLPlayerDataToPlayerData } from "@/scripts/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import { Button } from "../ui/button";

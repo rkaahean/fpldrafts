@@ -1,5 +1,5 @@
 import { auth } from "@/auth/main";
-import prisma from "@/lib/db";
+import prisma from "@/scripts/lib/db";
 import { jwtDecode } from "jwt-decode";
 import { NextRequest, NextResponse } from "next/server";
 import {
