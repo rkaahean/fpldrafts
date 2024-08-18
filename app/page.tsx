@@ -56,14 +56,14 @@ export default async function Home() {
       <div className="flex flex-row h-screen bg-grainy w-screen">
         <Navbar image={session.user!.image!} />
         <div className="flex flex-row w-full h-full">
-          <div className="w-[27%] min-h-full gap-1 py-2 pl-1 pr-6">
+          <div className="w-[28%] min-h-full gap-1 py-2 pl-1 pr-6">
             <Selector />
             {/* <div className="h-fit lg:h-full relative lg:overflow-scroll">
               <Selector />
             </div> */}
             {/* <PlayerComparison /> */}
           </div>
-          <div className="w-[23%] h-full py-2">
+          <div className="w-[22%] h-full py-2">
             <div className="flex flex-col h-full">
               <div className="h-1/3">
                 <Drafts />

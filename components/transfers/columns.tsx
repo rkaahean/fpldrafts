@@ -53,7 +53,7 @@ export const columns: ColumnDef<DataType>[] = [
         <button
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Points
+          P
         </button>
       );
     },
@@ -89,7 +89,7 @@ export const columns: ColumnDef<DataType>[] = [
         <button
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          xGA/90
+          xA/90
         </button>
       );
     },
