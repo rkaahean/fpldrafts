@@ -5,5 +5,5 @@ export function isOnMobile() {
   const isMobile =
     h.get("User-Agent")?.includes("iOS") ||
     h.get("User-Agent")?.includes("Android");
-  return isMobile && process.env.NODE_ENV == "production";
+  return isMobile && process.env.MOBILE_FEATURES == "on";
 }

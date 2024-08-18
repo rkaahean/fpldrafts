@@ -1,6 +1,5 @@
 import { signIn } from "@/auth/main";
 
-import { isOnMobile } from "@/lib/serverUtils";
 import { Icons } from "../icons";
 import { Button } from "../ui/button";
 import {
@@ -10,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { isOnMobile } from "@/lib/serverUtils";
 
 export default function SignIn() {
   const isMobile = isOnMobile();
