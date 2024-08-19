@@ -6,12 +6,12 @@ type JSONResponseHistory = NonNullable<
   Awaited<ReturnType<typeof parseHistoryData>>
 >;
 
-function getPicksData(
+async function getPicksData(
   fpl_team_numer: number,
   gameweek: number,
   teamId: string
 ) {
-  return fetch(
+  return await fetch(
     `https://fantasy.premierleague.com/api/entry/${fpl_team_numer}/event/${gameweek}/picks/`,
 
     {
@@ -113,19 +113,18 @@ export async function updateFPLTeamData(
   const history: JSONResponseHistory[] = [];
 
   for (let i = 1; i <= 38; i++) {
-    const gameweekData = getPicksData(fpl_team_number, i, team_id);
+    const gameweekData = await getPicksData(fpl_team_number, i, team_id);
     data.push(gameweekData);
   }
 
-  const alldata = await Promise.all(data);
-  const validData = alldata.filter(
+  const validData = data.filter(
     (gameweekData) =>
       !!gameweekData &&
       gameweekData.picks != undefined &&
       gameweekData.history != undefined
   );
 
-  console.log("Valid, clean data", validData);
+  console.log("Valid, clean data", validData.length);
   validData.map(async (data) => {
     if (!data) {
       return;
@@ -142,7 +141,7 @@ export async function updateFPLTeamData(
     });
 
     console.log("Inserting overall stats...", history.length);
-    console.log(history);
+    // console.log(history);
     await Promise.all(
       history.map(async (gameweekStat) => {
         await prisma.fPLGameweekOverallStats.upsert({
