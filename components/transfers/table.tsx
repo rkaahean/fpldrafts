@@ -31,6 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Cross1Icon } from "@radix-ui/react-icons";
+import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
 import { Button } from "../ui/button";
@@ -218,13 +219,14 @@ export function DataTable<TData, TValue>({
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    onClick={() => {
-                      const isSelected = row.getIsSelected();
-                      row.toggleSelected(!isSelected);
-                    }}
                   >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                    {row.getVisibleCells().map((cell, idx) => (
+                      <TableCell
+                        key={cell.id}
+                        className={clsx({
+                          "max-w-14": idx == 1,
+                        })}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
