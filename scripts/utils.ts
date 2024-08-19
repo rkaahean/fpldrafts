@@ -21,7 +21,14 @@ function getPicksData(
       },
     }
   )
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      const data = res.text();
+      console.log("Returned response", data);
+      return data;
+    })
     .then(async (data) => {
       console.log(data);
       if (data["detail"] != "Not found.") {
@@ -32,7 +39,7 @@ function getPicksData(
       }
     })
     .catch((e) => {
-      console.log("Error processing picks data...", e);
+      //   console.log("Error processing picks data...", e);
       return {
         picks: undefined,
         history: undefined,
