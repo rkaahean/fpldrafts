@@ -21,16 +21,8 @@ function getPicksData(
       },
     }
   )
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      const data = res.text();
-      console.log("Returned response", data);
-      return data;
-    })
+    .then((res) => res.json())
     .then(async (data) => {
-      console.log(data);
       if (data["detail"] != "Not found.") {
         return {
           picks: await parsePicksData(data, gameweek, teamId),
