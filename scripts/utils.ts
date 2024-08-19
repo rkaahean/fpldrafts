@@ -23,7 +23,8 @@ function getPicksData(
         };
       }
     })
-    .catch((error) => {
+    .catch((e) => {
+      console.log("Error processing picks data...", e);
       return {
         picks: undefined,
         history: undefined,
@@ -109,25 +110,27 @@ export async function updateFPLTeamData(
     data.push(gameweekData);
   }
 
-  const alldata = Promise.all(data);
+  const alldata = await Promise.all(data);
+  const validData = alldata.filter((gameweekData) => !!gameweekData);
 
-  await alldata.then(async (data) => {
-    data.map((gw) => {
-      if (gw && gw.picks) {
-        picks.push(...gw.picks);
-      }
-      if (gw && gw.history) {
-        history.push(gw.history);
-      }
-    });
+  console.log(validData);
+  validData.map(async (data) => {
+    if (!data) {
+      return;
+    }
+    // data.map((gw) => {
+    picks.push(...data.picks!);
+    history.push(data.history!);
+    // });
 
-    console.log("Inserting picks...");
+    console.log("Inserting picks...", picks.length);
     await prisma.fPLGameweekPicks.createMany({
       data: picks,
       skipDuplicates: true,
     });
 
-    console.log("Inserting overall stats...");
+    console.log("Inserting overall stats...", history.length);
+    console.log(history);
     await Promise.all(
       history.map(async (gameweekStat) => {
         await prisma.fPLGameweekOverallStats.upsert({
