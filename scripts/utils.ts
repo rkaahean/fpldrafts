@@ -111,9 +111,14 @@ export async function updateFPLTeamData(
   }
 
   const alldata = await Promise.all(data);
-  const validData = alldata.filter((gameweekData) => !!gameweekData);
+  const validData = alldata.filter(
+    (gameweekData) =>
+      !!gameweekData &&
+      gameweekData.picks != undefined &&
+      gameweekData.history != undefined
+  );
 
-  console.log(validData);
+  console.log("Valid, clean data", validData);
   validData.map(async (data) => {
     if (!data) {
       return;
