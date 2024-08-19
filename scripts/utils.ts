@@ -16,6 +16,7 @@ function getPicksData(
   )
     .then((res) => res.json())
     .then(async (data) => {
+      console.log(data);
       if (data["detail"] != "Not found.") {
         return {
           picks: await parsePicksData(data, gameweek, teamId),
@@ -152,8 +153,13 @@ export async function updateFPLTeamData(
     );
   });
 
-  console.log("Inserting transfer data...");
-  await getTransfersData(fpl_team_number).then(async (data) => {
+  const transfers = await getTransfersData(fpl_team_number);
+
+  if (transfers.length == 0) {
+    return;
+  }
+  console.log("Inserting transfer data...", transfers.length);
+  transfers.map(async (data: any) => {
     const inPlayers = await prisma.fPLPlayer.findMany({
       where: {
         player_id: {
