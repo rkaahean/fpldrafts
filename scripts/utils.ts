@@ -12,7 +12,14 @@ function getPicksData(
   teamId: string
 ) {
   return fetch(
-    `https://fantasy.premierleague.com/api/entry/${fpl_team_numer}/event/${gameweek}/picks/`
+    `https://fantasy.premierleague.com/api/entry/${fpl_team_numer}/event/${gameweek}/picks/`,
+
+    {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+      },
+    }
   )
     .then((res) => res.json())
     .then(async (data) => {
