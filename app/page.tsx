@@ -53,10 +53,10 @@ export default async function Home() {
 
   const desktopContent = (
     <div className="flex flex-col">
-      <div className="flex flex-row h-screen bg-grainy w-screen">
+      <div className="flex flex-row h-screen bg-grainy max-w-screen">
         <Navbar image={session.user!.image!} />
         <div className="flex flex-row w-full h-full">
-          <div className="w-[28%] min-h-full gap-1 py-2 pl-1 pr-6">
+          <div className="w-[28%] 2xl:w-[25%] min-h-full gap-1 py-2 pl-1 pr-6">
             <Selector />
             {/* <div className="h-fit lg:h-full relative lg:overflow-scroll">
               <Selector />
