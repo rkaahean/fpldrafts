@@ -169,7 +169,7 @@ export default function Gameweek(props: { gameweek: number }) {
               <ArrowLeftIcon className="w-4 h-4 lg:w-6 lg:h-6" />
             </Button>
             <div className="flex flex-row justify-around w-full items-center">
-              <GameweekStat title="Points" value={data.overall.total_points} />
+              <GameweekStat title="Points" value={data.overall.points} />
               <GameweekStat title="Gameweek" value={currentGameweek} />
               <GameweekStat
                 title="Transfers"
