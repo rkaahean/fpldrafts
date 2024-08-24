@@ -164,59 +164,57 @@ export async function updateFPLTeamData(
     return;
   }
   console.log("Inserting transfer data...", transfers.length);
-  transfers.map(async (data: any) => {
-    const inPlayers = await prisma.fPLPlayer.findMany({
-      where: {
-        player_id: {
-          in: data.map(
-            (transfer: { element_in: number }) => transfer.element_in
-          ),
-        },
-        season_id: process.env.FPL_SEASON_ID!,
+  const inPlayers = await prisma.fPLPlayer.findMany({
+    where: {
+      player_id: {
+        in: transfers.map(
+          (transfer: { element_in: number }) => transfer.element_in
+        ),
       },
-      select: {
-        id: true,
-        player_id: true,
+      season_id: process.env.FPL_SEASON_ID!,
+    },
+    select: {
+      id: true,
+      player_id: true,
+    },
+  });
+
+  const outPlayers = await prisma.fPLPlayer.findMany({
+    where: {
+      player_id: {
+        in: transfers.map(
+          (transfer: { element_out: number }) => transfer.element_out
+        ),
       },
-    });
+      season_id: process.env.FPL_SEASON_ID!,
+    },
+    select: {
+      id: true,
+      player_id: true,
+    },
+  });
 
-    const outPlayers = await prisma.fPLPlayer.findMany({
-      where: {
-        player_id: {
-          in: data.map(
-            (transfer: { element_out: number }) => transfer.element_out
-          ),
-        },
-        season_id: process.env.FPL_SEASON_ID!,
-      },
-      select: {
-        id: true,
-        player_id: true,
-      },
-    });
+  const inPlayerMap = new Map(
+    inPlayers.map((player) => [player.player_id, player.id])
+  );
+  const outPlayerMap = new Map(
+    outPlayers.map((player) => [player.player_id, player.id])
+  );
 
-    const inPlayerMap = new Map(
-      inPlayers.map((player) => [player.player_id, player.id])
-    );
-    const outPlayerMap = new Map(
-      outPlayers.map((player) => [player.player_id, player.id])
-    );
+  const formattedData = transfers.map((transfer: any) => {
+    return {
+      fpl_team_id: team_id,
+      in_player_id: inPlayerMap.get(transfer.element_in)!,
+      in_player_cost: transfer.element_in_cost,
+      out_player_id: outPlayerMap.get(transfer.element_out)!,
+      out_player_cost: transfer.element_out_cost,
+      time: transfer.time,
+      gameweek: transfer.event,
+    };
+  });
 
-    const formattedData = data.map((transfer: any) => {
-      return {
-        fpl_team_id: team_id,
-        in_player_id: inPlayerMap.get(transfer.element_in),
-        in_player_cost: transfer.element_in_cost,
-        out_player_id: outPlayerMap.get(transfer.element_out),
-        out_player_cost: transfer.element_out_cost,
-        time: transfer.time,
-        gameweek: transfer.event,
-      };
-    });
-
-    await prisma.fPLGameweekTransfers.createMany({
-      data: formattedData,
-      skipDuplicates: true,
-    });
+  await prisma.fPLGameweekTransfers.createMany({
+    data: formattedData,
+    skipDuplicates: true,
   });
 }
