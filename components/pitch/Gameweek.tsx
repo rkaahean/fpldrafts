@@ -152,7 +152,7 @@ export default function Gameweek(props: { gameweek: number }) {
       // transferCount =
       //   (currentGameweek > 5 ? 5 : currentGameweek) - data.transfers! - 1;
       // transferCount = transferCount <= 0 ? 1 : transferCount;
-      transferCount = currentGameweek - data.transfers! - 1;
+      transferCount = currentGameweek - data.transfers!.length - 1;
       transferCount = transferCount > 5 ? 5 : transferCount;
       transferCount = transferCount <= 0 ? 1 : transferCount;
     }
