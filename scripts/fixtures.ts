@@ -37,7 +37,7 @@ async function parseFixtureData(data: any): Promise<JSONResponse> {
       season_id: process.env.FPL_SEASON_ID!,
       code: fixture.code,
       fixture_id: fixture.id,
-      event: fixture.event,
+      event: fixture.event || -1,
       finished: fixture.finished,
       team_h_id: team_h?.id,
       team_a_id: team_a?.id,

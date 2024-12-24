@@ -6,6 +6,7 @@ try {
     .findMany({
       where: {
         fpl_season_id: process.env.FPL_SEASON_ID!,
+        id: "a37f46f5-5450-4315-8377-2ceadf8aa768",
       },
     })
     .then((teams) => {

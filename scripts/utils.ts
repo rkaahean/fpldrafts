@@ -31,7 +31,7 @@ async function getPicksData(
       }
     })
     .catch((e) => {
-      //   console.log("Error processing picks data...", e);
+      // console.log("Error processing picks data...", e);
       return {
         picks: undefined,
         history: undefined,
@@ -134,12 +134,17 @@ export async function updateFPLTeamData(
     history.push(data.history!);
     // });
 
-    console.log("Inserting picks...", picks.length);
-    await prisma.fPLGameweekPicks.createMany({
-      data: picks,
-      skipDuplicates: true,
-    });
+    try {
+      console.log("Inserting picks...", picks.length);
+      await prisma.fPLGameweekPicks.createMany({
+        data: picks,
+        skipDuplicates: true,
+      });
+    } catch (e) {
+      console.log("Ran into an error", e);
+    }
 
+    console.log("History", history);
     console.log("Inserting overall stats...", history.length);
     // console.log(history);
     await Promise.all(
@@ -160,6 +165,7 @@ export async function updateFPLTeamData(
 
   const transfers = await getTransfersData(fpl_team_number);
 
+  console.log("Transfers", transfers);
   if (transfers.length == 0) {
     return;
   }
