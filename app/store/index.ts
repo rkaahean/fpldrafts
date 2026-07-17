@@ -1,12 +1,16 @@
+import { validateSubstitution } from "@/lib/fpl/formation";
 import { toast } from "@/components/ui/use-toast";
 import { elementTypeToPosition } from "@/scripts/lib/utils";
 import { create } from "zustand";
-import { FPLGameweekPicksData, FPLPlayerData } from "../api";
+import { FPLGameweekPicksData } from "../api";
 import { DraftState, DraftTransfer, PlayerData } from "./utils";
+
+export { swapPlayers } from "@/lib/fpl/swap";
 
 interface State {
   currentGameweek: number;
   picks?: FPLGameweekPicksData;
+  committedBank?: number;
   base?: FPLGameweekPicksData;
   substitutedIn?: PlayerData;
   substitutedOut?: PlayerData;
@@ -24,6 +28,7 @@ interface State {
   }>;
   setDrafts: (drafts: DraftState) => void;
   setPicks: (picks: FPLGameweekPicksData) => void;
+  setCommittedBank: (bank: number) => void;
   setTransferIn: (players: { [key: number]: PlayerData[] }) => void;
   setTransferOut: (players: { [key: number]: PlayerData[] }) => void;
   resetSubs: () => void;
@@ -43,6 +48,9 @@ export const picksStore = create<State>()((set, get) => ({
   transfersOut: structuredClone(TRANSFER_INIT_VALUE),
   setPicks: (picks: FPLGameweekPicksData) => {
     set({ picks });
+  },
+  setCommittedBank: (bank: number) => {
+    set({ committedBank: bank });
   },
   setBase: (picks: FPLGameweekPicksData) => {
     set({ base: picks });
@@ -102,91 +110,27 @@ export const picksStore = create<State>()((set, get) => ({
       currentGameweek: gameweek,
     } = get();
 
-    const data = picks?.data;
-    // if both subs are set
     if (!!substitutedIn && !!substitutedOut) {
-      // Rules of transferring
-
-      // 1. A GK can be swapped out only for a GK.
-
-      // 2. A swap of equal element type is always allowed.
-
-      // 3. The below rules are for when element types are different.
-
-      // 3.1 To swap out a DEF, you must have atleast 4 of them (>= 4)
-      // 3.2 To swap out a midfielder, you must have atleast 3 of them (>= 3)
-      // 3.3 To swap out a FWD, you must have atleast 2 of them
-
-      // first, get the number of players in each position until the drafts so far.
-
       let draftTransfers: DraftTransfer[] = [];
       draftTransfers = [...drafts.changes];
 
-      const numDef = getNumPlayersByType(2, picks!);
-      const numMid = getNumPlayersByType(3, picks!);
-      const numFwd = getNumPlayersByType(4, picks!);
+      const result = validateSubstitution(
+        substitutedIn,
+        substitutedOut,
+        picks!
+      );
 
-      const [subInType, subOutType] = [
-        substitutedIn.element_type,
-        substitutedOut.element_type,
-      ];
-
-      // Rule 2. A swap of equal element type is always allowed.
-      if (subInType != subOutType) {
-        // Rule 1. A GK can be swapped out only for a GK.
-        if (subInType == 1 || subOutType == 1) {
-          toast({
-            title: "Cannot substitute player.",
-            description:
-              "A goalkeeper can be substituted only for another goalkeeper.",
-            variant: "destructive",
-          });
-          set({
-            substitutedIn: undefined,
-            substitutedOut: undefined,
-          });
-          return;
-        }
-
-        // if subbing out a defender
-        if (subOutType == 2 && numDef == 3) {
-          toast({
-            title: "Cannot substitute player.",
-            description: "Need a minimum of 3 defenders in playing team.",
-            variant: "destructive",
-          });
-          set({
-            substitutedIn: undefined,
-            substitutedOut: undefined,
-          });
-          return;
-        }
-
-        if (subOutType == 3 && numMid == 2) {
-          toast({
-            title: "Cannot substitute player.",
-            description: "Need a minimum of 2 midfielders in playing team.",
-            variant: "destructive",
-          });
-          set({
-            substitutedIn: undefined,
-            substitutedOut: undefined,
-          });
-          return;
-        }
-
-        if (subOutType == 4 && numFwd == 1) {
-          toast({
-            title: "Cannot substitute player.",
-            description: "Need a minimum of 1 forward in playing team.",
-            variant: "destructive",
-          });
-          set({
-            substitutedIn: undefined,
-            substitutedOut: undefined,
-          });
-          return;
-        }
+      if (!result.valid) {
+        toast({
+          title: "Cannot substitute player.",
+          description: result.reason,
+          variant: "destructive",
+        });
+        set({
+          substitutedIn: undefined,
+          substitutedOut: undefined,
+        });
+        return;
       }
       draftTransfers.push({
         in: {
@@ -274,84 +218,3 @@ export const picksStore = create<State>()((set, get) => ({
     };
   },
 }));
-
-/**
- *
- * @param data Current state of the draft
- * @param substitutedIn Player ID to be substituted in
- * @param substitutedOut Player ID to be substituted out
- * @returns Modified gameweek picks data
- */
-export async function swapPlayers(
-  data: FPLGameweekPicksData,
-  transfer: DraftTransfer
-): Promise<FPLGameweekPicksData> {
-  const { in: substitutedIn, out: substitutedOut } = transfer;
-
-  const inPlayerIndex = data.data.findIndex(
-    (player) => player.fpl_player.player_id === substitutedIn.data.player_id
-  );
-  const outPlayerIndex = data.data.findIndex(
-    (player) => player.fpl_player.player_id === substitutedOut.data.player_id
-  );
-
-  if (outPlayerIndex === -1) {
-    // If index of player substituted out not found, return
-    // this means transferring out a player not in team. BAD!
-    return data;
-  }
-
-  let inPlayer: FPLPlayerData;
-  if (inPlayerIndex === -1) {
-    // Player being bought in is not in team, making a transfer
-
-    inPlayer = {
-      fpl_player: substitutedIn.data,
-      position: data.data[outPlayerIndex].position,
-      selling_price: substitutedIn.price,
-    };
-  } else {
-    // Happens when players being switched up within the team
-    inPlayer = {
-      ...data.data[inPlayerIndex],
-      position: data.data[inPlayerIndex].position,
-      selling_price: data.data[inPlayerIndex].selling_price,
-    }; // Create a new object
-  }
-
-  const outPlayer = { ...data.data[outPlayerIndex] }; // Create a new object
-  const newData = [...data.data]; // Create a new array with the same elements as data
-
-  if (inPlayerIndex === -1) {
-    // New player is not in the team, so replace the outPlayer with inPlayer
-    inPlayer.position = outPlayer.position;
-    newData[outPlayerIndex] = inPlayer;
-  } else {
-    // Swap the position attribute
-    const tempPosition = inPlayer.position;
-    inPlayer.position = outPlayer.position;
-    outPlayer.position = tempPosition;
-
-    // Replace the modified elements in the new array
-    newData[inPlayerIndex] = inPlayer;
-    newData[outPlayerIndex] = outPlayer;
-  }
-
-  return {
-    data: newData,
-    overall: {
-      ...data.overall,
-      bank: data.overall.bank + substitutedOut.price - substitutedIn.price,
-    },
-  };
-}
-
-function getNumPlayersByType(
-  element_type: number,
-  picks: FPLGameweekPicksData
-): number {
-  return picks?.data.filter(
-    (player) =>
-      player.fpl_player.element_type == element_type && player.position <= 11
-  ).length!;
-}

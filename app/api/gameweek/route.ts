@@ -1,4 +1,5 @@
 import { auth } from "@/auth/main";
+import { computeSellingPrice } from "@/lib/fpl/pricing";
 import prisma from "@/scripts/lib/db";
 import { jwtDecode } from "jwt-decode";
 import { NextRequest, NextResponse } from "next/server";
@@ -150,20 +151,12 @@ export const GET = auth(async function GET(req: NextRequest) {
       player.fpl_player.id,
       gameweek
     );
-    const diff = currentPrice?.value! - transferInPrice?.in_player_cost!;
-    // profit!
-    if (diff > 0) {
-      // for every 2 in profit, add 1 to selling price
-      return {
-        ...player,
-        selling_price: transferInPrice?.in_player_cost! + Math.floor(diff / 2),
-      };
-    }
-
-    // if no profit, sell at current price
     return {
       ...player,
-      selling_price: currentPrice?.value!,
+      selling_price: computeSellingPrice(
+        transferInPrice?.in_player_cost!,
+        currentPrice?.value!
+      ),
     };
   });
 

@@ -10,6 +10,9 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "bootstrap": "npx tsc scripts/bootstrap.ts --outDir build && node build/bootstrap.js",
     "picks": "npx tsc scripts/picks.ts --outDir build && node build/picks.js",
     "elements": "npx tsc scripts/elements.ts --outDir build && node build/elements.js",
@@ -64,6 +67,7 @@
     "@types/node": "^26.1.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "@vitest/coverage-v8": "^4.1.10",
     "autoprefixer": "^10.5.4",
     "bufferutil": "^4.1.0",
     "eslint": "^8.57.1",
@@ -72,6 +76,8 @@
     "prisma": "^5.22.0",
     "tailwindcss": "^3.4.19",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^4.1.10"
   }
 }

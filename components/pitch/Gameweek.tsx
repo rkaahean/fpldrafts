@@ -7,6 +7,12 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 import { fetchGameweekData } from "@/app/api/utils";
+import { checkBudget } from "@/lib/fpl/squad";
+import {
+  computeFreeTransfers,
+  computeTransferCost,
+  countTransfersInGameweek,
+} from "@/lib/fpl/transfers";
 import { filterData } from "@/scripts/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -21,21 +27,25 @@ export default function Gameweek(props: { gameweek: number }) {
     setBase: state.setBase,
     setCurrentGameweek: state.setCurrentGameweek,
     setPicks: state.setPicks,
+    setCommittedBank: state.setCommittedBank,
     dbbase: state.base!,
     drafts: state.drafts,
     currentGameweek: state.currentGameweek,
     picks: state.picks!,
+    committedBank: state.committedBank,
     transfers: state.transfersOut,
   }));
 
   const {
     setBase,
     setPicks,
+    setCommittedBank,
     setCurrentGameweek,
     dbbase,
     drafts,
     currentGameweek,
     picks,
+    committedBank,
     transfers,
   } = picksSelectors;
 
@@ -104,6 +114,8 @@ export default function Gameweek(props: { gameweek: number }) {
           draftData = await swapPlayers(draftData, draftChange);
         }
 
+        setCommittedBank(draftData.overall.bank);
+
         setPicks({
           data: draftData.data,
           overall: {
@@ -123,39 +135,21 @@ export default function Gameweek(props: { gameweek: number }) {
   });
 
   if (data && data.data && data.overall && session) {
-    let transferCount: string | number = 1;
+    const transferCount = computeFreeTransfers({
+      currentGameweek,
+      draftChanges: drafts.changes,
+      serverTransferCount: data.transfers?.length ?? 0,
+    });
 
-    // if its the first gameweek, then infinite
-    if (currentGameweek == 1) {
-      transferCount = "∞";
-    }
-    // for other gameweeks, its a minimum of 1.
-    else if (currentGameweek == 2) {
-      transferCount = 1;
-    }
-    // if there's a draft, get number of changes in last gameweek
-    else if (drafts.changes.length > 0) {
-      const numTransfers = drafts.changes.filter(
-        (transfer) =>
-          transfer.gameweek >= currentGameweek - 5 &&
-          transfer.gameweek <= currentGameweek - 1 &&
-          transfer.gameweek > 1 &&
-          transfer.type == "transfer"
-      ).length;
-      transferCount = currentGameweek - numTransfers - 1;
-      transferCount = transferCount > 5 ? 5 : transferCount;
-      transferCount = transferCount <= 0 ? 1 : transferCount;
-    }
-    // if drafts not set, just get the transfers made in previous gameweek, and add 1.
-    // min of 1, max of 5.
-    else {
-      // transferCount =
-      //   (currentGameweek > 5 ? 5 : currentGameweek) - data.transfers! - 1;
-      // transferCount = transferCount <= 0 ? 1 : transferCount;
-      transferCount = currentGameweek - data.transfers!.length - 1;
-      transferCount = transferCount > 5 ? 5 : transferCount;
-      transferCount = transferCount <= 0 ? 1 : transferCount;
-    }
+    const transfersMade = countTransfersInGameweek(
+      drafts.changes,
+      currentGameweek
+    );
+
+    const transferCost = computeTransferCost(transfersMade, transferCount);
+
+    const budget =
+      committedBank !== undefined ? checkBudget(committedBank) : undefined;
 
     return (
       <ReactQueryProvider>
@@ -176,15 +170,19 @@ export default function Gameweek(props: { gameweek: number }) {
               <GameweekStat title="Gameweek" value={currentGameweek} />
               <GameweekStat
                 title="Transfers"
-                value={`${
-                  drafts.changes.filter(
-                    (transfer) =>
-                      transfer.gameweek == currentGameweek &&
-                      transfer.type == "transfer"
-                  ).length
-                } / ${transferCount}`}
+                value={`${transfersMade} / ${transferCount}`}
               />
-              <GameweekStat title="ITB" value={`${picks.overall.bank! / 10}`} />
+              <GameweekStat
+                title="Hit"
+                value={transferCost === 0 ? "0" : `${transferCost}`}
+              />
+              <GameweekStat
+                title="ITB"
+                value={`${picks.overall.bank! / 10}`}
+              />
+              {budget && !budget.valid && (
+                <GameweekStat title="Budget" value="Over" />
+              )}
               <GameweekStat
                 title="Rank"
                 value={data.overall.overall_rank!.toLocaleString()}
