@@ -2,11 +2,12 @@
 
 import { FPLGameweekPicksData } from "@/app/api";
 import { ReactQueryProvider } from "@/app/provider";
-import { picksStore, swapPlayers } from "@/app/store";
+import { picksStore } from "@/app/store";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 import { fetchGameweekData } from "@/app/api/utils";
+import { resolveGameweekPicks } from "@/lib/fpl/gameweek";
 import { checkBudget } from "@/lib/fpl/squad";
 import {
   computeFreeTransfers,
@@ -77,60 +78,27 @@ export default function Gameweek(props: { gameweek: number }) {
     enabled: !!gameweekData,
     // staleTime: 60 * 60 * 1000 * 24,
     queryFn: async () => {
-      const data: FPLGameweekPicksData = JSON.parse(gameweekData);
+      const parsed: FPLGameweekPicksData = JSON.parse(gameweekData);
 
-      let base: FPLGameweekPicksData;
-      if (data.data.length > 0) {
-        // if the gameweek has valid data, that is the base
-        setBase(data);
-        base = data;
-      } else {
-        // else, if viewing a future gameweek, we need to use the base data
-        base = dbbase;
+      const resolved = await resolveGameweekPicks({
+        parsed,
+        dbbase,
+        draftChanges: drafts.changes,
+        currentGameweek,
+        transfersOut: transfers,
+      });
+
+      if (!resolved) {
+        return undefined;
       }
-      // get all the draft changes relevant to that gameweek
-      let gameweekDraft = drafts.changes.filter(
-        (draft) => draft.gameweek <= currentGameweek
-      );
 
-      // if there's a base, apply relevant draft changes
-      let draftData = base;
-      if (base.data && base.data.length > 0) {
-        // some players are still selected in to transfer
-        const remainingTransferOutSum = Object.values(transfers).reduce(
-          (total, array) => {
-            return (
-              total +
-              array.reduce((arrayTotal, item) => {
-                return arrayTotal + (item.selling_price || 0);
-              }, 0)
-            );
-          },
-          0
-        );
-
-        for (let draftChange of gameweekDraft) {
-          // swap players in the team
-          draftData = await swapPlayers(draftData, draftChange);
-        }
-
-        setCommittedBank(draftData.overall.bank);
-
-        setPicks({
-          data: draftData.data,
-          overall: {
-            ...draftData.overall,
-            bank: draftData.overall.bank! + remainingTransferOutSum,
-          },
-        });
-
-        draftData.overall.bank =
-          draftData.overall.bank + remainingTransferOutSum;
-        return draftData;
-      } else if (data.data.length > 0) {
-        setPicks(data);
-        return data;
+      if (resolved.setBase && resolved.base) {
+        setBase(resolved.base);
       }
+      setCommittedBank(resolved.committedBank);
+      setPicks(resolved.picks);
+
+      return resolved.picks;
     },
   });
 
