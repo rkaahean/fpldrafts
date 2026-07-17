@@ -37,30 +37,30 @@ export const GET = auth(async function GET(req: NextRequest) {
 
   // special basecase
   if (gameweek == 1) {
-    // allison: 310
-    // ederson: 347
+    // kelleher: 101
+    // roefs: 670
 
-    // l.martinez: 380
-    // tripper: 418
-    // virgil: 339
-    // gabriel: 3
-    // gvardiol: 350
+    // truffert: 74
+    // mukiele: 694
+    // van hecke: 151
+    // mitchell: 258
+    // keane: 295
 
-    // martinelli: 9
-    // mbeumo: 99
-    // sterling: 186
-    // eze: 199
-    // rashford: 385
+    // anderson: 517
+    // wilson: 329
+    // casemiro: 457
+    // garner: 303
+    // enzo: 237
 
-    // watkins: 58
-    // havertz: 4
-    // toney: 108
+    // calvert-lewin: 691
+    // welbeck: 178
+    // richarlison: 597
 
     let playerData: any[] = [];
 
     const allPlayers: FPLPlayerData2[] = await getPlayerDataBySeason(
       process.env.FPL_SEASON_ID!,
-      [310, 347, 380, 418, 339, 3, 350, 9, 99, 186, 199, 385, 58, 4, 108]
+      [101, 670, 74, 694, 151, 258, 295, 517, 329, 457, 303, 237, 691, 178, 597]
     );
     // get 2 goalkeeps
     const gks = allPlayers
