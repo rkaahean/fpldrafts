@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 
-export function isOnMobile() {
-  const h = headers();
+export async function isOnMobile() {
+  const h = await headers();
   const isMobile =
     h.get("User-Agent")?.includes("iOS") ||
     h.get("User-Agent")?.includes("Android");

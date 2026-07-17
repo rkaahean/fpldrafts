@@ -11,8 +11,8 @@ import {
   CardTitle,
 } from "../ui/card";
 
-export default function SignIn() {
-  const isMobile = isOnMobile();
+export default async function SignIn() {
+  const isMobile = await isOnMobile();
 
   if (isMobile) {
     return (

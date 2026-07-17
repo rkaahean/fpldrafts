@@ -3,8 +3,8 @@ import { signIn } from "@/auth/main";
 import { isOnMobile } from "@/scripts/lib/serverUtils";
 import { Button } from "./button";
 
-export default function Header() {
-  const isMobile = isOnMobile();
+export default async function Header() {
+  const isMobile = await isOnMobile();
 
   return (
     <div className="flex flex-row w-full justify-end py-2 px-4 gap-4">
