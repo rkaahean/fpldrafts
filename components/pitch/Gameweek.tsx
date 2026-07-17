@@ -122,7 +122,7 @@ export default function Gameweek(props: { gameweek: number }) {
     },
   });
 
-  if (data && data.data && session) {
+  if (data && data.data && data.overall && session) {
     let transferCount: string | number = 1;
 
     // if its the first gameweek, then infinite
@@ -162,7 +162,10 @@ export default function Gameweek(props: { gameweek: number }) {
         <div className="flex flex-col gap-2 lg:gap-1 h-full relative">
           <div className="flex flex-row justify-between gap-2">
             <Button
-              onClick={() => setCurrentGameweek(currentGameweek - 1)}
+              onClick={() =>
+                setCurrentGameweek(Math.max(1, currentGameweek - 1))
+              }
+              disabled={currentGameweek <= 1}
               variant="secondary"
               title="Previous Gameweek"
             >
@@ -188,7 +191,10 @@ export default function Gameweek(props: { gameweek: number }) {
               />
             </div>
             <Button
-              onClick={() => setCurrentGameweek(currentGameweek + 1)}
+              onClick={() =>
+                setCurrentGameweek(Math.min(38, currentGameweek + 1))
+              }
+              disabled={currentGameweek >= 38}
               title="Next Gameweek"
               variant="secondary"
             >
