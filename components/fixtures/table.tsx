@@ -115,7 +115,7 @@ export default function FixturesClient(props: { fixtures: FPLFixtures[] }) {
         <Table>
           <TableHeader>
             <TableRow className="grid grid-cols-7 h-6 2xl:h-10">
-              <TableHeader className="col-span-2"></TableHeader>
+              <TableHead className="col-span-2"></TableHead>
               {Array.from({ length: maxGameweek + 1 }, (_, i) => i).map(
                 (number) => {
                   return (
