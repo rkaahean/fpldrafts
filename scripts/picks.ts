@@ -1,30 +1,57 @@
 import prisma from "./lib/db";
-import { updateFPLTeamData } from "./utils";
+import { syncGameweeks } from "./utils";
+import {
+  computeLatestCompletedGameweek,
+  computeGameweeksToSync,
+} from "@/lib/fpl/sync-plan";
+import { runWithConcurrencyLimit } from "./lib/concurrency";
 
-try {
-  prisma.fPLTeam
-    .findMany({
-      where: {
-        fpl_season_id: process.env.FPL_SEASON_ID!,
-        id: "a37f46f5-5450-4315-8377-2ceadf8aa768",
-      },
-    })
-    .then((teams) => {
-      teams.map((team) => {
-        try {
-          console.log("Updating team...", team.id);
+const TEAM_CONCURRENCY = 8;
 
-          updateFPLTeamData(team.id, team.team_id).then(() =>
-            console.log("Completed upload...")
-          );
-        } catch (e) {
-          console.log("Ran into an error updating team. Skipping...", e);
-        }
+export async function syncAllTeams() {
+  const teams = await prisma.fPLTeam.findMany({
+    where: { fpl_season_id: process.env.FPL_SEASON_ID! },
+  });
+
+  const fixtures = await prisma.fPLFixtures.findMany({
+    where: { season_id: process.env.FPL_SEASON_ID! },
+    select: { event: true, finished: true },
+  });
+  const latestCompleted = computeLatestCompletedGameweek(fixtures);
+
+  const results = await runWithConcurrencyLimit(
+    teams,
+    TEAM_CONCURRENCY,
+    async (team) => {
+      const latestSynced = await prisma.fPLGameweekPicks.aggregate({
+        _max: { gameweek: true },
+        where: { fpl_team_id: team.id },
       });
-    });
+      const gameweeks = computeGameweeksToSync(
+        latestSynced._max.gameweek,
+        latestCompleted
+      );
+      if (gameweeks.length === 0) {
+        return;
+      }
+      await syncGameweeks(team.id, team.team_id, gameweeks);
+    }
+  );
 
-  prisma.$disconnect();
-} catch (e) {
-  console.error(e);
-  prisma.$disconnect();
+  const failures = results.filter((result) => result.status === "rejected");
+  if (failures.length > 0) {
+    console.error(
+      `${failures.length}/${teams.length} teams failed to sync`,
+      failures
+    );
+  }
+}
+
+if (require.main === module) {
+  syncAllTeams()
+    .catch((e) => {
+      console.error(e);
+      process.exitCode = 1;
+    })
+    .finally(() => prisma.$disconnect());
 }

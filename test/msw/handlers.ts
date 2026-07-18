@@ -46,7 +46,7 @@ function buildSquad(): FPLGameweekPicksData {
       points: 0,
       overall_rank: 1000,
     } as FPLGameweekPicksData["overall"],
-    transfers: [],
+    transferCount: 0,
   };
 }
 

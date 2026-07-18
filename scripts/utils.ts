@@ -1,5 +1,9 @@
 import { FPLGameweekPicks } from "@prisma/client";
 import prisma from "./lib/db";
+import { runWithConcurrencyLimit } from "./lib/concurrency";
+import { mergeGameweekResults } from "../lib/fpl/sync-plan";
+
+const GAMEWEEK_FETCH_CONCURRENCY = 8;
 
 type JSONResponsePicks = Omit<FPLGameweekPicks, "id">[];
 type JSONResponseHistory = NonNullable<
@@ -30,8 +34,7 @@ async function getPicksData(
         };
       }
     })
-    .catch((e) => {
-      // console.log("Error processing picks data...", e);
+    .catch(() => {
       return {
         picks: undefined,
         history: undefined,
@@ -104,72 +107,13 @@ async function parseHistoryData(data: any, gameweek: number, teamId: string) {
   }
 }
 
-export async function updateFPLTeamData(
-  team_id: string,
-  fpl_team_number: number
-) {
-  const data = [];
-  const picks: JSONResponsePicks = [];
-  const history: JSONResponseHistory[] = [];
-
-  for (let i = 1; i <= 38; i++) {
-    const gameweekData = await getPicksData(fpl_team_number, i, team_id);
-    data.push(gameweekData);
-  }
-
-  const validData = data.filter(
-    (gameweekData) =>
-      !!gameweekData &&
-      gameweekData.picks != undefined &&
-      gameweekData.history != undefined
-  );
-
-  console.log("Valid, clean data", validData.length);
-  validData.map(async (data) => {
-    if (!data) {
-      return;
-    }
-    // data.map((gw) => {
-    picks.push(...data.picks!);
-    history.push(data.history!);
-    // });
-
-    try {
-      console.log("Inserting picks...", picks.length);
-      await prisma.fPLGameweekPicks.createMany({
-        data: picks,
-        skipDuplicates: true,
-      });
-    } catch (e) {
-      console.log("Ran into an error", e);
-    }
-
-    console.log("History", history);
-    console.log("Inserting overall stats...", history.length);
-    // console.log(history);
-    await Promise.all(
-      history.map(async (gameweekStat) => {
-        await prisma.fPLGameweekOverallStats.upsert({
-          where: {
-            fpl_team_id_gameweek: {
-              fpl_team_id: team_id,
-              gameweek: gameweekStat.gameweek,
-            },
-          },
-          update: gameweekStat,
-          create: gameweekStat,
-        });
-      })
-    );
-  });
-
+async function syncTransfers(team_id: string, fpl_team_number: number) {
   const transfers = await getTransfersData(fpl_team_number);
 
-  console.log("Transfers", transfers);
   if (transfers.length == 0) {
     return;
   }
-  console.log("Inserting transfer data...", transfers.length);
+
   const inPlayers = await prisma.fPLPlayer.findMany({
     where: {
       player_id: {
@@ -223,4 +167,65 @@ export async function updateFPLTeamData(
     data: formattedData,
     skipDuplicates: true,
   });
+}
+
+export async function syncGameweeks(
+  team_id: string,
+  fpl_team_number: number,
+  gameweeks: number[]
+): Promise<void> {
+  const [fetchResults] = await Promise.all([
+    runWithConcurrencyLimit(
+      gameweeks,
+      GAMEWEEK_FETCH_CONCURRENCY,
+      (gameweek) => getPicksData(fpl_team_number, gameweek, team_id)
+    ),
+    syncTransfers(team_id, fpl_team_number),
+  ]);
+
+  const validData = fetchResults
+    .filter((result) => result.status === "fulfilled")
+    .map((result) => (result as { value: Awaited<ReturnType<typeof getPicksData>> }).value);
+
+  const { picks, history } = mergeGameweekResults<
+    JSONResponsePicks[number],
+    JSONResponseHistory
+  >(
+    validData.map((data) => ({
+      picks: data?.picks,
+      history: data?.history,
+    })) as any
+  );
+
+  if (picks.length > 0) {
+    await prisma.fPLGameweekPicks.createMany({
+      data: picks,
+      skipDuplicates: true,
+    });
+  }
+
+  if (history.length > 0) {
+    await Promise.all(
+      history.map((gameweekStat) =>
+        prisma.fPLGameweekOverallStats.upsert({
+          where: {
+            fpl_team_id_gameweek: {
+              fpl_team_id: team_id,
+              gameweek: gameweekStat.gameweek,
+            },
+          },
+          update: gameweekStat,
+          create: gameweekStat,
+        })
+      )
+    );
+  }
+}
+
+export async function syncFullHistory(
+  team_id: string,
+  fpl_team_number: number
+): Promise<void> {
+  const allGameweeks = Array.from({ length: 38 }, (_, i) => i + 1);
+  await syncGameweeks(team_id, fpl_team_number, allGameweeks);
 }

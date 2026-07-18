@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  applySellingPrices,
   computeSellingPrice,
   latestTransferCostByPlayer,
   priceByPlayer,
@@ -47,5 +48,32 @@ describe("priceByPlayer", () => {
 
     expect(result.get("p1")).toBe(45);
     expect(result.get("p2")).toBe(62);
+  });
+});
+
+describe("applySellingPrices", () => {
+  it("applies the latest transfer cost and current gameweek value to each pick", () => {
+    const picks = [
+      { fpl_player: { id: "p1" } },
+      { fpl_player: { id: "p2" } },
+    ];
+
+    expect(
+      applySellingPrices(
+        picks,
+        [
+          { in_player_id: "p1", in_player_cost: 50, time: new Date("2026-01-01") },
+          { in_player_id: "p1", in_player_cost: 60, time: new Date("2026-02-01") },
+          { in_player_id: "p2", in_player_cost: 55, time: new Date("2026-01-01") },
+        ],
+        [
+          { fpl_player_id: "p1", value: 64 },
+          { fpl_player_id: "p2", value: 50 },
+        ]
+      )
+    ).toEqual([
+      { fpl_player: { id: "p1" }, selling_price: 62 },
+      { fpl_player: { id: "p2" }, selling_price: 50 },
+    ]);
   });
 });

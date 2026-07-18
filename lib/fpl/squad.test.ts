@@ -28,7 +28,10 @@ function pick(
 function picksFrom(
   entries: FPLGameweekPicksData["data"]
 ): FPLGameweekPicksData {
-  return { data: entries, overall: {} as FPLGameweekPicksData["overall"] };
+  return {
+    data: entries,
+    overall: {} as FPLGameweekPicksData["overall"],
+  };
 }
 
 function validSquad(): FPLGameweekPicksData {

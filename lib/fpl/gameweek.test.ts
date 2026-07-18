@@ -6,8 +6,11 @@ import type {
 } from "./types";
 import {
   applyDrafts,
+  assembleGameweekBaseData,
+  assembleGameweekPicks,
   buildInitialGameweekPayload,
   computeNextGameweek,
+  groupFixturesForTeamCodes,
   resolveGameweekPicks,
   selectBase,
   sumTransferOut,
@@ -65,6 +68,178 @@ describe("buildInitialGameweekPayload", () => {
     expect(payload.data.map((p) => p.position).sort((a, b) => a - b)).toEqual(
       Array.from({ length: 15 }, (_, i) => i + 1)
     );
+  });
+});
+
+describe("assembleGameweekPicks", () => {
+  const pickRows = [
+    {
+      position: 1,
+      fpl_player_id: "player-a",
+      player_id: 10,
+      web_name: "Alice",
+      team_code: 1,
+      element_type: 1,
+      total_points: 50,
+      expected_goal_involvements_per_90: 0.1,
+      now_value: 45,
+      team_short_name: "AAA",
+      stat_value: 44,
+    },
+    {
+      position: 2,
+      fpl_player_id: "player-b",
+      player_id: 20,
+      web_name: "Bob",
+      team_code: 2,
+      element_type: 2,
+      total_points: 30,
+      expected_goal_involvements_per_90: 0.2,
+      now_value: 55,
+      team_short_name: "BBB",
+      stat_value: 50,
+    },
+  ];
+
+  const fixturesByTeamCode = new Map([
+    [
+      1,
+      [
+        {
+          id: "fx-1",
+          event: 5,
+          team_h_difficulty: 3,
+          team_a_difficulty: 2,
+          is_home: true,
+          opponent_short_name: "CCC",
+        },
+      ],
+    ],
+    [2, []],
+  ]);
+
+  it("nests each pick's fixtures under its own team, not other teams'", () => {
+    const result = assembleGameweekPicks(pickRows, fixturesByTeamCode);
+
+    expect(result.length).toBe(2);
+    const alice = result.find((p) => p.fpl_player.player_id === 10)!;
+    const bob = result.find((p) => p.fpl_player.player_id === 20)!;
+
+    expect(alice.fpl_player.fpl_player_team.home_fixtures.length).toBe(1);
+    expect(alice.fpl_player.fpl_player_team.home_fixtures[0].id).toBe("fx-1");
+    expect(bob.fpl_player.fpl_player_team.home_fixtures.length).toBe(0);
+    expect(bob.fpl_player.fpl_player_team.away_fixtures.length).toBe(0);
+  });
+
+  it("splits fixtures into home/away based on is_home", () => {
+    const result = assembleGameweekPicks(pickRows, fixturesByTeamCode);
+    const alice = result.find((p) => p.fpl_player.player_id === 10)!;
+
+    expect(alice.fpl_player.fpl_player_team.home_fixtures.length).toBe(1);
+    expect(alice.fpl_player.fpl_player_team.away_fixtures.length).toBe(0);
+  });
+
+  it("preserves position and core player fields", () => {
+    const result = assembleGameweekPicks(pickRows, fixturesByTeamCode);
+    const alice = result.find((p) => p.fpl_player.player_id === 10)!;
+
+    expect(alice.position).toBe(1);
+    expect(alice.fpl_player.web_name).toBe("Alice");
+    expect(alice.fpl_player.fpl_gameweek_player_stats).toEqual([
+      { value: 44 },
+    ]);
+  });
+});
+
+describe("groupFixturesForTeamCodes", () => {
+  it("keeps only the requested teams while retaining the correct home/away opponent", () => {
+    const fixtures = groupFixturesForTeamCodes(
+      [
+        {
+          id: "fixture-1",
+          event: 5,
+          team_h_difficulty: 2,
+          team_a_difficulty: 4,
+          home_team_code: 1,
+          away_team_code: 2,
+          home_team_short_name: "AAA",
+          away_team_short_name: "BBB",
+        },
+      ],
+      new Set([1])
+    );
+
+    expect(fixtures.get(1)).toEqual([
+      {
+        id: "fixture-1",
+        event: 5,
+        team_h_difficulty: 2,
+        team_a_difficulty: 4,
+        is_home: true,
+        opponent_short_name: "BBB",
+      },
+    ]);
+    expect(fixtures.get(2)).toBeUndefined();
+  });
+});
+
+describe("assembleGameweekBaseData", () => {
+  it("builds the API base payload from one combined query result", () => {
+    const result = assembleGameweekBaseData({
+      pickRows: [
+        {
+          position: 1,
+          fpl_player_id: "player-a",
+          player_id: 10,
+          web_name: "Alice",
+          team_code: 1,
+          element_type: 1,
+          total_points: 50,
+          expected_goal_involvements_per_90: 0.1,
+          now_value: 45,
+          team_short_name: "AAA",
+          stat_values: [44],
+        },
+      ],
+      fixtureRows: [
+        {
+          id: "fixture-1",
+          event: 5,
+          team_h_difficulty: 2,
+          team_a_difficulty: 4,
+          home_team_code: 1,
+          away_team_code: 2,
+          home_team_short_name: "AAA",
+          away_team_short_name: "BBB",
+        },
+      ],
+      overall: { value: 1000, overall_rank: 123, bank: 50, points: 60 },
+      transferCount: 2,
+    });
+
+    expect(result.transferCount).toBe(2);
+    expect(result.overall).toEqual({
+      value: 1000,
+      overall_rank: 123,
+      bank: 50,
+      points: 60,
+    });
+    expect(result.data[0].fpl_player.fpl_player_team.home_fixtures).toEqual([
+      expect.objectContaining({ id: "fixture-1" }),
+    ]);
+  });
+
+  it("returns an empty squad when the combined query has no picks", () => {
+    const result = assembleGameweekBaseData({
+      pickRows: [],
+      fixtureRows: [],
+      overall: null,
+      transferCount: 0,
+    });
+
+    expect(result.data).toEqual([]);
+    expect(result.overall).toBeNull();
+    expect(result.transferCount).toBe(0);
   });
 });
 

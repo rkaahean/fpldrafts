@@ -20,6 +20,161 @@ export interface ResolveGameweekPicksResult {
   committedBank: number;
 }
 
+export interface GameweekPickRow {
+  position: number;
+  fpl_player_id: string;
+  player_id: number;
+  web_name: string;
+  team_code: number;
+  element_type: number;
+  total_points: number;
+  expected_goal_involvements_per_90: number;
+  now_value: number;
+  team_short_name: string;
+  stat_values?: number[];
+  stat_value?: number | null;
+}
+
+export interface GameweekFixture {
+  id: string;
+  event: number;
+  team_h_difficulty: number;
+  team_a_difficulty: number;
+  is_home: boolean;
+  opponent_short_name: string;
+}
+
+export interface GameweekFixtureRow {
+  id: string;
+  event: number;
+  team_h_difficulty: number;
+  team_a_difficulty: number;
+  home_team_code: number;
+  away_team_code: number;
+  home_team_short_name: string;
+  away_team_short_name: string;
+}
+
+export interface GameweekOverallRow {
+  value: number;
+  overall_rank: number;
+  bank: number;
+  points: number;
+}
+
+export interface GameweekBaseQueryResult {
+  pickRows: GameweekPickRow[];
+  fixtureRows: GameweekFixtureRow[];
+  overall: GameweekOverallRow | null;
+  transferCount: number;
+}
+
+export function groupFixturesForTeamCodes(
+  fixtureRows: GameweekFixtureRow[],
+  teamCodes: Set<number>
+): Map<number, GameweekFixture[]> {
+  const fixturesByTeamCode = new Map<number, GameweekFixture[]>();
+  const addFixture = (teamCode: number, fixture: GameweekFixture) => {
+    const fixtures = fixturesByTeamCode.get(teamCode) ?? [];
+    fixtures.push(fixture);
+    fixturesByTeamCode.set(teamCode, fixtures);
+  };
+
+  for (const fixture of fixtureRows) {
+    if (teamCodes.has(fixture.home_team_code)) {
+      addFixture(fixture.home_team_code, {
+        id: fixture.id,
+        event: fixture.event,
+        team_h_difficulty: fixture.team_h_difficulty,
+        team_a_difficulty: fixture.team_a_difficulty,
+        is_home: true,
+        opponent_short_name: fixture.away_team_short_name,
+      });
+    }
+    if (teamCodes.has(fixture.away_team_code)) {
+      addFixture(fixture.away_team_code, {
+        id: fixture.id,
+        event: fixture.event,
+        team_h_difficulty: fixture.team_h_difficulty,
+        team_a_difficulty: fixture.team_a_difficulty,
+        is_home: false,
+        opponent_short_name: fixture.home_team_short_name,
+      });
+    }
+  }
+
+  return fixturesByTeamCode;
+}
+
+export function assembleGameweekPicks(
+  pickRows: GameweekPickRow[],
+  fixturesByTeamCode: Map<number, GameweekFixture[]>
+): FPLGameweekPicksData["data"] {
+  return pickRows.map((pick) => {
+    const fixtures = fixturesByTeamCode.get(pick.team_code) ?? [];
+    const home_fixtures = fixtures
+      .filter((fixture) => fixture.is_home)
+      .map((fixture) => ({
+        id: fixture.id,
+        event: fixture.event,
+        team_h_difficulty: fixture.team_h_difficulty,
+        team_a_difficulty: fixture.team_a_difficulty,
+        fpl_team_a: { short_name: fixture.opponent_short_name },
+      }));
+    const away_fixtures = fixtures
+      .filter((fixture) => !fixture.is_home)
+      .map((fixture) => ({
+        id: fixture.id,
+        event: fixture.event,
+        team_h_difficulty: fixture.team_h_difficulty,
+        team_a_difficulty: fixture.team_a_difficulty,
+        fpl_team_h: { short_name: fixture.opponent_short_name },
+      }));
+
+    return {
+      position: pick.position,
+      fpl_player: {
+        id: pick.fpl_player_id,
+        player_id: pick.player_id,
+        web_name: pick.web_name,
+        team_code: pick.team_code,
+        element_type: pick.element_type,
+        total_points: pick.total_points,
+        expected_goal_involvements_per_90:
+          pick.expected_goal_involvements_per_90,
+        now_value: pick.now_value,
+        fpl_player_team: {
+          short_name: pick.team_short_name,
+          home_fixtures,
+          away_fixtures,
+        },
+        fpl_gameweek_player_stats: (
+          pick.stat_values ??
+          (pick.stat_value === undefined || pick.stat_value === null
+            ? []
+            : [pick.stat_value])
+        ).map((value) => ({ value })),
+      },
+    };
+  }) as FPLGameweekPicksData["data"];
+}
+
+export function assembleGameweekBaseData({
+  pickRows,
+  fixtureRows,
+  overall,
+  transferCount,
+}: GameweekBaseQueryResult) {
+  const teamCodes = new Set(pickRows.map((pick) => pick.team_code));
+  const fixturesByTeamCode = groupFixturesForTeamCodes(fixtureRows, teamCodes);
+
+  return {
+    data: assembleGameweekPicks(pickRows, fixturesByTeamCode),
+    overall,
+    transferCount,
+  };
+}
+
 export function computeNextGameweek(maxPlayedGameweek: number | null): number {
   const next = maxPlayedGameweek ? maxPlayedGameweek + 1 : 1;
   return Math.min(next, 38);
@@ -91,7 +246,7 @@ export function buildInitialGameweekPayload(
       overall_rank: 0,
       points: 0,
     } as FPLGameweekPicksData["overall"],
-    transfers: [],
+    transferCount: 0,
   };
 }
 

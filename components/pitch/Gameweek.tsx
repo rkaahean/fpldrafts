@@ -8,6 +8,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { fetchGameweekData } from "@/app/api/utils";
 import { resolveGameweekPicks } from "@/lib/fpl/gameweek";
 import { checkBudget } from "@/lib/fpl/squad";
+import { selectTransferActivity } from "@/lib/fpl/transfer-activity";
 import {
   computeFreeTransfers,
   computeTransferCost,
@@ -18,6 +19,7 @@ import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import PitchRow from "./PitchRow";
+import TransferActivityStrip from "./transfer-activity";
 
 import { useRef } from "react";
 import Pitch from "../../public/pitch.svg";
@@ -64,12 +66,38 @@ export default function Gameweek(props: { gameweek: number }) {
   const { data: gameweekData } = useQuery({
     queryKey: ["gameweekData", effectiveGameweek, session?.accessToken],
     placeholderData: keepPreviousData,
-    queryFn: async () => {
-      const response = await fetchGameweekData(
-        effectiveGameweek,
-        session?.accessToken!
-      );
-      return response.json();
+    queryFn: async ({ signal }) => {
+      const startedAt = performance.now();
+      if (process.env.NODE_ENV === "development") {
+        console.debug(
+          `[gameweek client:${effectiveGameweek}] network fetch started`
+        );
+      }
+      try {
+        const response = await fetchGameweekData(
+          effectiveGameweek,
+          session?.accessToken!,
+          signal
+        );
+        return response.json();
+      } catch (error) {
+        if (
+          process.env.NODE_ENV === "development" &&
+          error instanceof DOMException &&
+          error.name === "AbortError"
+        ) {
+          console.debug(
+            `[gameweek client:${effectiveGameweek}] network fetch aborted`
+          );
+        }
+        throw error;
+      } finally {
+        if (process.env.NODE_ENV === "development") {
+          console.debug(
+            `[gameweek client:${effectiveGameweek}] network fetch finished in ${(performance.now() - startedAt).toFixed(1)}ms`
+          );
+        }
+      }
     },
 
     enabled: !!session?.accessToken,
@@ -110,7 +138,7 @@ export default function Gameweek(props: { gameweek: number }) {
     const transferCount = computeFreeTransfers({
       currentGameweek,
       draftChanges: drafts.changes,
-      serverTransferCount: data.transfers?.length ?? 0,
+      serverTransferCount: data.transferCount ?? 0,
     });
 
     const transfersMade = countTransfersInGameweek(
@@ -122,10 +150,16 @@ export default function Gameweek(props: { gameweek: number }) {
 
     const budget =
       committedBank !== undefined ? checkBudget(committedBank) : undefined;
+    const transferActivity = selectTransferActivity({
+      currentGameweek,
+      nextGameweek: props.gameweek,
+      historical: gameweekData?.transferActivity ?? [],
+      draftChanges: drafts.changes,
+    });
 
     return (
-      <div className="flex flex-col gap-2 lg:gap-1 h-full lg:min-h-0 relative">
-        <div className="flex flex-row justify-between gap-2 flex-shrink-0">
+      <div className="relative flex h-full flex-col gap-3 lg:min-h-0">
+        <div className="flex flex-row justify-between gap-3 rounded-md border bg-background/30 p-2 flex-shrink-0">
           <Button
             onClick={() =>
               setCurrentGameweek(Math.max(1, currentGameweek - 1))
@@ -136,7 +170,7 @@ export default function Gameweek(props: { gameweek: number }) {
           >
             <ArrowLeft className="w-4 h-4 lg:w-6 lg:h-6" />
           </Button>
-          <div className="flex flex-row justify-around w-full items-center">
+          <div className="flex w-full items-center justify-around gap-2">
             <GameweekStat title="Points" value={data.overall.points} />
             <GameweekStat title="Gameweek" value={currentGameweek} />
             <GameweekStat
@@ -168,23 +202,28 @@ export default function Gameweek(props: { gameweek: number }) {
           </Button>
         </div>
 
-        <div className="relative flex-1 min-h-[400px] lg:min-h-0 w-full">
-          <Image
-            src={Pitch}
-            alt=""
-            fill
-            className="object-contain -z-10 pointer-events-none select-none"
-          />
-          <div className="relative z-0 grid grid-rows-[1fr_1fr_1fr_1fr_1.15fr] h-full w-full">
-            {["GK", "DEF", "MID", "FWD", "subs"].map((position: string) => (
-              <PitchRow
-                key={position}
-                position={position}
-                data={filterData(data.data, position)}
-                gameweek={currentGameweek}
-              />
-            ))}
+        <div className="flex min-h-[400px] flex-1 flex-col gap-3 lg:min-h-0 lg:flex-row lg:gap-4">
+          <div className="relative min-h-[400px] flex-1 rounded-md border bg-background/20 p-2 lg:min-h-0">
+            <Image
+              src={Pitch}
+              alt=""
+              fill
+              className="pointer-events-none -z-10 select-none object-contain"
+            />
+            <div className="relative z-0 grid h-full w-full grid-rows-[1fr_1fr_1fr_1fr_1.15fr]">
+              {["GK", "DEF", "MID", "FWD", "subs"].map((position: string) => (
+                <PitchRow
+                  key={position}
+                  position={position}
+                  data={filterData(data.data, position)}
+                  gameweek={currentGameweek}
+                />
+              ))}
+            </div>
           </div>
+          <aside className="order-first w-full shrink-0 lg:order-none lg:min-h-0 lg:w-60 xl:w-72">
+            <TransferActivityStrip {...transferActivity} />
+          </aside>
         </div>
       </div>
     );

@@ -1,45 +1,65 @@
 import { auth } from "@/auth/main";
 import { buildInitialGameweekPayload } from "@/lib/fpl/gameweek";
-import {
-  computeSellingPrice,
-  latestTransferCostByPlayer,
-  priceByPlayer,
-} from "@/lib/fpl/pricing";
-import prisma from "@/scripts/lib/db";
-import { jwtDecode } from "jwt-decode";
+import { applySellingPrices } from "@/lib/fpl/pricing";
 import { NextRequest, NextResponse } from "next/server";
 import {
   FPLPlayerData2,
-  getGameweekOverallData,
-  getGameweekPicksData,
-  getLastTransferValues,
+  getGameweekBaseData,
   getPlayerDataBySeason,
-  getPlayerValuesByGameweek,
-  getUserTeamFromEmail,
 } from "..";
 
-export const GET = auth(async function GET(req: NextRequest) {
+export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
 
   const gameweek = parseInt(searchParams.get("gameweek")!);
+  const requestId = crypto.randomUUID().slice(0, 8);
+  const routeStartedAt = performance.now();
+  const durations = new Map<string, number>();
+  const recordTiming = (label: string, durationMs: number) => {
+    durations.set(label, durationMs);
+    console.info(
+      `[gameweek:${gameweek}:${requestId}] ${label}: ${durationMs.toFixed(1)}ms`
+    );
+  };
+  const timed = (label: string) => {
+    const startedAt = performance.now();
+    return () => recordTiming(label, performance.now() - startedAt);
+  };
+  const measure = async <T>(label: string, operation: () => Promise<T>) => {
+    const end = timed(label);
+    try {
+      return await operation();
+    } finally {
+      end();
+    }
+  };
+  const response = (body: object, init?: ResponseInit) => {
+    recordTiming("total", performance.now() - routeStartedAt);
+    const serverTiming = [...durations]
+      .map(([label, duration]) =>
+        `${label.replaceAll(" ", "_")};dur=${duration.toFixed(1)}`
+      )
+      .join(", ");
+    return NextResponse.json(body, {
+      ...init,
+      headers: { "Server-Timing": serverTiming },
+    });
+  };
+
+  const session = await measure("auth", () => auth());
 
   // decode token from header
   const jwt = req.headers.get("authorization");
   if (!jwt) {
-    return NextResponse.json(
+    return response(
       { error: "Authorization header missing" },
       { status: 401 }
     );
   }
-  const token = jwt.split(" ")[1];
-  const decoded = jwtDecode<{ email: string }>(token);
-
-  console.time("[gameweek] getUserTeamFromEmail");
-  const { teamId } = await getUserTeamFromEmail(
-    decoded.email,
-    process.env.FPL_SEASON_ID!
-  );
-  console.timeEnd("[gameweek] getUserTeamFromEmail");
+  if (!session?.team_id) {
+    return response({ error: "FPL team missing from session" }, { status: 403 });
+  }
+  const teamId = session.team_id;
 
   // get team and user from token
 
@@ -69,50 +89,34 @@ export const GET = auth(async function GET(req: NextRequest) {
       [101, 670, 74, 694, 151, 258, 295, 517, 329, 457, 303, 237, 691, 178, 597]
     );
 
-    return Response.json(buildInitialGameweekPayload(allPlayers));
+    return response(buildInitialGameweekPayload(allPlayers));
   }
 
-  console.time("[gameweek] getGameweekOverallData");
-  const overall = await getGameweekOverallData(gameweek - 1, teamId);
-  console.timeEnd("[gameweek] getGameweekOverallData");
+  const baseGameweek = gameweek - 1;
+  const { overall, data, transferCount, transfers, transferActivity, priceStats } = await measure("gameweek data query", () =>
+    getGameweekBaseData(
+      baseGameweek,
+      teamId,
+      gameweek - 5,
+      gameweek - 1,
+      gameweek,
+      gameweek,
+      recordTiming
+    )
+  );
 
-  console.time("[gameweek] getGameweekPicksData");
-  let data = await getGameweekPicksData(gameweek - 1, teamId);
-  console.timeEnd("[gameweek] getGameweekPicksData");
+  const responseConstructionStartedAt = performance.now();
+  const newData = applySellingPrices(data, transfers, priceStats);
 
-  const playerIds = data.map((player) => player.fpl_player.id);
-  console.time("[gameweek] batched transfer+price queries");
-  const [transfers, priceStats] = await Promise.all([
-    getLastTransferValues(teamId, playerIds),
-    getPlayerValuesByGameweek(playerIds, gameweek),
-  ]);
-  console.timeEnd("[gameweek] batched transfer+price queries");
-
-  const transferInPriceByPlayer = latestTransferCostByPlayer(transfers);
-  const currentPriceByPlayer = priceByPlayer(priceStats);
-
-  const newData = data.map((player) => ({
-    ...player,
-    selling_price: computeSellingPrice(
-      transferInPriceByPlayer.get(player.fpl_player.id)!,
-      currentPriceByPlayer.get(player.fpl_player.id)!
-    ),
-  }));
-
-  console.time("[gameweek] fPLGameweekTransfers.findMany");
-  const recentTransfers = await prisma.fPLGameweekTransfers.findMany({
-    where: {
-      gameweek: {
-        gte: gameweek - 5,
-        lte: gameweek - 1,
-      },
-    },
-  });
-  console.timeEnd("[gameweek] fPLGameweekTransfers.findMany");
-
-  return Response.json({
+  const body = {
     data: newData,
     overall,
-    transfers: recentTransfers,
-  });
-});
+    transferCount,
+    transferActivity,
+  };
+  recordTiming(
+    "response construction",
+    performance.now() - responseConstructionStartedAt
+  );
+  return response(body);
+}

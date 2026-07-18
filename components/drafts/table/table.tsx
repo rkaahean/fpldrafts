@@ -7,6 +7,8 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -18,8 +20,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { FileText } from "lucide-react";
 import { useState } from "react";
+import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../ui/card";
 import { Input } from "../../ui/input";
 import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group";
 
@@ -29,6 +40,7 @@ interface DataTableProps<TData, TValue> {
   name: string;
   isFilterable: boolean;
   isPaginated?: boolean;
+  filterColumnId?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -37,8 +49,10 @@ export function DataTable<TData, TValue>({
   name,
   isFilterable,
   isPaginated = false,
+  filterColumnId = "name",
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
     data,
@@ -46,7 +60,9 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    state: { columnFilters },
+    getSortedRowModel: getSortedRowModel(),
+    state: { columnFilters, sorting },
+    onSortingChange: setSorting,
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
@@ -61,18 +77,33 @@ export function DataTable<TData, TValue>({
   const isPaginationVisible = isPaginated;
 
   return (
-    <div className="relative min-h-56 lg:h-full">
+    <Card className="flex h-full min-h-0 flex-col overflow-hidden">
+      <CardHeader className="flex-row items-center justify-between gap-4 border-b px-4 py-3 sm:px-5">
+        <div>
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <FileText className="h-5 w-5 text-muted-foreground" />
+            Draft library
+          </CardTitle>
+          <CardDescription className="mt-1">
+            Saved transfer plans ready to load and refine.
+          </CardDescription>
+        </div>
+        <Badge variant="outline" className="shrink-0">
+          {data.length} saved {data.length === 1 ? "draft" : "drafts"}
+        </Badge>
+      </CardHeader>
+      <CardContent className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden p-3 sm:p-4">
       {isFilterable && (
-        <div className="flex items-center pb-1 gap-2">
+        <div className="flex items-center gap-2 rounded-md border bg-background/40 p-3">
           <Input
             placeholder={`Filter ${name}...`}
             value={
-              (table.getColumn("web_name")?.getFilterValue() as string) ?? ""
+              (table.getColumn(filterColumnId)?.getFilterValue() as string) ?? ""
             }
             onChange={(event) =>
-              table.getColumn("web_name")?.setFilterValue(event.target.value)
+              table.getColumn(filterColumnId)?.setFilterValue(event.target.value)
             }
-            className="w-1/2 max-w-sm"
+            className="w-full max-w-sm"
           />
           <ToggleGroup
             type="single"
@@ -92,20 +123,34 @@ export function DataTable<TData, TValue>({
           </ToggleGroup>
         </div>
       )}
-      <div className="rounded-sm h-full bg-bgsecondary">
+      <div className="min-h-0 flex-1 overflow-auto rounded-md border bg-background/30">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      className="sticky top-0 bg-bgsecondary/95 backdrop-blur"
+                    >
                       {header.isPlaceholder
                         ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                        : header.column.getCanSort()
+                          ? (
+                              <button
+                                className="inline-flex items-center gap-1 text-left hover:text-foreground"
+                                onClick={() =>
+                                  header.column.toggleSorting(
+                                    header.column.getIsSorted() === "asc"
+                                  )
+                                }
+                              >
+                                {flexRender(header.column.columnDef.header, header.getContext())}
+                                {header.column.getIsSorted() === "asc" ? "↑" : header.column.getIsSorted() === "desc" ? "↓" : ""}
+                              </button>
+                            )
+                          : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   );
                 })}
@@ -117,6 +162,7 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
+                  className="hover:bg-muted/40"
                   // data-state={row.getIsSelected() && "selected"}
                   onClick={() => {
                     const isSelected = row.getIsSelected();
@@ -139,15 +185,16 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No drafts saved yet.
+                  {data.length ? "No matching drafts." : "No drafts saved yet."}
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
+      </CardContent>
       {isPaginationVisible && (
-        <div className="absolute bottom-0 flex items-center justify-around space-x-2 py-4 w-full">
+        <div className="flex items-center justify-between border-t px-4 py-3">
           <Button
             variant="outline"
             size="xs"
@@ -156,9 +203,9 @@ export function DataTable<TData, TValue>({
           >
             Previous
           </Button>
-          <div className="text-xs">{`${
+          <div className="text-xs text-muted-foreground">{`Page ${
             table.getState().pagination.pageIndex + 1
-          }  / ${table.getPageCount()}`}</div>
+          } of ${table.getPageCount()}`}</div>
           <Button
             variant="outline"
             size="xs"
@@ -169,6 +216,6 @@ export function DataTable<TData, TValue>({
           </Button>
         </div>
       )}
-    </div>
+    </Card>
   );
 }

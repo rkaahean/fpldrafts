@@ -160,6 +160,7 @@ model FPLGameweekPlayerStats {
 
   @@unique([fpl_player_id, fixture_id])
   @@index([fpl_player_id, value])
+  @@index([fpl_player_id, gameweek])
 }
 
 model FPLGameweekTransfers {
@@ -176,6 +177,8 @@ model FPLGameweekTransfers {
   out_fpl_player FPLPlayer @relation("out_player", fields: [out_player_id], references: [id])
 
   @@unique([in_player_id, out_player_id, time])
+  @@index([fpl_team_id, gameweek])
+  @@index([fpl_team_id, in_player_id])
 }
 
 model FPLTeam {

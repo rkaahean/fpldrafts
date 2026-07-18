@@ -4,6 +4,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string;
     accessToken: string;
+    team_id?: string;
   }
 }
 
@@ -13,7 +14,7 @@ declare module "next-auth" {
    */
   interface Session {
     hasTeam: boolean;
-    team_id: string;
+    team_id?: string;
     accessToken: string;
     user: {
       id: string;

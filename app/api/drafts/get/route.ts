@@ -60,6 +60,8 @@ export async function GET(req: NextRequest) {
         FPLDraftTransfers: true,
         bank: true,
         base_gameweek: true,
+        createdAt: true,
+        updatedAt: true,
       },
       where: {
         fpl_team_id: teamId,

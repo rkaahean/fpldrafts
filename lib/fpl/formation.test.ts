@@ -26,7 +26,10 @@ function picksWith(counts: {
   add(2, counts.def ?? 0);
   add(3, counts.mid ?? 0);
   add(4, counts.fwd ?? 0);
-  return { data, overall: {} as FPLGameweekPicksData["overall"] };
+  return {
+    data,
+    overall: {} as FPLGameweekPicksData["overall"],
+  };
 }
 
 describe("validateSubstitution", () => {

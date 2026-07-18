@@ -1,4 +1,6 @@
 import prisma from "@/scripts/lib/db";
+import { teamSessionFields, verifiedTeamId } from "./session";
+import { persistSignInToken, persistTeamId } from "./token";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
@@ -24,15 +26,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
-    async session({ session, token }) {
-      const userWithTeam = await prisma.fPLTeam.findFirst({
-        where: {
-          user_id: token.id,
-          fpl_season_id: process.env.FPL_SEASON_ID!,
-        },
-      });
-
-      session.hasTeam = !!userWithTeam;
+    session({ session, token }) {
+      Object.assign(session, teamSessionFields(token.team_id));
 
       if (token) {
         session.user.id = token.id;
@@ -45,34 +40,43 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
 
-    async jwt({ token }) {
-      const dbUser = await prisma.user.findFirst({
-        where: {
-          email: token.email!,
-        },
-      });
+    async jwt({ token, user, account, trigger, session }) {
+      const signedInToken = persistSignInToken(token, user, account);
+      const updatedTeamId =
+        trigger === "update"
+          ? (session as { team_id?: string } | undefined)?.team_id
+          : undefined;
 
-      if (!dbUser) {
-        return null;
+      if (updatedTeamId && signedInToken.id) {
+        const verifiedTeam = await prisma.fPLTeam.findFirst({
+          select: { id: true },
+          where: {
+            id: updatedTeamId,
+            user_id: signedInToken.id,
+            fpl_season_id: process.env.FPL_SEASON_ID!,
+          },
+        });
+        return persistTeamId(
+          signedInToken,
+          verifiedTeamId(updatedTeamId, verifiedTeam)
+        );
       }
 
-      const jwtToken = await prisma.account.findFirst({
+      const tokenWithUpdatedTeam = signedInToken;
+
+      if (tokenWithUpdatedTeam.team_id || !tokenWithUpdatedTeam.id) {
+        return tokenWithUpdatedTeam;
+      }
+
+      const team = await prisma.fPLTeam.findFirst({
+        select: { id: true },
         where: {
-          userId: dbUser.id,
-        },
-        orderBy: {
-          updatedAt: "desc",
+          user_id: tokenWithUpdatedTeam.id,
+          fpl_season_id: process.env.FPL_SEASON_ID!,
         },
       });
 
-      return {
-        ...token,
-        id: dbUser.id,
-        name: dbUser.name,
-        email: dbUser.email,
-        picture: dbUser.image,
-        accessToken: jwtToken?.id_token!,
-      };
+      return persistTeamId(tokenWithUpdatedTeam, team?.id);
     },
   },
 });

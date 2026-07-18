@@ -1,42 +1,41 @@
 "use client";
 
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { UsersRound } from "lucide-react";
 import Link from "next/link";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { Button } from "../ui/button";
 
 export default function PlayerPane({ children }: { children: ReactNode }) {
-  const [open, setOpen] = useState(false);
-
   return (
-    <Collapsible
-      open={open}
-      onOpenChange={setOpen}
-      className="w-full lg:w-80 flex-shrink-0"
-    >
-      <div className="flex items-center justify-between gap-2">
-        <CollapsibleTrigger asChild>
-          <Button variant="secondary" className="flex-grow justify-between">
-            Players
-            <ChevronDown
-              className={`h-4 w-4 transition-transform ${
-                open ? "rotate-180" : ""
-              }`}
-            />
-          </Button>
-        </CollapsibleTrigger>
-      </div>
-      <CollapsibleContent className="flex flex-col gap-2 pt-2">
-        {children}
-        <Link href="/players" className="text-xs text-muted-foreground underline text-center">
-          View all players
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button
+          variant="ghost"
+          size="xs"
+          title="Browse players"
+          aria-label="Browse players"
+        >
+          <UsersRound className="h-4 w-4" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent className="flex w-full flex-col overflow-y-auto sm:max-w-2xl">
+        <SheetHeader>
+          <SheetTitle>Players</SheetTitle>
+          <SheetDescription>Find players and add them to your transfer plan.</SheetDescription>
+        </SheetHeader>
+        <div className="mt-4 min-h-0 flex-1">{children}</div>
+        <Link href="/players" className="pt-3 text-center text-xs text-muted-foreground underline">
+          Open full player explorer
         </Link>
-      </CollapsibleContent>
-    </Collapsible>
+      </SheetContent>
+    </Sheet>
   );
 }

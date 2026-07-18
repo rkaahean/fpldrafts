@@ -1,31 +1,37 @@
 import { jwtDecode } from "jwt-decode";
-import { computeNextGameweek } from "@/lib/fpl/gameweek";
+import {
+  assembleGameweekBaseData,
+  assembleGameweekPicks,
+  groupFixturesForTeamCodes,
+  type GameweekBaseQueryResult,
+  type GameweekFixtureRow,
+  type GameweekPickRow,
+  computeNextGameweek,
+} from "@/lib/fpl/gameweek";
+import type { TransferActivity } from "@/lib/fpl/transfer-activity";
 import prisma from "../../scripts/lib/db";
 import { DraftTransfer } from "../store/utils";
 import type { Session } from "next-auth";
 
 export async function getUserTeamFromEmail(email: string, seasonId: string) {
-  const user_data = await prisma.user.findFirst({
+  const team = await prisma.fPLTeam.findFirst({
     select: {
       id: true,
-      fpl_teams: {
-        select: {
-          id: true,
-        },
-        where: {
-          fpl_season_id: seasonId,
-        },
-      },
+      user_id: true,
     },
     where: {
-      email,
+      fpl_season_id: seasonId,
+      user: { email },
     },
-  })!;
-  const teamId = user_data!.fpl_teams[0].id!;
+  });
+
+  if (!team) {
+    throw new Error("No FPL team found for this user and season");
+  }
 
   return {
-    userId: user_data?.id,
-    teamId,
+    userId: team.user_id,
+    teamId: team.id,
   };
 }
 
@@ -89,6 +95,8 @@ export async function getPlayerData(
       fpl_gameweek_player_stats: {
         select: {
           value: true,
+          gameweek: true,
+          total_points: true,
         },
         where: {
           gameweek,
@@ -117,8 +125,11 @@ export async function getPlayerDataBySeason(
       team_code: true,
       element_type: true,
       total_points: true,
+      expected_assists: true,
       expected_assists_per_90: true,
+      expected_goals: true,
       expected_goals_per_90: true,
+      expected_goal_involvements: true,
       expected_goal_involvements_per_90: true,
       now_value: true,
       goals_scored: true,
@@ -164,6 +175,8 @@ export async function getPlayerDataBySeason(
       fpl_gameweek_player_stats: {
         select: {
           value: true,
+          gameweek: true,
+          total_points: true,
         },
       },
     },
@@ -202,83 +215,268 @@ export async function getGameweekOverallData(gameweek: number, teamId: string) {
   });
 }
 
-export async function getGameweekPicksData(gameweek: number, team_id: string) {
-  const result = await prisma.fPLGameweekPicks.findMany({
-    select: {
-      position: true,
-      fpl_player: {
-        // Include the related FPLPlayer record
-        select: {
-          id: true,
-          player_id: true,
-          web_name: true,
-          team_code: true,
-          element_type: true,
-          total_points: true,
-          expected_goal_involvements_per_90: true,
-          now_value: true,
-          fpl_player_team: {
-            select: {
-              short_name: true,
-              home_fixtures: {
-                select: {
-                  fpl_team_a: {
-                    select: {
-                      short_name: true,
-                    },
-                  },
-                  id: true,
-                  event: true,
-                  team_h_difficulty: true,
-                  team_a_difficulty: true,
-                },
-                where: {
-                  event: {
-                    gte: gameweek,
-                    lte: gameweek + 4,
-                  },
-                  season_id: process.env.FPL_SEASON_ID!,
-                },
-              },
-              away_fixtures: {
-                select: {
-                  fpl_team_h: {
-                    select: {
-                      short_name: true,
-                    },
-                  },
-                  id: true,
-                  event: true,
-                  team_h_difficulty: true,
-                  team_a_difficulty: true,
-                },
-                where: {
-                  event: {
-                    gte: gameweek,
-                    lte: gameweek + 4,
-                  },
-                  season_id: process.env.FPL_SEASON_ID!,
-                },
-              },
-            },
-          },
-          fpl_gameweek_player_stats: {
-            select: {
-              value: true,
-            },
-            where: {
-              gameweek,
-            },
-          },
-        },
-      },
-    },
-    where: {
-      gameweek,
-      fpl_team_id: team_id,
-    },
-  });
+type GameweekBaseQueryRow = {
+  pickRows: GameweekPickRow[];
+  fixtureRows: GameweekFixtureRow[];
+  overall: GameweekBaseQueryResult["overall"];
+  transferCount: number;
+  transfers: { in_player_id: string; in_player_cost: number; time: string }[];
+  transferActivity: TransferActivity[];
+  priceStats: { fpl_player_id: string; value: number }[];
+};
+
+export async function getGameweekBaseData(
+  gameweek: number,
+  teamId: string,
+  fromTransferGameweek: number,
+  toTransferGameweek: number,
+  priceGameweek: number,
+  transferActivityGameweek: number,
+  recordTiming?: (label: string, durationMs: number) => void
+) {
+  const startedAt = performance.now();
+  const [row] = await prisma.$queryRaw<GameweekBaseQueryRow[]>`
+    WITH pick_rows AS (
+      SELECT
+        pick."position",
+        player."id" AS "fpl_player_id",
+        player."player_id",
+        player."web_name",
+        player."team_code",
+        player."element_type",
+        player."total_points",
+        player."expected_goal_involvements_per_90",
+        player."now_value",
+        player_team."short_name" AS "team_short_name",
+        COALESCE(
+          array_agg(stat."value") FILTER (WHERE stat."id" IS NOT NULL),
+          ARRAY[]::INTEGER[]
+        ) AS "stat_values"
+      FROM "FPLGameweekPicks" AS pick
+      JOIN "FPLPlayer" AS player ON player."id" = pick."fpl_player_id"
+      JOIN "FPLPlayerTeam" AS player_team
+        ON player_team."code" = player."team_code"
+        AND player_team."season_id" = player."season_id"
+      LEFT JOIN "FPLGameweekPlayerStats" AS stat
+        ON stat."fpl_player_id" = player."id"
+        AND stat."gameweek" = ${gameweek}
+      WHERE pick."gameweek" = ${gameweek}
+        AND pick."fpl_team_id" = ${teamId}
+      GROUP BY
+        pick."position",
+        player."id",
+        player."player_id",
+        player."web_name",
+        player."team_code",
+        player."element_type",
+        player."total_points",
+        player."expected_goal_involvements_per_90",
+        player."now_value",
+        player_team."short_name"
+    ), player_ids AS (
+      SELECT "fpl_player_id" FROM pick_rows
+    ), fixture_rows AS (
+      SELECT
+        fixture."id",
+        fixture."event",
+        fixture."team_h_difficulty",
+        fixture."team_a_difficulty",
+        home_team."code" AS "home_team_code",
+        away_team."code" AS "away_team_code",
+        home_team."short_name" AS "home_team_short_name",
+        away_team."short_name" AS "away_team_short_name"
+      FROM "FPLFixtures" AS fixture
+      JOIN "FPLPlayerTeam" AS home_team ON home_team."id" = fixture."team_h_id"
+      JOIN "FPLPlayerTeam" AS away_team ON away_team."id" = fixture."team_a_id"
+      WHERE fixture."season_id" = ${process.env.FPL_SEASON_ID!}
+        AND fixture."event" BETWEEN ${gameweek} AND ${gameweek + 4}
+        AND (
+          home_team."code" IN (SELECT "team_code" FROM pick_rows)
+          OR away_team."code" IN (SELECT "team_code" FROM pick_rows)
+        )
+    )
+    SELECT
+      COALESCE(
+        (SELECT jsonb_agg(to_jsonb(pick_row) ORDER BY pick_row."position") FROM pick_rows AS pick_row),
+        '[]'::jsonb
+      ) AS "pickRows",
+      COALESCE(
+        (SELECT jsonb_agg(to_jsonb(fixture_row) ORDER BY fixture_row."event") FROM fixture_rows AS fixture_row),
+        '[]'::jsonb
+      ) AS "fixtureRows",
+      (
+        SELECT to_jsonb(overall_row)
+        FROM (
+          SELECT "value", "overall_rank", "bank", "points"
+          FROM "FPLGameweekOverallStats"
+          WHERE "gameweek" = ${gameweek}
+            AND "fpl_team_id" = ${teamId}
+          LIMIT 1
+        ) AS overall_row
+      ) AS "overall",
+      (
+        SELECT COUNT(*)::INTEGER
+        FROM "FPLGameweekTransfers"
+        WHERE "fpl_team_id" = ${teamId}
+          AND "gameweek" BETWEEN ${fromTransferGameweek} AND ${toTransferGameweek}
+      ) AS "transferCount",
+      COALESCE(
+        (
+          SELECT jsonb_agg(to_jsonb(transfer_activity_row) ORDER BY transfer_activity_row."time")
+          FROM (
+            SELECT
+              jsonb_build_object(
+                'id', out_player."id",
+                'webName', out_player."web_name",
+                'team', out_team."short_name"
+              ) AS "out",
+              jsonb_build_object(
+                'id', in_player."id",
+                'webName', in_player."web_name",
+                'team', in_team."short_name"
+              ) AS "in",
+              transfer."time"
+            FROM "FPLGameweekTransfers" AS transfer
+            JOIN "FPLPlayer" AS out_player ON out_player."id" = transfer."out_player_id"
+            JOIN "FPLPlayer" AS in_player ON in_player."id" = transfer."in_player_id"
+            JOIN "FPLPlayerTeam" AS out_team
+              ON out_team."code" = out_player."team_code"
+              AND out_team."season_id" = out_player."season_id"
+            JOIN "FPLPlayerTeam" AS in_team
+              ON in_team."code" = in_player."team_code"
+              AND in_team."season_id" = in_player."season_id"
+            WHERE transfer."fpl_team_id" = ${teamId}
+              AND transfer."gameweek" = ${transferActivityGameweek}
+          ) AS transfer_activity_row
+        ),
+        '[]'::jsonb
+      ) AS "transferActivity",
+      COALESCE(
+        (
+          SELECT jsonb_agg(to_jsonb(transfer_row))
+          FROM (
+            SELECT "in_player_id", "in_player_cost", "time"
+            FROM "FPLGameweekTransfers"
+            WHERE "fpl_team_id" = ${teamId}
+              AND "in_player_id" IN (SELECT "fpl_player_id" FROM player_ids)
+          ) AS transfer_row
+        ),
+        '[]'::jsonb
+      ) AS "transfers",
+      COALESCE(
+        (
+          SELECT jsonb_agg(to_jsonb(price_stat_row))
+          FROM (
+            SELECT "fpl_player_id", "value"
+            FROM "FPLGameweekPlayerStats"
+            WHERE "gameweek" = ${priceGameweek}
+              AND "fpl_player_id" IN (SELECT "fpl_player_id" FROM player_ids)
+          ) AS price_stat_row
+        ),
+        '[]'::jsonb
+      ) AS "priceStats"
+  `;
+  recordTiming?.("combined base query", performance.now() - startedAt);
+
+  return {
+    ...assembleGameweekBaseData(row),
+    transfers: row.transfers.map((transfer) => ({
+      ...transfer,
+      time: new Date(transfer.time),
+    })),
+    transferActivity: row.transferActivity,
+    priceStats: row.priceStats,
+  };
+}
+
+export async function getGameweekPicksData(
+  gameweek: number,
+  team_id: string,
+  fixtureRowsPromise: Promise<GameweekFixtureRow[]>,
+  recordTiming?: (label: string, durationMs: number) => void
+): Promise<FPLGameweekPicksData["data"]> {
+  const picksStartedAt = performance.now();
+  const pickRows = await prisma.$queryRaw<GameweekPickRow[]>`
+    SELECT
+      pick."position",
+      player."id" AS "fpl_player_id",
+      player."player_id",
+      player."web_name",
+      player."team_code",
+      player."element_type",
+      player."total_points",
+      player."expected_goal_involvements_per_90",
+      player."now_value",
+      player_team."short_name" AS "team_short_name",
+      COALESCE(
+        array_agg(stat."value") FILTER (WHERE stat."id" IS NOT NULL),
+        ARRAY[]::INTEGER[]
+      ) AS "stat_values"
+    FROM "FPLGameweekPicks" AS pick
+    JOIN "FPLPlayer" AS player ON player."id" = pick."fpl_player_id"
+    JOIN "FPLPlayerTeam" AS player_team
+      ON player_team."code" = player."team_code"
+      AND player_team."season_id" = player."season_id"
+    LEFT JOIN "FPLGameweekPlayerStats" AS stat
+      ON stat."fpl_player_id" = player."id"
+      AND stat."gameweek" = ${gameweek}
+    WHERE pick."gameweek" = ${gameweek}
+      AND pick."fpl_team_id" = ${team_id}
+    GROUP BY
+      pick."position",
+      player."id",
+      player."player_id",
+      player."web_name",
+      player."team_code",
+      player."element_type",
+      player."total_points",
+      player."expected_goal_involvements_per_90",
+      player."now_value",
+      player_team."short_name"
+    ORDER BY pick."position"
+  `;
+  recordTiming?.("raw picks query", performance.now() - picksStartedAt);
+
+  const teamCodes = [...new Set(pickRows.map((pick) => pick.team_code))];
+  if (teamCodes.length === 0) {
+    return [] as FPLGameweekPicksData["data"];
+  }
+
+  const fixtureRows = await fixtureRowsPromise;
+  const assemblyStartedAt = performance.now();
+  const fixturesByTeamCode = groupFixturesForTeamCodes(
+    fixtureRows,
+    new Set(teamCodes)
+  );
+  const result = assembleGameweekPicks(pickRows, fixturesByTeamCode);
+  recordTiming?.("assemble gameweek picks", performance.now() - assemblyStartedAt);
   return result;
+}
+
+export async function getGameweekFixtureRows(
+  gameweek: number,
+  recordTiming?: (label: string, durationMs: number) => void
+): Promise<GameweekFixtureRow[]> {
+  const fixturesStartedAt = performance.now();
+  const fixtureRows = await prisma.$queryRaw<GameweekFixtureRow[]>`
+    SELECT
+      fixture."id",
+      fixture."event",
+      fixture."team_h_difficulty",
+      fixture."team_a_difficulty",
+      home_team."code" AS "home_team_code",
+      away_team."code" AS "away_team_code",
+      home_team."short_name" AS "home_team_short_name",
+      away_team."short_name" AS "away_team_short_name"
+    FROM "FPLFixtures" AS fixture
+    JOIN "FPLPlayerTeam" AS home_team ON home_team."id" = fixture."team_h_id"
+    JOIN "FPLPlayerTeam" AS away_team ON away_team."id" = fixture."team_a_id"
+    WHERE fixture."season_id" = ${process.env.FPL_SEASON_ID!}
+      AND fixture."event" BETWEEN ${gameweek} AND ${gameweek + 4}
+    ORDER BY fixture."event"
+  `;
+  recordTiming?.("raw fixtures query", performance.now() - fixturesStartedAt);
+  return fixtureRows;
 }
 
 export async function getLastTransferValue(team_id: string, player_id: string) {
@@ -343,12 +541,61 @@ export async function getPlayerValuesByGameweek(
     },
   });
 }
+
+export async function getRecentTransferCount(
+  team_id: string,
+  fromGameweek: number,
+  toGameweek: number
+) {
+  return prisma.fPLGameweekTransfers.count({
+    where: {
+      fpl_team_id: team_id,
+      gameweek: {
+        gte: fromGameweek,
+        lte: toGameweek,
+      },
+    },
+  });
+}
+
+export type FPLGameweekPickData = {
+  position: number;
+  selling_price: number;
+  fpl_player: {
+    id: string;
+    player_id: number;
+    web_name: string;
+    team_code: number;
+    element_type: number;
+    total_points: number;
+    expected_goal_involvements_per_90: number;
+    now_value: number;
+    fpl_player_team: {
+      short_name: string;
+      home_fixtures: {
+        id: string;
+        event: number;
+        team_h_difficulty: number;
+        team_a_difficulty: number;
+        fpl_team_a: { short_name: string };
+      }[];
+      away_fixtures: {
+        id: string;
+        event: number;
+        team_h_difficulty: number;
+        team_a_difficulty: number;
+        fpl_team_h: { short_name: string };
+      }[];
+    };
+    fpl_gameweek_player_stats: { value: number }[];
+  };
+};
+
 export type FPLGameweekPicksData = {
-  data: (Awaited<ReturnType<typeof getGameweekPicksData>>[number] & {
-    selling_price: number;
-  })[];
+  data: FPLGameweekPickData[];
   overall: NonNullable<Awaited<ReturnType<typeof getGameweekOverallData>>>;
-  transfers?: any[];
+  transferCount?: number;
+  transferActivity?: TransferActivity[];
 };
 export type FPLPlayerData = Pick<
   FPLGameweekPicksData["data"][number],

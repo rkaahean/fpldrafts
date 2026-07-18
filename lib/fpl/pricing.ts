@@ -35,3 +35,22 @@ export function priceByPlayer(
 ): Map<string, number> {
   return new Map(stats.map((stat) => [stat.fpl_player_id, stat.value]));
 }
+
+export function applySellingPrices<
+  T extends { fpl_player: { id: string } }
+>(
+  picks: T[],
+  transfers: { in_player_id: string; in_player_cost: number; time: Date }[],
+  priceStats: { fpl_player_id: string; value: number }[]
+): (T & { selling_price: number })[] {
+  const transferInPriceByPlayer = latestTransferCostByPlayer(transfers);
+  const currentPriceByPlayer = priceByPlayer(priceStats);
+
+  return picks.map((pick) => ({
+    ...pick,
+    selling_price: computeSellingPrice(
+      transferInPriceByPlayer.get(pick.fpl_player.id)!,
+      currentPriceByPlayer.get(pick.fpl_player.id)!
+    ),
+  }));
+}

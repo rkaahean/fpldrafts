@@ -2,8 +2,7 @@
 
 import { picksStore } from "@/app/store";
 
-import Heading from "../ui/text/heading";
-import { columns } from "./columns";
+import { columns, miniColumns } from "./columns";
 import { DataTable } from "./table";
 
 export default function ClientTable(
@@ -36,13 +35,17 @@ export default function ClientTable(
   }
 
   return (
-    <div className="h-full flex flex-col">
-      <Heading text={"Players"} />
+    <div
+      className={
+        props.showAdvancedFilters === false ? "w-full" : "h-full min-h-0 w-full"
+      }
+    >
       <DataTable
-        columns={columns}
+        columns={props.compact ? miniColumns : columns}
         data={filteredData}
         name="players"
         showAdvancedFilters={props.showAdvancedFilters}
+        fillContainer={props.showAdvancedFilters !== false}
       />
     </div>
   );

@@ -22,7 +22,7 @@ export default function TeamLinkComponent() {
   const router = useRouter();
   const [teamNumber, setTeamNumber] = useState("");
 
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
 
   const [loading, setLoading] = useState(false);
   if (status == "loading") {
@@ -88,7 +88,10 @@ export default function TeamLinkComponent() {
                 }),
               })
                 .then((res) => res.json())
-                .then(() => new Promise((resolve) => setTimeout(resolve, 4000)))
+                .then(async ({ data }) => {
+                  await update({ team_id: data.teamId });
+                  await new Promise((resolve) => setTimeout(resolve, 4000));
+                })
                 .catch((error) => {
                   console.error("Error on clicking link", error);
                 })

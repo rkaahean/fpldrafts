@@ -3,8 +3,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { Card, CardContent, CardHeader } from "../../ui/card";
 import { Skeleton } from "../../ui/skeleton";
-import Heading from "../../ui/text/heading";
 import { DraftsData, columns } from "./columns";
 import { DataTable } from "./table";
 
@@ -30,24 +30,26 @@ export default function Drafts() {
 
   if (!data) {
     return (
-      <div className="flex flex-col h-full w-full">
-        <Heading text={"Drafts"} />
-        <Skeleton className="w-full h-full rounded-md flex flex-col items-center justify-center">
+      <Card className="flex h-full min-h-0 flex-col overflow-hidden">
+        <CardHeader className="border-b px-4 py-3" />
+        <CardContent className="flex min-h-0 flex-1 items-center justify-center p-4">
+        <Skeleton className="flex h-full w-full flex-col items-center justify-center rounded-md">
           <Loader2 className="mr-2 h-12 w-12 animate-spin" />
         </Skeleton>
-      </div>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <Heading text={"Drafts"} />
+    <div className="h-full min-h-0">
       <DataTable
         columns={columns}
         data={data.data!}
         name="drafts"
-        isFilterable={false}
+        isFilterable
         isPaginated={true}
+        filterColumnId="name"
       />
     </div>
   );
