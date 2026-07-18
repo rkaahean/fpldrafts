@@ -69,14 +69,14 @@ export default async function Landing() {
               {features.map((feature, index) => (
                 <div
                   key={index}
-                  className="flex flex-row gap-8 items-start text-black"
+                  className="flex flex-row gap-8 items-start text-player-foreground"
                 >
                   <div className="feature-icon w-8 h-8">{feature.icon}</div>
                   <div className="feature-content flex flex-col">
                     <h3 className="feature-title font-normal text-md lg:text-xl tracking-tighter">
                       {feature.title}
                     </h3>
-                    <p className="feature-description text-black/50 text-xs lg:text-base">
+                    <p className="feature-description text-player-foreground/60 text-xs lg:text-base">
                       {feature.description}
                     </p>
                   </div>

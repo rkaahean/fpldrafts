@@ -119,8 +119,8 @@ export default function Gameweek(props: { gameweek: number }) {
       committedBank !== undefined ? checkBudget(committedBank) : undefined;
 
     return (
-      <div className="flex flex-col gap-2 lg:gap-1 h-full relative">
-        <div className="flex flex-row justify-between gap-2">
+      <div className="flex flex-col gap-2 lg:gap-1 h-full lg:min-h-0 relative">
+        <div className="flex flex-row justify-between gap-2 flex-shrink-0">
           <Button
             onClick={() =>
               setCurrentGameweek(Math.max(1, currentGameweek - 1))
@@ -163,21 +163,23 @@ export default function Gameweek(props: { gameweek: number }) {
           </Button>
         </div>
 
-        <div>
-          <div className="absolute h-[60vh] lg:h-[92vh] w-full -z-10">
-            <Image src={Pitch} alt="" layout="fill" objectFit="cover" />
+        <div className="relative flex-1 min-h-[400px] lg:min-h-0 w-full">
+          <Image
+            src={Pitch}
+            alt=""
+            fill
+            className="object-contain -z-10 pointer-events-none select-none"
+          />
+          <div className="relative z-0 grid grid-rows-[1fr_1fr_1fr_1fr_1.15fr] h-full w-full">
+            {["GK", "DEF", "MID", "FWD", "subs"].map((position: string) => (
+              <PitchRow
+                key={position}
+                position={position}
+                data={filterData(data.data, position)}
+                gameweek={currentGameweek}
+              />
+            ))}
           </div>
-        </div>
-
-        <div className="w-full z-0 flex flex-col">
-          {["GK", "DEF", "MID", "FWD", "subs"].map((position: string) => (
-            <PitchRow
-              key={position}
-              position={position}
-              data={filterData(data.data, position)}
-              gameweek={currentGameweek}
-            />
-          ))}
         </div>
       </div>
     );

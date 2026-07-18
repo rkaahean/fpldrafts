@@ -40,7 +40,7 @@ export default function DraftSave() {
       <DialogTrigger asChild>
         <Button
           variant="ghost"
-          className="h-6 px-2 py-1 text-xs rounded-sm 2xl:h-10 2xl:px-4 2xl:py-2"
+          className="h-6 w-6 p-1 text-xs rounded-sm 2xl:h-8 2xl:w-8"
           title="Save Draft"
           disabled={drafts.changes.length == 0}
         >

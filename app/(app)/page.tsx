@@ -19,8 +19,8 @@ export default async function Home() {
   const newGameweek = await getNextGameweekForSession(session);
 
   return (
-    <div className="flex flex-col gap-4 lg:flex-row lg:h-full lg:items-start">
-      <div className="flex-grow lg:h-full">
+    <div className="flex flex-col gap-4 lg:flex-row lg:h-full lg:min-h-0 lg:items-stretch w-full min-w-0">
+      <div className="flex-grow lg:h-full lg:min-h-0 min-w-0">
         <Team gameweek={newGameweek} />
       </div>
       <PlayerPane>

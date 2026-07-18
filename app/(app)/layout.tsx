@@ -25,14 +25,12 @@ export default async function AppLayout({
   );
 
   const desktopContent = (
-    <div className="flex flex-col">
-      <div className="flex flex-row h-screen bg-grainy max-w-screen">
-        <div className="w-40 2xl:w-48 flex-shrink-0">
-          <Navbar image={session.user!.image!} />
-        </div>
-        <div className="flex-grow py-2 px-2 min-h-full overflow-y-auto">
-          {children}
-        </div>
+    <div className="flex flex-col h-screen bg-grainy max-w-screen">
+      <div className="flex-shrink-0 border-b">
+        <Navbar image={session.user!.image!} />
+      </div>
+      <div className="flex-grow py-2 px-2 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden">
+        {children}
       </div>
     </div>
   );

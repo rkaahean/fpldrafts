@@ -20,7 +20,7 @@ export default function DraftChanges() {
       <SheetTrigger asChild>
         <Button
           variant="ghost"
-          className="h-6 px-2 py-1 text-xs rounded-sm 2xl:h-10 2xl:px-4 2xl:py-2"
+          className="h-6 w-6 p-1 text-xs rounded-sm 2xl:h-8 2xl:w-8"
         >
           <Repeat className="w-4 h-4 2xl:w-6 2xl:h-6" />
         </Button>

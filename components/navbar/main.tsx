@@ -20,13 +20,13 @@ export default function Navbar(props: { image: string }) {
   const pathname = usePathname();
 
   return (
-    <div className="flex flex-row lg:flex-col py-2 justify-between lg:justify-start lg:h-full lg:items-center gap-5 pl-2 lg:pr-2">
-      <div className="flex flex-row lg:flex-col items-center gap-5">
+    <div className="flex flex-row items-center justify-between py-2 lg:px-4 gap-5 pl-2">
+      <div className="flex flex-row items-center gap-5">
         <Avatar>
           <AvatarImage src={props.image} alt="profile_image" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
-        <nav className="flex flex-row lg:flex-col items-center gap-1 lg:gap-3">
+        <nav className="flex flex-row items-center gap-1 lg:gap-2">
           {NAV_LINKS.map(({ href, label, icon: Icon }) => {
             const isActive = pathname === href;
             return (
@@ -36,7 +36,7 @@ export default function Navbar(props: { image: string }) {
                 size="icon"
                 asChild
                 className={cn(
-                  "lg:w-full lg:justify-start lg:gap-2 lg:px-2",
+                  "lg:w-auto lg:gap-2 lg:px-3",
                   isActive
                     ? "bg-accent text-accent-foreground"
                     : "text-muted-foreground"

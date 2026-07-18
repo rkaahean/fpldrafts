@@ -9,7 +9,7 @@ import Gameweek from "./Gameweek";
 
 export default function Team(props: { gameweek: number }) {
   return (
-    <div className="w-full h-fit lg:min-h-full flex flex-col lg:flex-row justify-start items-center gap-2">
+    <div className="w-full min-w-0 flex flex-col lg:flex-row lg:h-full lg:min-h-0 justify-start items-center lg:items-stretch gap-2">
       {isMobile ? (
         <nav className="flex flex-row justify-center gap-4">
           <RemoveAll />
@@ -20,7 +20,7 @@ export default function Team(props: { gameweek: number }) {
           <DraftUpdate />
         </nav>
       ) : (
-        <nav className="flex flex-col justify-center gap-4 2xl:gap-12 bg-card border rounded-md p-2">
+        <nav className="flex flex-col justify-center items-center gap-2 2xl:gap-3 bg-card border rounded-md p-1.5 w-fit">
           <RemoveAll />
           {/* <ResetAll /> */}
           {/* <ResetCurrentGameweek /> */}
@@ -29,7 +29,7 @@ export default function Team(props: { gameweek: number }) {
           <DraftUpdate />
         </nav>
       )}
-      <div className="flex flex-col flex-grow">
+      <div className="flex flex-col flex-grow min-w-0 w-full lg:min-h-0">
         <Gameweek gameweek={props.gameweek} />
       </div>
     </div>

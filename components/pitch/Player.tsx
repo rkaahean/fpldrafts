@@ -37,96 +37,102 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
 
   const firstFixture = props.data.fixtures[props.gameweek - 1];
   return (
-    <div>
+    <div className="flex flex-col h-full min-h-0 items-center justify-center">
       {isSubstitute && (
-        <div className="text-[8px] lg:text-xs 2xl:text-base text-background text-center tracking-tight font-bold">
+        <div className="flex-shrink-0 text-[8px] lg:text-xs 2xl:text-base text-background text-center tracking-tight font-bold">
           {elementTypeToPosition(props.data.element_type)}
         </div>
       )}
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.2 }}
-      >
-        <Card
-          className={cn(
-            "flex flex-row w-[68px] h-[72px] sm:w-20 h:20 lg:w-[120px] lg:h-32 2xl:w-32 2xl:h-40 rounded-lg text-player-foreground p-0",
-            player?.player_id == props.data.player_id
-              ? "bg-muted"
-              : "bg-player",
-            isSelectedForTransfer ? "bg-destructive" : ""
-          )}
+      <div className="flex-1 min-h-0 min-w-0 flex items-center justify-center">
+        <motion.div
+          className="h-full min-h-0"
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.2 }}
         >
-          <PlayerFixtureTicker
-            fixtures={props.data.fixtures}
-            gameweek={props.gameweek}
-          />
+          <Card
+            className={cn(
+              "flex flex-row h-full max-h-full aspect-[4/5] min-w-0 rounded-lg text-player-foreground p-0",
+              player?.player_id == props.data.player_id
+                ? "bg-muted"
+                : "bg-player",
+              isSelectedForTransfer ? "bg-destructive" : ""
+            )}
+          >
+            <PlayerFixtureTicker
+              fixtures={props.data.fixtures}
+              gameweek={props.gameweek}
+            />
 
-          <div className="w-9/12 text-xs flex flex-col h-full items-end">
-            <div className="h-1/12 flex flex-row gap-0 2xl:gap-3 p-0 lg:px-1 lg:py-0.5">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="w-4 h-4 rounded-sm p-0"
-                onClick={() => {
-                  if (isSubstitute) {
-                    subIn(props.data);
-                  } else {
-                    subOut(props.data);
-                  }
-                  makeSubs();
-                }}
-              >
-                <ArrowDownToLine className="w-[10px] h-[10px] lg:w-3 lg:h-3 2xl:w-6 2xl:h-6" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="w-4 h-4 rounded-sm p-0"
-                onClick={() => {
-                  // if not already selected, push into state
-                  updateTransfer(
-                    transfersOut,
-                    props.data,
-                    addToBank,
-                    removeFromBank
-                  );
-                  // because transferrring in, reset subs
-                  resetSubs();
-                  setTransferOut(transfersOut);
-                }}
-              >
-                <X className="w-[10px] h-[10px] lg:w-3 lg:h-3 2xl:w-6 2xl:h-6" />
-              </Button>
-            </div>
-            <div className="flex flex-col h-full w-full justify-between items-center">
-              <div className="w-6 h-6 lg:h-14 lg:w-14 2xl:h-16 2xl:w-20">
-                <Image
-                  src={`https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${props.data.team_code}-110.webp`}
-                  alt="Player"
-                  width={80}
-                  height={80}
-                  priority
-                  className="w-full h-full object-contain"
-                />
+            <div className="w-9/12 text-xs flex flex-col h-full min-h-0 items-end">
+              <div className="flex-shrink-0 flex flex-row gap-0 2xl:gap-3 p-0 lg:px-1 lg:py-0.5">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="w-4 h-4 rounded-sm p-0"
+                  onClick={() => {
+                    if (isSubstitute) {
+                      subIn(props.data);
+                    } else {
+                      subOut(props.data);
+                    }
+                    makeSubs();
+                  }}
+                >
+                  <ArrowDownToLine className="w-[10px] h-[10px] lg:w-3 lg:h-3 2xl:w-6 2xl:h-6" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="w-4 h-4 rounded-sm p-0"
+                  onClick={() => {
+                    // if not already selected, push into state
+                    updateTransfer(
+                      transfersOut,
+                      props.data,
+                      addToBank,
+                      removeFromBank
+                    );
+                    // because transferrring in, reset subs
+                    resetSubs();
+                    setTransferOut(transfersOut);
+                  }}
+                >
+                  <X className="w-[10px] h-[10px] lg:w-3 lg:h-3 2xl:w-6 2xl:h-6" />
+                </Button>
               </div>
-              <div className="text-[9px] lg:text-xs 2xl:text-lg h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
-                {`${props.data.web_name}`}
+              <div className="flex flex-col flex-1 min-h-0 w-full justify-between items-center">
+                <div className="w-[45%] aspect-square">
+                  <Image
+                    src={`https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${props.data.team_code}-110.webp`}
+                    alt="Player"
+                    width={80}
+                    height={80}
+                    priority
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div className="text-[9px] lg:text-xs 2xl:text-lg h-fit font-semibold tracking-tighter truncate text-ellipsis max-w-full px-1">
+                  {`${props.data.web_name}`}
+                </div>
+                <div
+                  className={clsx(
+                    "text-[8px] lg:text-[10px] 2xl:text-xs w-full items-center flex flex-row justify-center"
+                  )}
+                >
+                  {firstFixture
+                    ? `${firstFixture.name.toUpperCase()} (${
+                        firstFixture.location
+                      })`
+                    : "-"}
+                </div>
+                {!isMobile && <PlayerStatsTicker data={props.data} />}
               </div>
-              <div
-                className={clsx(
-                  "text-[8px] lg:text-[10px] 2xl:text-xs w-full items-center flex flex-row justify-center"
-                  // `${getFixtureColorFromDifficulty(firstFixture.strength!)}`
-                )}
-              >{`${firstFixture.name.toUpperCase()} (${
-                firstFixture.location
-              })`}</div>
-              {!isMobile && <PlayerStatsTicker data={props.data} />}
             </div>
-          </div>
-        </Card>
-      </motion.div>
+          </Card>
+        </motion.div>
+      </div>
     </div>
   );
 }
@@ -156,7 +162,7 @@ function PlayerFixtureTicker({
   }
 
   return (
-    <div className="w-3/12 grid grid-rows-5 text-[7px] lg:text-xs 2xl:text-base tracking-tighter">
+    <div className="w-3/12 min-w-0 h-full min-h-0 grid grid-rows-5 text-[7px] lg:text-xs 2xl:text-base tracking-tighter">
       {formattedFixtures.map((fixture, idx) => {
         if (Array.isArray(fixture)) {
           return (
