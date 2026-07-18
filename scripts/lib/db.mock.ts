@@ -22,8 +22,11 @@ export function createMockPrisma() {
   };
 
   const model = (name: string) => ({
-    findMany: vi.fn(async ({ where }: { where?: Record<string, unknown> } = {}) =>
-      table(name).filter((row) => matches(row, where))
+    findMany: vi.fn(
+      async ({
+        where,
+      }: { where?: Record<string, unknown>; orderBy?: unknown } = {}) =>
+        table(name).filter((row) => matches(row, where))
     ),
     findFirst: vi.fn(async ({ where }: { where?: Record<string, unknown> } = {}) =>
       table(name).find((row) => matches(row, where)) ?? null

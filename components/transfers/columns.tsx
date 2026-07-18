@@ -9,10 +9,12 @@ import {
 } from "@/lib/fpl/player-insights";
 import { FPLPlayerDataToPlayerData, getFixtureIntensityClass } from "@/scripts/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
 import { DataType, priceFilter, teamFilter } from "./table";
+import { usePlayerDrawerClose } from "./player-drawer-context";
 
 export function MetricHeader({
   label,
@@ -25,6 +27,35 @@ export function MetricHeader({
     <abbr title={description} className="cursor-help no-underline">
       {label}
     </abbr>
+  );
+}
+
+type SortableColumn = {
+  getIsSorted: () => false | "asc" | "desc";
+  toggleSorting: (desc?: boolean) => void;
+};
+
+export function SortableHeader({
+  column,
+  label,
+  description = label,
+}: {
+  column: SortableColumn;
+  label: string;
+  description?: string;
+}) {
+  const sorted = column.getIsSorted();
+  const Icon = sorted === "asc" ? ArrowUp : sorted === "desc" ? ArrowDown : ArrowUpDown;
+
+  return (
+    <button
+      title={`Sort by ${description}`}
+      className="inline-flex items-center gap-1 whitespace-nowrap text-left hover:text-foreground"
+      onClick={() => column.toggleSorting(sorted === "asc")}
+    >
+      <MetricHeader label={label} description={description} />
+      <Icon className="h-3 w-3 text-muted-foreground" aria-hidden />
+    </button>
   );
 }
 
@@ -121,7 +152,7 @@ export const columns: ColumnDef<DataType>[] = [
   },
   {
     accessorKey: "web_name",
-    header: "Name",
+    header: ({ column }) => <SortableHeader column={column} label="Name" />,
     cell: ({ row }) => (
       <PlayerIdentity
         name={row.original.web_name}
@@ -132,7 +163,7 @@ export const columns: ColumnDef<DataType>[] = [
   {
     id: "now_value",
     accessorKey: "now_value",
-    header: "£",
+    header: ({ column }) => <SortableHeader column={column} label="£" description="Price" />,
     cell: ({ row }) => row.original.now_value / 10,
     filterFn: priceFilter,
   },
@@ -151,16 +182,7 @@ export const columns: ColumnDef<DataType>[] = [
   },
   {
     accessorKey: "total_points",
-    header: ({ column }) => {
-      return (
-        <button
-          title="Season points"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <MetricHeader label="Pts" description="Season points" />
-        </button>
-      );
-    },
+    header: ({ column }) => <SortableHeader column={column} label="Pts" description="Season points" />,
   },
   {
     id: "fixtures",
@@ -174,110 +196,40 @@ export const columns: ColumnDef<DataType>[] = [
   },
   {
     accessorKey: "expected_goal_involvements_per_90",
-    header: ({ column }) => {
-      return (
-        <button
-          title="Expected goal involvements per 90 minutes"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <MetricHeader
-            label="xGI/90"
-            description="Expected goal involvements per 90 minutes"
-          />
-        </button>
-      );
-    },
+    header: ({ column }) => <SortableHeader column={column} label="xGI/90" description="Expected goal involvements per 90 minutes" />,
   },
   {
     id: "goal_contributions",
-    header: () => (
-      <MetricHeader label="G+A" description="Goals and assists" />
-    ),
+    accessorFn: (row) => row.goals_scored + row.assists,
+    header: ({ column }) => <SortableHeader column={column} label="G+A" description="Goals and assists" />,
     cell: ({ row }) => row.original.goals_scored + row.original.assists,
   },
   {
     accessorKey: "expected_goals_per_90",
-    header: ({ column }) => {
-      return (
-        <button
-          title="Expected goals per 90 minutes"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <MetricHeader
-            label="xG/90"
-            description="Expected goals per 90 minutes"
-          />
-        </button>
-      );
-    },
+    header: ({ column }) => <SortableHeader column={column} label="xG/90" description="Expected goals per 90 minutes" />,
   },
   {
     accessorKey: "expected_assists_per_90",
-    header: ({ column }) => {
-      return (
-        <button
-          title="Expected assists per 90 minutes"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <MetricHeader
-            label="xA/90"
-            description="Expected assists per 90 minutes"
-          />
-        </button>
-      );
-    },
+    header: ({ column }) => <SortableHeader column={column} label="xA/90" description="Expected assists per 90 minutes" />,
   },
   {
     accessorKey: "expected_goal_involvements",
-    header: ({ column }) => (
-      <button
-        title="Expected goal involvements"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        <MetricHeader
-          label="xGI"
-          description="Expected goal involvements"
-        />
-      </button>
-    ),
+    header: ({ column }) => <SortableHeader column={column} label="xGI" description="Expected goal involvements" />,
     cell: ({ row }) => row.original.expected_goal_involvements.toFixed(2),
   },
   {
     accessorKey: "expected_goals",
-    header: ({ column }) => (
-      <button
-        title="Expected goals"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        <MetricHeader label="xG" description="Expected goals" />
-      </button>
-    ),
+    header: ({ column }) => <SortableHeader column={column} label="xG" description="Expected goals" />,
     cell: ({ row }) => row.original.expected_goals.toFixed(2),
   },
   {
     accessorKey: "expected_assists",
-    header: ({ column }) => (
-      <button
-        title="Expected assists"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        <MetricHeader label="xA" description="Expected assists" />
-      </button>
-    ),
+    header: ({ column }) => <SortableHeader column={column} label="xA" description="Expected assists" />,
     cell: ({ row }) => row.original.expected_assists.toFixed(2),
   },
   {
     accessorKey: "minutes",
-    header: ({ column }) => {
-      return (
-        <button
-          title="Minutes played"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <MetricHeader label="Mins" description="Minutes played" />
-        </button>
-      );
-    },
+    header: ({ column }) => <SortableHeader column={column} label="Mins" description="Minutes played" />,
   },
   {
     id: "is_in_team",
@@ -285,6 +237,7 @@ export const columns: ColumnDef<DataType>[] = [
   {
     id: "player_add",
     cell: ({ row, table }) => {
+      const closePlayerDrawer = usePlayerDrawerClose();
       const transfersIn = picksStore((store) => store.transfersIn);
       const setTransferIn = picksStore((store) => store.setTransferIn);
 
@@ -355,7 +308,9 @@ export const columns: ColumnDef<DataType>[] = [
                 description: reason,
                 variant: "destructive",
               });
+              return;
             }
+            closePlayerDrawer?.();
           }}
         >
           Add

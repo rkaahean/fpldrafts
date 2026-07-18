@@ -10,7 +10,7 @@ export default defineConfig({
     setupFiles: ["./vitest.setup.ts"],
     coverage: {
       provider: "v8",
-      include: ["lib/fpl/**"],
+      include: ["lib/fpl/**", "scripts/**"],
     },
   },
 });

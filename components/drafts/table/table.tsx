@@ -20,7 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FileText } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, FileText } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
@@ -147,7 +147,13 @@ export function DataTable<TData, TValue>({
                                 }
                               >
                                 {flexRender(header.column.columnDef.header, header.getContext())}
-                                {header.column.getIsSorted() === "asc" ? "↑" : header.column.getIsSorted() === "desc" ? "↓" : ""}
+                                {header.column.getIsSorted() === "asc" ? (
+                                  <ArrowUp className="h-3.5 w-3.5" aria-hidden />
+                                ) : header.column.getIsSorted() === "desc" ? (
+                                  <ArrowDown className="h-3.5 w-3.5" aria-hidden />
+                                ) : (
+                                  <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground/70" aria-hidden />
+                                )}
                               </button>
                             )
                           : flexRender(header.column.columnDef.header, header.getContext())}

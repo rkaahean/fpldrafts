@@ -195,6 +195,8 @@ model FPLTeam {
   updatedAt DateTime @default(now())
 
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, fpl_season_id])
 }
 
 model FPLSeason {

@@ -46,6 +46,7 @@ export default function ClientTable(
         name="players"
         showAdvancedFilters={props.showAdvancedFilters}
         fillContainer={props.showAdvancedFilters !== false}
+        compact={props.compact}
       />
     </div>
   );

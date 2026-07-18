@@ -1,7 +1,7 @@
 import prisma from "@/scripts/lib/db";
-import { updateFPLTeamData } from "@/scripts/utils";
+import { syncFullHistory } from "@/scripts/utils";
 
-import { NextRequest } from "next/server";
+import { NextRequest, after } from "next/server";
 
 export async function POST(req: NextRequest) {
   const request = await req.json();
@@ -15,11 +15,14 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  try {
-    await updateFPLTeamData(team.id, parseInt(request.teamNumber));
-  } catch (e) {
-    console.log("Ran into error", e);
-  }
+  after(async () => {
+    try {
+      await syncFullHistory(team.id, parseInt(request.teamNumber));
+    } catch (e) {
+      console.error("Background full-history sync failed", e);
+    }
+  });
+
   return Response.json({
     data: {
       teamId: team.id,

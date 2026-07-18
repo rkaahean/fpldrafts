@@ -1,9 +1,12 @@
-import { FPLGameweekPlayerStats, PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import prisma from "./lib/db";
+import { runWithConcurrencyLimit } from "./lib/concurrency";
+import { flattenPlayerGameweekStats } from "../lib/fpl/sync-plan";
 
-function getData() {
-  console.log("Fetching player information from DB...");
-  const players = prisma.fPLPlayer.findMany({
+export const FETCH_CONCURRENCY = 10;
+const WRITE_CONCURRENCY = 15;
+
+export async function syncElementsData() {
+  const players = await prisma.fPLPlayer.findMany({
     orderBy: {
       total_points: "desc",
     },
@@ -12,95 +15,42 @@ function getData() {
     },
   });
 
-  return players
-    .then((players) => {
-      console.log("Fetching player information from FPL...");
-      return Promise.all(
-        players.map(async (player) => {
-          try {
-            const data = await fetch(
-              `https://fantasy.premierleague.com/api/element-summary/${player.player_id}/`
-            ).then((res) => res.json());
-            return {
-              id: player.id,
-              ...data,
-            };
-          } catch (e) {
-            return {};
-          }
-        })
-      );
-    })
-    .then(async (playersData) => {
-      console.log("Upadting Gameweek Player Stats...");
-      const formattedData: Partial<FPLGameweekPlayerStats[]>[] = playersData
-        .filter((value) => Object.keys(value).length != 0)
-        .map((player) => {
-          if (player) {
-            const history = player["history"];
-            return history.map((h: any) => {
-              return {
-                fpl_player_id: player?.id,
-                gameweek: h.round,
-                total_points: h.total_points,
-                goals_scored: h.goals_scored,
-                assists: h.assists,
-                expected_goals: parseFloat(h.expected_goals),
-                expected_assists: parseFloat(h.expected_assists),
-                value: h.value,
-                fixture_id: h.fixture,
-              };
-            });
-          }
-        });
+  const fetchResults = await runWithConcurrencyLimit(
+    players,
+    FETCH_CONCURRENCY,
+    async (player) => {
+      const data = await fetch(
+        `https://fantasy.premierleague.com/api/element-summary/${player.player_id}/`
+      ).then((res) => res.json());
+      return { id: player.id, ...data };
+    }
+  );
 
-      await prisma.$transaction(
-        async (tx) => {
-          for (const player of formattedData) {
-            console.log(
-              "Updating player for player stats: ",
-              player[0]!.fpl_player_id
-            );
-            await tx.fPLGameweekPlayerStats.upsert({
-              where: {
-                fpl_player_id_fixture_id: {
-                  fpl_player_id: player[0]!.fpl_player_id,
-                  fixture_id: player[0]!.fixture_id,
-                },
-              },
-              create: player[0]!,
-              update: player[0]!,
-            });
-          }
+  const playersData = fetchResults
+    .filter((result) => result.status === "fulfilled")
+    .map((result) => (result as { value: any }).value);
+
+  const rows = flattenPlayerGameweekStats(playersData);
+
+  await runWithConcurrencyLimit(rows, WRITE_CONCURRENCY, (row) =>
+    prisma.fPLGameweekPlayerStats.upsert({
+      where: {
+        fpl_player_id_fixture_id: {
+          fpl_player_id: row.fpl_player_id,
+          fixture_id: row.fixture_id,
         },
-        {
-          timeout: 1000000,
-        }
-      );
-
-      // await Promise.all(
-      //   formattedData.map(async (player) => {
-      //     console.log(player);
-      //     await prisma.fPLGameweekPlayerStats.upsert({
-      //       where: {
-      //         fpl_player_id_gameweek: {
-      //           fpl_player_id: player[0].fpl_player_id,
-      //           gameweek: player[0].gameweek,
-      //         },
-      //       },
-      //       create: player[0],
-      //       update: player[0],
-      //     });
-      //   })
-      // );
-    });
+      },
+      create: row,
+      update: row,
+    })
+  );
 }
 
-try {
-  // get all players
-  getData();
-  prisma.$disconnect();
-} catch (e) {
-  console.error(e);
-  prisma.$disconnect();
+if (require.main === module) {
+  syncElementsData()
+    .catch((e) => {
+      console.error(e);
+      process.exitCode = 1;
+    })
+    .finally(() => prisma.$disconnect());
 }

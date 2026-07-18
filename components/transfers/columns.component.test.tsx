@@ -36,6 +36,7 @@ describe("Player columns", () => {
     expect(columnIds).toContain("fixtures");
     expect(columnIds).toContain("expected_goal_involvements_per_90");
     expect(columnIds).toContain("player_add");
+    expect(columnIds).toContain("team_crest");
     expect(columnIds).not.toContain("expected_goals");
     expect(columnIds).not.toContain("expected_assists");
   });

@@ -3,7 +3,7 @@ import { syncGameweeks } from "./utils";
 import {
   computeLatestCompletedGameweek,
   computeGameweeksToSync,
-} from "@/lib/fpl/sync-plan";
+} from "../lib/fpl/sync-plan";
 import { runWithConcurrencyLimit } from "./lib/concurrency";
 
 const TEAM_CONCURRENCY = 8;

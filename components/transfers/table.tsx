@@ -85,6 +85,7 @@ interface DataTableProps<TData, TValue> {
   name: string;
   showAdvancedFilters?: boolean;
   fillContainer?: boolean;
+  compact?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -93,6 +94,7 @@ export function DataTable<TData, TValue>({
   name,
   showAdvancedFilters = true,
   fillContainer = true,
+  compact = false,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
     {
@@ -312,7 +314,14 @@ export function DataTable<TData, TValue>({
             "min-h-0 flex-1 overflow-hidden": fillContainer,
           })}
         >
-          <Table className="min-w-[44rem] table-fixed [&_tbody_td]:px-2 [&_tbody_td]:py-1.5 [&_tbody_td]:text-sm [&_tbody_tr]:h-12 [&_thead_th]:px-2 lg:min-w-full">
+          <Table
+            className={clsx(
+              "[&_tbody_td]:px-2 [&_tbody_td]:py-1.5 [&_tbody_td]:text-sm [&_tbody_tr]:h-12 [&_thead_th]:px-2",
+              compact
+                ? "table-auto [&_tbody_td]:!max-w-none [&_tbody_td]:!overflow-visible [&_tbody_td]:!text-clip [&_thead_th]:!max-w-none [&_thead_th]:!overflow-visible [&_thead_th]:!text-clip"
+                : "min-w-[72rem] table-fixed lg:min-w-full"
+            )}
+          >
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>

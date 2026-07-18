@@ -74,7 +74,10 @@ describe("mergeGameweekResults", () => {
       },
     ];
 
-    const result = mergeGameweekResults(validData as any);
+    const result = mergeGameweekResults<
+      { fpl_team_id: string; fpl_player_id: string; gameweek: number },
+      { fpl_team_id: string; gameweek: number; bank: number }
+    >(validData as any);
 
     expect(result.picks).toHaveLength(2);
     expect(result.history).toHaveLength(2);

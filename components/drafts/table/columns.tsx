@@ -18,6 +18,13 @@ function formatNetCost(netCost: number) {
   return netCost > 0 ? `£${(netCost / 10).toFixed(1)} spend` : `£${Math.abs(netCost / 10).toFixed(1)} saved`;
 }
 
+export function formatDraftUpdatedAt(updatedAt: Date | string) {
+  return new Date(updatedAt).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+  });
+}
+
 export const columns: ColumnDef<DraftsData>[] = [
   {
     accessorKey: "name",
@@ -70,7 +77,7 @@ export const columns: ColumnDef<DraftsData>[] = [
   {
     accessorKey: "updatedAt",
     header: "Updated",
-    cell: ({ row }) => row.original.updatedAt.toLocaleDateString(undefined, { month: "short", day: "numeric" }),
+    cell: ({ row }) => formatDraftUpdatedAt(row.original.updatedAt),
   },
   {
     id: "load",

@@ -1,86 +1,8 @@
-import { FPLPlayer, FPLPlayerTeam, PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { FPLPlayer, FPLPlayerTeam } from "@prisma/client";
+import prisma from "./lib/db";
+import { runWithConcurrencyLimit } from "./lib/concurrency";
 
-function getData() {
-  return fetch("https://fantasy.premierleague.com/api/bootstrap-static/")
-    .then((res) => res.json())
-    .then((data) => {
-      return parseBoostrapData(data);
-    })
-    .then(async (data) => {
-      const { players, teams } = data;
-
-      console.log("Updating player teams...");
-      // upsert player team data.
-      teams.map(async (team) => {
-        await prisma.fPLPlayerTeam.upsert({
-          where: {
-            season_id_code: {
-              season_id: process.env.FPL_SEASON_ID!,
-              code: team.code,
-            },
-          },
-          update: team,
-          create: team,
-        });
-      });
-
-      // upsert fpl player data
-      // Step 1: Fetch existing player IDs
-      console.log("Finding existing players...");
-      const existingPlayers = await prisma.fPLPlayer.findMany({
-        select: { player_id: true },
-        where: { season_id: process.env.FPL_SEASON_ID! },
-      });
-      const existingPlayerIds = new Set(
-        existingPlayers.map((p) => p.player_id)
-      );
-
-      // Step 2: Separate players to create and update
-      const playersToCreate: FPLPlayer[] = [];
-      const playersToUpdate: FPLPlayer[] = [];
-
-      for (const player of data.players) {
-        if (existingPlayerIds.has(player.player_id)) {
-          playersToUpdate.push(player);
-        } else {
-          playersToCreate.push(player);
-        }
-      }
-
-      // Step 3: Bulk create new players
-      if (playersToCreate.length > 0) {
-        console.log("Creating new players...", playersToCreate.length);
-        await prisma.fPLPlayer.createMany({
-          data: playersToCreate,
-        });
-      }
-
-      // Step 4: Bulk update existing players
-      console.log("Updating existing players...", playersToUpdate.length);
-      await prisma.$transaction(
-        async (tx) => {
-          for (const player of playersToUpdate) {
-            await tx.fPLPlayer.update({
-              where: {
-                player_id_season_id: {
-                  player_id: player.player_id,
-                  season_id: process.env.FPL_SEASON_ID!,
-                },
-              },
-              data: player,
-            });
-          }
-        },
-        {
-          timeout: 1000000,
-        }
-      );
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-    });
-}
+const PLAYER_WRITE_CONCURRENCY = 15;
 
 function parseBoostrapData(data: any): {
   players: FPLPlayer[];
@@ -89,8 +11,6 @@ function parseBoostrapData(data: any): {
   const elements = data["elements"];
   const teams = data["teams"];
 
-  console.log("Parsing bootstrap data into teams and players...");
-  // get player info
   const players: FPLPlayer[] = elements.map((player: any) => {
     return {
       player_id: player.id,
@@ -133,9 +53,72 @@ function parseBoostrapData(data: any): {
   };
 }
 
-try {
-  getData();
-  prisma.$disconnect();
-} catch (e) {
-  console.error(e);
+export async function syncBootstrapData() {
+  const data = await fetch(
+    "https://fantasy.premierleague.com/api/bootstrap-static/"
+  ).then((res) => res.json());
+
+  const { players, teams } = parseBoostrapData(data);
+
+  await Promise.all(
+    teams.map((team) =>
+      prisma.fPLPlayerTeam.upsert({
+        where: {
+          season_id_code: {
+            season_id: process.env.FPL_SEASON_ID!,
+            code: team.code,
+          },
+        },
+        update: team,
+        create: team,
+      })
+    )
+  );
+
+  const existingPlayers = await prisma.fPLPlayer.findMany({
+    select: { player_id: true },
+    where: { season_id: process.env.FPL_SEASON_ID! },
+  });
+  const existingPlayerIds = new Set(existingPlayers.map((p) => p.player_id));
+
+  const playersToCreate: FPLPlayer[] = [];
+  const playersToUpdate: FPLPlayer[] = [];
+
+  for (const player of players) {
+    if (existingPlayerIds.has(player.player_id)) {
+      playersToUpdate.push(player);
+    } else {
+      playersToCreate.push(player);
+    }
+  }
+
+  if (playersToCreate.length > 0) {
+    await prisma.fPLPlayer.createMany({
+      data: playersToCreate,
+    });
+  }
+
+  await runWithConcurrencyLimit(
+    playersToUpdate,
+    PLAYER_WRITE_CONCURRENCY,
+    (player) =>
+      prisma.fPLPlayer.update({
+        where: {
+          player_id_season_id: {
+            player_id: player.player_id,
+            season_id: process.env.FPL_SEASON_ID!,
+          },
+        },
+        data: player,
+      })
+  );
+}
+
+if (require.main === module) {
+  syncBootstrapData()
+    .catch((e) => {
+      console.error(e);
+      process.exitCode = 1;
+    })
+    .finally(() => prisma.$disconnect());
 }

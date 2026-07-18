@@ -90,7 +90,6 @@ export default function TeamLinkComponent() {
                 .then((res) => res.json())
                 .then(async ({ data }) => {
                   await update({ team_id: data.teamId });
-                  await new Promise((resolve) => setTimeout(resolve, 4000));
                 })
                 .catch((error) => {
                   console.error("Error on clicking link", error);
