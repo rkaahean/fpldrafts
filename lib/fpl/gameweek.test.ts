@@ -6,10 +6,67 @@ import type {
 } from "./types";
 import {
   applyDrafts,
+  buildInitialGameweekPayload,
+  computeNextGameweek,
   resolveGameweekPicks,
   selectBase,
   sumTransferOut,
 } from "./gameweek";
+
+describe("computeNextGameweek", () => {
+  it("returns 1 when no gameweek has been played yet", () => {
+    expect(computeNextGameweek(null)).toBe(1);
+  });
+
+  it("returns the next gameweek when mid-season", () => {
+    expect(computeNextGameweek(21)).toBe(22);
+  });
+
+  it("clamps to 38 when the season is fully played (gameweek 38 already recorded)", () => {
+    expect(computeNextGameweek(38)).toBe(38);
+  });
+});
+
+function basePlayer(id: string, element_type: number, now_value: number) {
+  return { id, element_type, now_value };
+}
+
+describe("buildInitialGameweekPayload", () => {
+  const allPlayers = [
+    basePlayer("gk1", 1, 40),
+    basePlayer("gk2", 1, 40),
+    basePlayer("def1", 2, 50),
+    basePlayer("def2", 2, 50),
+    basePlayer("def3", 2, 50),
+    basePlayer("def4", 2, 50),
+    basePlayer("def5", 2, 50),
+    basePlayer("mid1", 3, 60),
+    basePlayer("mid2", 3, 60),
+    basePlayer("mid3", 3, 60),
+    basePlayer("mid4", 3, 60),
+    basePlayer("mid5", 3, 60),
+    basePlayer("fwd1", 4, 70),
+    basePlayer("fwd2", 4, 70),
+    basePlayer("fwd3", 4, 70),
+  ];
+
+  it("returns a plain, directly-consumable object (not a JSON-encoded string)", () => {
+    const payload = buildInitialGameweekPayload(allPlayers);
+
+    expect(typeof payload).toBe("object");
+    expect(typeof (payload as unknown)).not.toBe("string");
+    expect(JSON.parse(JSON.stringify(payload))).toEqual(payload);
+  });
+
+  it("produces a 15-player squad with distinct pitch positions 1-15", () => {
+    const payload = buildInitialGameweekPayload(allPlayers);
+
+    expect(payload.data.length).toBe(15);
+    expect(payload.data.map((p) => p.position).sort((a, b) => a - b)).toEqual(
+      Array.from({ length: 15 }, (_, i) => i + 1)
+    );
+  });
+});
 
 function pick(player_id: number, position: number, selling_price: number) {
   return {

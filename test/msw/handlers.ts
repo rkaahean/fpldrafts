@@ -53,7 +53,5 @@ function buildSquad(): FPLGameweekPicksData {
 export const gameweekPayload = buildSquad();
 
 export const handlers = [
-  http.get("/api/gameweek", () =>
-    HttpResponse.json(JSON.stringify(gameweekPayload))
-  ),
+  http.get("/api/gameweek", () => HttpResponse.json(gameweekPayload)),
 ];

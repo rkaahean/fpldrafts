@@ -97,9 +97,7 @@ export const picksStore = create<State>()((set, get) => ({
   setTransferOut: (players) => set({ transfersOut: players }),
   setDrafts: (drafts) => set({ drafts }),
   setCurrentGameweek: (gameweek: number) => {
-    if (gameweek >= 1 && gameweek <= 38) {
-      set({ currentGameweek: gameweek });
-    }
+    set({ currentGameweek: Math.min(Math.max(gameweek, 1), 38) });
   },
   makeSubs: async () => {
     const {

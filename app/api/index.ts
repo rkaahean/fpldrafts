@@ -1,4 +1,5 @@
 import { jwtDecode } from "jwt-decode";
+import { computeNextGameweek } from "@/lib/fpl/gameweek";
 import prisma from "../../scripts/lib/db";
 import { DraftTransfer } from "../store/utils";
 import type { Session } from "next-auth";
@@ -234,6 +235,7 @@ export async function getGameweekPicksData(gameweek: number, team_id: string) {
                 where: {
                   event: {
                     gte: gameweek,
+                    lte: gameweek + 4,
                   },
                   season_id: process.env.FPL_SEASON_ID!,
                 },
@@ -253,6 +255,7 @@ export async function getGameweekPicksData(gameweek: number, team_id: string) {
                 where: {
                   event: {
                     gte: gameweek,
+                    lte: gameweek + 4,
                   },
                   season_id: process.env.FPL_SEASON_ID!,
                 },
@@ -303,6 +306,39 @@ export async function getPlayerValueByGameweek(
       gameweek: gameweek,
     },
     select: {
+      value: true,
+    },
+  });
+}
+
+export async function getLastTransferValues(
+  team_id: string,
+  player_ids: string[]
+) {
+  return await prisma.fPLGameweekTransfers.findMany({
+    where: {
+      in_player_id: { in: player_ids },
+      fpl_team_id: team_id,
+    },
+    select: {
+      in_player_id: true,
+      in_player_cost: true,
+      time: true,
+    },
+  });
+}
+
+export async function getPlayerValuesByGameweek(
+  player_ids: string[],
+  gameweek: number
+) {
+  return await prisma.fPLGameweekPlayerStats.findMany({
+    where: {
+      fpl_player_id: { in: player_ids },
+      gameweek,
+    },
+    select: {
+      fpl_player_id: true,
       value: true,
     },
   });
@@ -574,10 +610,6 @@ export async function getLatestGameweek(teamId: string) {
   });
 }
 
-/**
- * Computes the "next gameweek" (last played + 1, or 1 if none played yet)
- * for the team associated with the given session.
- */
 export async function getNextGameweekForSession(session: Session) {
   const decoded = jwtDecode<{ email: string }>(session.accessToken!);
   const { teamId } = await getUserTeamFromEmail(
@@ -585,5 +617,5 @@ export async function getNextGameweekForSession(session: Session) {
     process.env.FPL_SEASON_ID!
   );
   const maxGameweek = await getLatestGameweek(teamId);
-  return maxGameweek._max.gameweek ? maxGameweek._max.gameweek + 1 : 1;
+  return computeNextGameweek(maxGameweek._max.gameweek);
 }

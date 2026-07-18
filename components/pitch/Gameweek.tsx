@@ -19,7 +19,7 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import PitchRow from "./PitchRow";
 
-import { useEffect } from "react";
+import { useRef } from "react";
 import Pitch from "../../public/pitch.svg";
 import { Button } from "../ui/button";
 export default function Gameweek(props: { gameweek: number }) {
@@ -49,19 +49,24 @@ export default function Gameweek(props: { gameweek: number }) {
     transfers,
   } = picksSelectors;
 
-  // set the current gameweek
-  useEffect(() => {
-    setCurrentGameweek(props.gameweek);
-  }, [props.gameweek, setCurrentGameweek]);
+  const seededGameweekRef = useRef<number | null>(null);
+  let effectiveGameweek = currentGameweek;
+  if (seededGameweekRef.current !== props.gameweek) {
+    seededGameweekRef.current = props.gameweek;
+    effectiveGameweek = props.gameweek;
+    if (currentGameweek !== props.gameweek) {
+      setCurrentGameweek(props.gameweek);
+    }
+  }
 
   const { data: session } = useSession();
 
   const { data: gameweekData } = useQuery({
-    queryKey: ["gameweekData", currentGameweek, session?.accessToken],
+    queryKey: ["gameweekData", effectiveGameweek, session?.accessToken],
     placeholderData: keepPreviousData,
     queryFn: async () => {
       const response = await fetchGameweekData(
-        currentGameweek,
+        effectiveGameweek,
         session?.accessToken!
       );
       return response.json();
@@ -72,18 +77,18 @@ export default function Gameweek(props: { gameweek: number }) {
   });
 
   const { data } = useQuery({
-    queryKey: [currentGameweek, drafts.changes],
+    queryKey: [effectiveGameweek, drafts.changes],
     placeholderData: keepPreviousData,
     enabled: !!gameweekData,
     // staleTime: 60 * 60 * 1000 * 24,
     queryFn: async () => {
-      const parsed: FPLGameweekPicksData = JSON.parse(gameweekData);
+      const parsed: FPLGameweekPicksData = gameweekData;
 
       const resolved = await resolveGameweekPicks({
         parsed,
         dbbase,
         draftChanges: drafts.changes,
-        currentGameweek,
+        currentGameweek: effectiveGameweek,
         transfersOut: transfers,
       });
 
