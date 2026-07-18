@@ -20,7 +20,7 @@ export default function Team(props: { gameweek: number }) {
           <DraftUpdate />
         </nav>
       ) : (
-        <nav className="flex flex-col justify-center gap-4 2xl:gap-12 bg-secondary rounded-md">
+        <nav className="flex flex-col justify-center gap-4 2xl:gap-12 bg-card border rounded-md p-2">
           <RemoveAll />
           {/* <ResetAll /> */}
           {/* <ResetCurrentGameweek /> */}

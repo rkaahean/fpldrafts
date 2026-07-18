@@ -2,8 +2,10 @@
 
 import { FPLFixtures } from "@/app/api";
 import { picksStore } from "@/app/store";
+import { getFixtureIntensityClass } from "@/scripts/lib/utils";
 import clsx from "clsx";
 import { Loader2 } from "lucide-react";
+import { Badge } from "../ui/badge";
 import { Skeleton } from "../ui/skeleton";
 import {
   Table,
@@ -148,15 +150,23 @@ export default function FixturesClient(props: { fixtures: FPLFixtures[] }) {
                         <TableCell
                           key={allFixtures[0].event}
                           className={clsx(
-                            getFixtureColorFromDifficulty(
+                            getFixtureIntensityClass(
                               allFixtures[0].difficulty
                             ),
-                            "items-center justify-center flex flex-row w-full h-full"
+                            "items-center justify-center flex flex-row gap-1 w-full h-full"
                           )}
                         >
-                          {allFixtures[0].is_home
-                            ? allFixtures[0].short_name
-                            : allFixtures[0].short_name.toLowerCase()}
+                          <span>
+                            {allFixtures[0].is_home
+                              ? allFixtures[0].short_name
+                              : allFixtures[0].short_name.toLowerCase()}
+                          </span>
+                          <Badge
+                            variant="outline"
+                            className="px-1 py-0 text-[9px] leading-none border-current"
+                          >
+                            {allFixtures[0].difficulty}
+                          </Badge>
                         </TableCell>
                       );
                     } else {
@@ -191,19 +201,3 @@ export default function FixturesClient(props: { fixtures: FPLFixtures[] }) {
   );
 }
 
-export function getFixtureColorFromDifficulty(strength: number): string {
-  switch (strength) {
-    case 1:
-      return "bg-green-300";
-    case 2:
-      return "bg-green-500 text-black";
-    case 3:
-      return "bg-neutral-400 text-black";
-    case 4:
-      return "bg-rose-500 text-primary";
-    case 5:
-      return "bg-rose-950 text-white";
-    default:
-      return "bg-background";
-  }
-}

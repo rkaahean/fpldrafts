@@ -5,74 +5,82 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 0 0% 9%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 0 0% 97%;
+    --card-foreground: 0 0% 9%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 97%;
+    --popover-foreground: 0 0% 9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 96%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 0 0% 90%;
+    --secondary-foreground: 0 0% 15%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 0 0% 88%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 0 0% 82%;
+    --accent-foreground: 0 0% 9%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 0% 45%;
+    --destructive-foreground: 0 0% 96%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --success: 0 0% 20%;
+    --success-foreground: 0 0% 96%;
 
-    --highlight: #ca8a04;
+    --border: 0 0% 85%;
+    --input: 0 0% 85%;
+    --ring: 0 0% 20%;
+
+    --player: 0 0% 94%;
+    --player-foreground: 0 0% 9%;
+
+    --highlight: 0 0% 55%;
+    --bgsecondary: 0 0% 93%;
 
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: #052e16;
-    --foreground: #dcfce7;
+    --background: 0 0% 7%;
+    --foreground: 0 0% 96%;
 
-    --bgsecondary: #1c1917;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 96%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 96%;
 
-    --player: #bbf7d0;
-    --player-foreground: #022c22;
+    --primary: 0 0% 96%;
+    --primary-foreground: 0 0% 9%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 0 0% 90%;
 
-    --primary: #dcfce7;
-    --primary-foreground: #1e3a8a;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 60%;
 
-    --secondary: #57534e;
-    --secondary-foreground: 210 40% 98%;
+    --accent: 0 0% 24%;
+    --accent-foreground: 0 0% 96%;
 
-    --muted: #fcd34d;
-    --muted-foreground: #a8a29e;
+    --destructive: 0 0% 30%;
+    --destructive-foreground: 0 0% 96%;
 
-    --accent: #16a34a;
-    --accent-foreground: 210 40% 98%;
+    --success: 0 0% 85%;
+    --success-foreground: 0 0% 9%;
 
-    --destructive: #f97316;
-    --destructive-foreground: #bef264;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 0% 80%;
 
-    --success: #166534;
-    --success-foreground: #dcfce7;
+    --player: 0 0% 14%;
+    --player-foreground: 0 0% 96%;
 
-    --border: #57534e;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --highlight: 0 0% 40%;
+    --bgsecondary: 0 0% 12%;
   }
 }
 

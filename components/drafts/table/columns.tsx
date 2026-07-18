@@ -3,7 +3,7 @@
 import { picksStore } from "@/app/store";
 import { DraftTransfer } from "@/app/store/utils";
 import { FPLDraftTransfers, FPLDrafts } from "@prisma/client";
-import { TrashIcon } from "@radix-ui/react-icons";
+import { Trash2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { useSession } from "next-auth/react";
@@ -110,7 +110,7 @@ export const columns: ColumnDef<DraftsData>[] = [
             });
           }}
         >
-          <TrashIcon className="w-4 h-4s 2xl:w-6 2xl:h-6" />
+          <Trash2 className="w-4 h-4s 2xl:w-6 2xl:h-6" />
         </Button>
       );
     },

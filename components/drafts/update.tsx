@@ -1,4 +1,4 @@
-import { UpdateIcon } from "@radix-ui/react-icons";
+import { RotateCw } from "lucide-react";
 
 import { picksStore } from "@/app/store";
 import { useSession } from "next-auth/react";
@@ -49,7 +49,7 @@ export default function DraftUpdate() {
                 });
               }}
             >
-              <UpdateIcon className="w-4 h-4 2xl:w-6 2xl:h-6" />
+              <RotateCw className="w-4 h-4 2xl:w-6 2xl:h-6" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>

@@ -1,6 +1,7 @@
 import { signIn } from "@/auth/main";
 
 import { isOnMobile } from "@/scripts/lib/serverUtils";
+import Link from "next/link";
 import { Button } from "./button";
 
 export default async function Header() {
@@ -8,11 +9,11 @@ export default async function Header() {
 
   return (
     <div className="flex flex-row w-full justify-end py-2 px-4 gap-4">
-      <Button variant="outline">
-        <a href="/">Home</a>
+      <Button variant="outline" asChild>
+        <Link href="/">Home</Link>
       </Button>
-      <Button variant="outline">
-        <a href="/about">About</a>
+      <Button variant="outline" asChild>
+        <Link href="/about">About</Link>
       </Button>
 
       {!isMobile && (

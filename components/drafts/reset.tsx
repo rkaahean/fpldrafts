@@ -1,5 +1,5 @@
 import { picksStore } from "@/app/store";
-import { CubeIcon, ResetIcon } from "@radix-ui/react-icons";
+import { Box, RotateCcw } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Tooltip,
@@ -32,7 +32,7 @@ export function ResetCurrentGameweek() {
                 resetTransfers();
               }}
             >
-              <CubeIcon />
+              <Box />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
@@ -67,7 +67,7 @@ export function ResetAll() {
                 resetTransfers();
               }}
             >
-              <ResetIcon />
+              <RotateCcw />
             </Button>
           </TooltipTrigger>
           <TooltipContent>

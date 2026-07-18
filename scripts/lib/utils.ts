@@ -78,6 +78,23 @@ export function FPLPlayerDataToPlayerData(player: FPLPlayerData): PlayerData {
   // sort by position to display in order
 }
 
+export function getFixtureIntensityClass(strength: number): string {
+  switch (strength) {
+    case 1:
+      return "bg-neutral-200 text-neutral-900";
+    case 2:
+      return "bg-neutral-400 text-neutral-900";
+    case 3:
+      return "bg-neutral-500 text-white";
+    case 4:
+      return "bg-neutral-700 text-white";
+    case 5:
+      return "bg-neutral-900 text-white";
+    default:
+      return "bg-background";
+  }
+}
+
 export function elementTypeToPosition(type: number): string {
   switch (type) {
     case 1:

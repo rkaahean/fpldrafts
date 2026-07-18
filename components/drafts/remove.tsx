@@ -1,7 +1,7 @@
 import { picksStore } from "@/app/store";
 import { updateTransfer } from "@/app/store/utils";
 import { FPLPlayerDataToPlayerData } from "@/scripts/lib/utils";
-import { Cross1Icon } from "@radix-ui/react-icons";
+import { X } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Tooltip,
@@ -39,7 +39,7 @@ export function RemoveAll() {
                 setTransferOut(transfersOut);
               }}
             >
-              <Cross1Icon className="w-4 h-4 2xl:w-6 2xl:h-6" />
+              <X className="w-4 h-4 2xl:w-6 2xl:h-6" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>

@@ -1,5 +1,7 @@
+import { jwtDecode } from "jwt-decode";
 import prisma from "../../scripts/lib/db";
 import { DraftTransfer } from "../store/utils";
+import type { Session } from "next-auth";
 
 export async function getUserTeamFromEmail(email: string, seasonId: string) {
   const user_data = await prisma.user.findFirst({
@@ -570,4 +572,18 @@ export async function getLatestGameweek(teamId: string) {
       fpl_team_id: teamId,
     },
   });
+}
+
+/**
+ * Computes the "next gameweek" (last played + 1, or 1 if none played yet)
+ * for the team associated with the given session.
+ */
+export async function getNextGameweekForSession(session: Session) {
+  const decoded = jwtDecode<{ email: string }>(session.accessToken!);
+  const { teamId } = await getUserTeamFromEmail(
+    decoded.email,
+    process.env.FPL_SEASON_ID!
+  );
+  const maxGameweek = await getLatestGameweek(teamId);
+  return maxGameweek._max.gameweek ? maxGameweek._max.gameweek + 1 : 1;
 }

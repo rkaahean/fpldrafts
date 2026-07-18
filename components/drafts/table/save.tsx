@@ -1,9 +1,8 @@
 "use client";
 
 import { picksStore } from "@/app/store";
-import { DownloadIcon } from "@radix-ui/react-icons";
 import { useQueryClient } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { Download, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "../../ui/button";
@@ -45,7 +44,7 @@ export default function DraftSave() {
           title="Save Draft"
           disabled={drafts.changes.length == 0}
         >
-          <DownloadIcon className="w-4 h-4 2xl:w-6 2xl:h-6" />
+          <Download className="w-4 h-4 2xl:w-6 2xl:h-6" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] 2xl:max-w-[800px]">

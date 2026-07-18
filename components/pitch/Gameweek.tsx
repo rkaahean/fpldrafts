@@ -1,9 +1,8 @@
 "use client";
 
 import { FPLGameweekPicksData } from "@/app/api";
-import { ReactQueryProvider } from "@/app/provider";
 import { picksStore } from "@/app/store";
-import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 import { fetchGameweekData } from "@/app/api/utils";
@@ -120,72 +119,67 @@ export default function Gameweek(props: { gameweek: number }) {
       committedBank !== undefined ? checkBudget(committedBank) : undefined;
 
     return (
-      <ReactQueryProvider>
-        <div className="flex flex-col gap-2 lg:gap-1 h-full relative">
-          <div className="flex flex-row justify-between gap-2">
-            <Button
-              onClick={() =>
-                setCurrentGameweek(Math.max(1, currentGameweek - 1))
-              }
-              disabled={currentGameweek <= 1}
-              variant="secondary"
-              title="Previous Gameweek"
-            >
-              <ArrowLeftIcon className="w-4 h-4 lg:w-6 lg:h-6" />
-            </Button>
-            <div className="flex flex-row justify-around w-full items-center">
-              <GameweekStat title="Points" value={data.overall.points} />
-              <GameweekStat title="Gameweek" value={currentGameweek} />
-              <GameweekStat
-                title="Transfers"
-                value={`${transfersMade} / ${transferCount}`}
-              />
-              <GameweekStat
-                title="Hit"
-                value={transferCost === 0 ? "0" : `${transferCost}`}
-              />
-              <GameweekStat
-                title="ITB"
-                value={`${picks.overall.bank! / 10}`}
-              />
-              {budget && !budget.valid && (
-                <GameweekStat title="Budget" value="Over" />
-              )}
-              <GameweekStat
-                title="Rank"
-                value={data.overall.overall_rank!.toLocaleString()}
-              />
-            </div>
-            <Button
-              onClick={() =>
-                setCurrentGameweek(Math.min(38, currentGameweek + 1))
-              }
-              disabled={currentGameweek >= 38}
-              title="Next Gameweek"
-              variant="secondary"
-            >
-              <ArrowRightIcon className="w-4 h-4 lg:w-6 lg:h-6" />
-            </Button>
+      <div className="flex flex-col gap-2 lg:gap-1 h-full relative">
+        <div className="flex flex-row justify-between gap-2">
+          <Button
+            onClick={() =>
+              setCurrentGameweek(Math.max(1, currentGameweek - 1))
+            }
+            disabled={currentGameweek <= 1}
+            variant="secondary"
+            title="Previous Gameweek"
+          >
+            <ArrowLeft className="w-4 h-4 lg:w-6 lg:h-6" />
+          </Button>
+          <div className="flex flex-row justify-around w-full items-center">
+            <GameweekStat title="Points" value={data.overall.points} />
+            <GameweekStat title="Gameweek" value={currentGameweek} />
+            <GameweekStat
+              title="Transfers"
+              value={`${transfersMade} / ${transferCount}`}
+            />
+            <GameweekStat
+              title="Hit"
+              value={transferCost === 0 ? "0" : `${transferCost}`}
+            />
+            <GameweekStat title="ITB" value={`${picks.overall.bank! / 10}`} />
+            {budget && !budget.valid && (
+              <GameweekStat title="Budget" value="Over" />
+            )}
+            <GameweekStat
+              title="Rank"
+              value={data.overall.overall_rank!.toLocaleString()}
+            />
           </div>
+          <Button
+            onClick={() =>
+              setCurrentGameweek(Math.min(38, currentGameweek + 1))
+            }
+            disabled={currentGameweek >= 38}
+            title="Next Gameweek"
+            variant="secondary"
+          >
+            <ArrowRight className="w-4 h-4 lg:w-6 lg:h-6" />
+          </Button>
+        </div>
 
-          <div>
-            <div className="absolute h-[60vh] lg:h-[92vh] w-full -z-10">
-              <Image src={Pitch} alt="" layout="fill" objectFit="cover" />
-            </div>
-          </div>
-
-          <div className="w-full z-0 flex flex-col">
-            {["GK", "DEF", "MID", "FWD", "subs"].map((position: string) => (
-              <PitchRow
-                key={position}
-                position={position}
-                data={filterData(data.data, position)}
-                gameweek={currentGameweek}
-              />
-            ))}
+        <div>
+          <div className="absolute h-[60vh] lg:h-[92vh] w-full -z-10">
+            <Image src={Pitch} alt="" layout="fill" objectFit="cover" />
           </div>
         </div>
-      </ReactQueryProvider>
+
+        <div className="w-full z-0 flex flex-col">
+          {["GK", "DEF", "MID", "FWD", "subs"].map((position: string) => (
+            <PitchRow
+              key={position}
+              position={position}
+              data={filterData(data.data, position)}
+              gameweek={currentGameweek}
+            />
+          ))}
+        </div>
+      </div>
     );
   } else {
     return (

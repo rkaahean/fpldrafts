@@ -1,6 +1,6 @@
 import { picksStore } from "@/app/store";
 import { DraftTransfer } from "@/app/store/utils";
-import { LoopIcon, MinusIcon, PlusIcon } from "@radix-ui/react-icons";
+import { Minus, Plus, Repeat } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Card, CardHeader, CardTitle } from "../../ui/card";
 import {
@@ -22,7 +22,7 @@ export default function DraftChanges() {
           variant="ghost"
           className="h-6 px-2 py-1 text-xs rounded-sm 2xl:h-10 2xl:px-4 2xl:py-2"
         >
-          <LoopIcon className="w-4 h-4 2xl:w-6 2xl:h-6" />
+          <Repeat className="w-4 h-4 2xl:w-6 2xl:h-6" />
         </Button>
       </SheetTrigger>
       <SheetContent className="overflow-scroll">
@@ -51,11 +51,11 @@ function DraftCard(props: { data: DraftTransfer }) {
         <CardTitle>{`Gameweek ${props.data.gameweek}`}</CardTitle>
       </CardHeader>
       <div className="flex flex-row gap-3 px-6 items-center">
-        <PlusIcon className="text-green-500 bg-green-500" />
+        <Plus className="w-4 h-4 rounded-full border border-foreground p-0.5" />
         <div className="text-sm">{props.data.in.data.web_name}</div>
       </div>
       <div className="flex flex-row gap-3 px-6 items-center">
-        <MinusIcon className="text-red-500 bg-red-500" />
+        <Minus className="w-4 h-4 rounded-full border border-muted-foreground p-0.5 text-muted-foreground" />
         <div className="text-sm">{props.data.out.data.web_name}</div>
       </div>
       <div className="italic text-xs px-6 py-3">

@@ -30,7 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Cross1Icon } from "@radix-ui/react-icons";
+import { X } from "lucide-react";
 import clsx from "clsx";
 import Image from "next/image";
 import { useState } from "react";
@@ -44,12 +44,14 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   name: string;
+  showAdvancedFilters?: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   name,
+  showAdvancedFilters = true,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
     {
@@ -103,95 +105,103 @@ export function DataTable<TData, TValue>({
             }
             className="w-1/2 max-w-sm"
           />
-          <ToggleGroup
-            type="single"
-            onValueChange={(value) => {
-              const column = table.getColumn("element_type")!;
-              column.setFilterValue(null);
+          {showAdvancedFilters && (
+            <ToggleGroup
+              type="single"
+              onValueChange={(value) => {
+                const column = table.getColumn("element_type")!;
+                column.setFilterValue(null);
 
-              if (value) {
-                column.setFilterValue(value);
-              }
-            }}
-          >
-            <ToggleGroupItem value="1">GK</ToggleGroupItem>
-            <ToggleGroupItem value="2">DEF</ToggleGroupItem>
-            <ToggleGroupItem value="3">MID</ToggleGroupItem>
-            <ToggleGroupItem value="4">FWD</ToggleGroupItem>
-          </ToggleGroup>
-        </div>
-
-        <div className="flex flex-row w-full gap-4">
-          <div className="pb-3 w-1/2">
-            <div className="flex flex-row justify-between mb-2 2xl:mb-3">
-              <Label>Max Price</Label>
-              <div className="text-xs 2xl:text-base">
-                {`£${
-                  (table.getColumn("now_value")?.getFilterValue() as number) /
-                  10
-                }`}
-              </div>
-            </div>
-            <Slider
-              defaultValue={[150]}
-              max={155}
-              min={35}
-              step={5}
-              onValueChange={(value) =>
-                table.getColumn("now_value")?.setFilterValue(value[0])
-              }
-            />
-          </div>
-
-          <div className="flex-grow pr-2 ring-0">
-            <Select
-              onValueChange={(e) =>
-                table.getColumn("team_code")!.setFilterValue(e)
-              }
-              value={table.getColumn("team_code")?.getFilterValue()! as string}
+                if (value) {
+                  column.setFilterValue(value);
+                }
+              }}
             >
-              <div className="flex flex-row gap-2">
-                <SelectTrigger>
-                  <SelectValue placeholder="Team" />
-                </SelectTrigger>
-                <button
-                  onClick={() =>
-                    table.getColumn("team_code")!.setFilterValue("EMPTY_FILTER")
-                  }
-                >
-                  <Cross1Icon className="w-4 h-4 2xl:w-6 2xl:h-6" />
-                </button>
-              </div>
-
-              <SelectContent>
-                {Object.entries(teamCodeToShortName).map(
-                  ([code, name], index) => {
-                    return (
-                      <SelectItem
-                        value={code}
-                        className="flex flex-row w-full"
-                        key={index}
-                      >
-                        <div className="flex flex-row w-full gap-2 lg:gap-4 items-center">
-                          <div className="w-4 h-4 lg:w-6 lg:h-6">
-                            <Image
-                              src={`https://resources.premierleague.com/premierleague/badges/t${code}.png`}
-                              alt="crest"
-                              width={20}
-                              height={20}
-                              priority
-                            />
-                          </div>
-                          <div>{name}</div>
-                        </div>
-                      </SelectItem>
-                    );
-                  }
-                )}
-              </SelectContent>
-            </Select>
-          </div>
+              <ToggleGroupItem value="1">GK</ToggleGroupItem>
+              <ToggleGroupItem value="2">DEF</ToggleGroupItem>
+              <ToggleGroupItem value="3">MID</ToggleGroupItem>
+              <ToggleGroupItem value="4">FWD</ToggleGroupItem>
+            </ToggleGroup>
+          )}
         </div>
+
+        {showAdvancedFilters && (
+          <div className="flex flex-row w-full gap-4">
+            <div className="pb-3 w-1/2">
+              <div className="flex flex-row justify-between mb-2 2xl:mb-3">
+                <Label>Max Price</Label>
+                <div className="text-xs 2xl:text-base">
+                  {`£${
+                    (table.getColumn("now_value")?.getFilterValue() as number) /
+                    10
+                  }`}
+                </div>
+              </div>
+              <Slider
+                defaultValue={[150]}
+                max={155}
+                min={35}
+                step={5}
+                onValueChange={(value) =>
+                  table.getColumn("now_value")?.setFilterValue(value[0])
+                }
+              />
+            </div>
+
+            <div className="flex-grow pr-2 ring-0">
+              <Select
+                onValueChange={(e) =>
+                  table.getColumn("team_code")!.setFilterValue(e)
+                }
+                value={
+                  table.getColumn("team_code")?.getFilterValue()! as string
+                }
+              >
+                <div className="flex flex-row gap-2">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Team" />
+                  </SelectTrigger>
+                  <button
+                    onClick={() =>
+                      table
+                        .getColumn("team_code")!
+                        .setFilterValue("EMPTY_FILTER")
+                    }
+                  >
+                    <X className="w-4 h-4 2xl:w-6 2xl:h-6" />
+                  </button>
+                </div>
+
+                <SelectContent>
+                  {Object.entries(teamCodeToShortName).map(
+                    ([code, name], index) => {
+                      return (
+                        <SelectItem
+                          value={code}
+                          className="flex flex-row w-full"
+                          key={index}
+                        >
+                          <div className="flex flex-row w-full gap-2 lg:gap-4 items-center">
+                            <div className="w-4 h-4 lg:w-6 lg:h-6">
+                              <Image
+                                src={`https://resources.premierleague.com/premierleague/badges/t${code}.png`}
+                                alt="crest"
+                                width={20}
+                                height={20}
+                                priority
+                              />
+                            </div>
+                            <div>{name}</div>
+                          </div>
+                        </SelectItem>
+                      );
+                    }
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        )}
 
         <div className="bg-bgsecondary rounded-sm">
           <Table>

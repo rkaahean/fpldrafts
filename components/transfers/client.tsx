@@ -6,7 +6,9 @@ import Heading from "../ui/text/heading";
 import { columns } from "./columns";
 import { DataTable } from "./table";
 
-export default function ClientTable(props: any) {
+export default function ClientTable(
+  props: any & { showAdvancedFilters?: boolean }
+) {
   const picksSelectors = picksStore((state) => ({
     picks: state.picks!,
   }));
@@ -36,7 +38,12 @@ export default function ClientTable(props: any) {
   return (
     <div className="h-full flex flex-col">
       <Heading text={"Players"} />
-      <DataTable columns={columns} data={filteredData} name="players" />
+      <DataTable
+        columns={columns}
+        data={filteredData}
+        name="players"
+        showAdvancedFilters={props.showAdvancedFilters}
+      />
     </div>
   );
 }
