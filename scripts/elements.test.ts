@@ -21,6 +21,35 @@ function historyEntry(round: number, overrides: Record<string, unknown> = {}) {
     expected_assists: "0.1",
     value: 50 + round,
     fixture: 1000 + round,
+    clean_sheets: 0,
+    goals_conceded: 0,
+    own_goals: 0,
+    penalties_saved: 0,
+    penalties_missed: 0,
+    yellow_cards: 0,
+    red_cards: 0,
+    saves: 0,
+    bonus: 0,
+    bps: 0,
+    influence: "0.0",
+    creativity: "0.0",
+    threat: "0.0",
+    ict_index: "0.0",
+    clearances_blocks_interceptions: 0,
+    recoveries: 0,
+    tackles: 0,
+    defensive_contribution: 0,
+    starts: 0,
+    expected_goals_conceded: "0.0",
+    opponent_team: 1,
+    was_home: true,
+    team_h_score: 1,
+    team_a_score: 0,
+    kickoff_time: "2025-08-17T15:30:00Z",
+    selected: 0,
+    transfers_balance: 0,
+    transfers_in: 0,
+    transfers_out: 0,
     ...overrides,
   };
 }
@@ -102,5 +131,41 @@ describe("elements sync", () => {
 
     const stats = mockPrisma.tableRows("FPLGameweekPlayerStats");
     expect(stats.some((s) => s.fpl_player_id === "player-db-2")).toBe(true);
+  });
+
+  it("writes the expanded per-gameweek fields through to FPLGameweekPlayerStats", async () => {
+    server.use(
+      elementSummaryHandler((playerId) =>
+        playerId === "1"
+          ? {
+              history: [
+                historyEntry(1, {
+                  defensive_contribution: 12,
+                  bps: 38,
+                  influence: "49.2",
+                  clean_sheets: 1,
+                  saves: 7,
+                  opponent_team: 14,
+                  was_home: false,
+                }),
+              ],
+            }
+          : { history: [] }
+      )
+    );
+
+    const { syncElementsData } = await import("./elements");
+    await syncElementsData();
+
+    const [row] = mockPrisma.tableRows("FPLGameweekPlayerStats");
+    expect(row).toMatchObject({
+      defensive_contribution: 12,
+      bps: 38,
+      influence: 49.2,
+      clean_sheets: 1,
+      saves: 7,
+      opponent_team: 14,
+      was_home: false,
+    });
   });
 });

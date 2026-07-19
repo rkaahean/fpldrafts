@@ -84,6 +84,31 @@ describe("assembleGameweekPicks", () => {
       expected_goal_involvements_per_90: 0.1,
       now_value: 45,
       team_short_name: "AAA",
+      clean_sheets: 0,
+      bonus: 0,
+      bps: 0,
+      defensive_contribution: 0,
+      form: 0,
+      status: "a",
+      chance_of_playing_next_round: null,
+      news: "",
+      saves: 0,
+      influence: 0,
+      creativity: 0,
+      threat: 0,
+      ict_index: 0,
+      yellow_cards: 0,
+      red_cards: 0,
+      starts: 0,
+      selected_by_percent: 0,
+      points_per_game: 0,
+      expected_goals: 0,
+      expected_assists: 0,
+      expected_goals_conceded: 0,
+      goals_conceded: 0,
+      expected_assists_per_90: 0,
+      expected_goals_per_90: 0,
+      saves_per_90: 0,
       stat_value: 44,
     },
     {
@@ -97,6 +122,31 @@ describe("assembleGameweekPicks", () => {
       expected_goal_involvements_per_90: 0.2,
       now_value: 55,
       team_short_name: "BBB",
+      clean_sheets: 0,
+      bonus: 0,
+      bps: 0,
+      defensive_contribution: 0,
+      form: 0,
+      status: "a",
+      chance_of_playing_next_round: null,
+      news: "",
+      saves: 0,
+      influence: 0,
+      creativity: 0,
+      threat: 0,
+      ict_index: 0,
+      yellow_cards: 0,
+      red_cards: 0,
+      starts: 0,
+      selected_by_percent: 0,
+      points_per_game: 0,
+      expected_goals: 0,
+      expected_assists: 0,
+      expected_goals_conceded: 0,
+      goals_conceded: 0,
+      expected_assists_per_90: 0,
+      expected_goals_per_90: 0,
+      saves_per_90: 0,
       stat_value: 50,
     },
   ];
@@ -149,6 +199,68 @@ describe("assembleGameweekPicks", () => {
       { value: 44 },
     ]);
   });
+
+  it("passes through the expanded stat fields unchanged", () => {
+    const rowsWithStats = [
+      {
+        ...pickRows[0],
+        clean_sheets: 3,
+        bonus: 12,
+        bps: 456,
+        defensive_contribution: 7,
+        form: 4.2,
+        status: "d",
+        chance_of_playing_next_round: 75,
+        news: "Knock - 75% chance of playing",
+        saves: 7,
+        influence: 41.2,
+        creativity: 12.5,
+        threat: 30.1,
+        ict_index: 8.4,
+        yellow_cards: 2,
+        red_cards: 0,
+        starts: 20,
+        selected_by_percent: 15.3,
+        points_per_game: 4.8,
+        expected_goals: 0.5,
+        expected_assists: 0.3,
+        expected_goals_conceded: 1.2,
+        goals_conceded: 18,
+        expected_assists_per_90: 0.12,
+        expected_goals_per_90: 0.2,
+        saves_per_90: 1.4,
+      },
+    ];
+
+    const result = assembleGameweekPicks(rowsWithStats, fixturesByTeamCode);
+    const alice = result[0];
+
+    expect(alice.fpl_player.clean_sheets).toBe(3);
+    expect(alice.fpl_player.bonus).toBe(12);
+    expect(alice.fpl_player.bps).toBe(456);
+    expect(alice.fpl_player.defensive_contribution).toBe(7);
+    expect(alice.fpl_player.form).toBe(4.2);
+    expect(alice.fpl_player.status).toBe("d");
+    expect(alice.fpl_player.chance_of_playing_next_round).toBe(75);
+    expect(alice.fpl_player.news).toBe("Knock - 75% chance of playing");
+    expect(alice.fpl_player.saves).toBe(7);
+    expect(alice.fpl_player.influence).toBe(41.2);
+    expect(alice.fpl_player.creativity).toBe(12.5);
+    expect(alice.fpl_player.threat).toBe(30.1);
+    expect(alice.fpl_player.ict_index).toBe(8.4);
+    expect(alice.fpl_player.yellow_cards).toBe(2);
+    expect(alice.fpl_player.red_cards).toBe(0);
+    expect(alice.fpl_player.starts).toBe(20);
+    expect(alice.fpl_player.selected_by_percent).toBe(15.3);
+    expect(alice.fpl_player.points_per_game).toBe(4.8);
+    expect(alice.fpl_player.expected_goals).toBe(0.5);
+    expect(alice.fpl_player.expected_assists).toBe(0.3);
+    expect(alice.fpl_player.expected_goals_conceded).toBe(1.2);
+    expect(alice.fpl_player.goals_conceded).toBe(18);
+    expect(alice.fpl_player.expected_assists_per_90).toBe(0.12);
+    expect(alice.fpl_player.expected_goals_per_90).toBe(0.2);
+    expect(alice.fpl_player.saves_per_90).toBe(1.4);
+  });
 });
 
 describe("groupFixturesForTeamCodes", () => {
@@ -198,6 +310,31 @@ describe("assembleGameweekBaseData", () => {
           expected_goal_involvements_per_90: 0.1,
           now_value: 45,
           team_short_name: "AAA",
+          clean_sheets: 0,
+          bonus: 0,
+          bps: 0,
+          defensive_contribution: 0,
+          form: 0,
+          status: "a",
+          chance_of_playing_next_round: null,
+          news: "",
+          saves: 0,
+          influence: 0,
+          creativity: 0,
+          threat: 0,
+          ict_index: 0,
+          yellow_cards: 0,
+          red_cards: 0,
+          starts: 0,
+          selected_by_percent: 0,
+          points_per_game: 0,
+          expected_goals: 0,
+          expected_assists: 0,
+          expected_goals_conceded: 0,
+          goals_conceded: 0,
+          expected_assists_per_90: 0,
+          expected_goals_per_90: 0,
+          saves_per_90: 0,
           stat_values: [44],
         },
       ],
@@ -215,9 +352,24 @@ describe("assembleGameweekBaseData", () => {
       ],
       overall: { value: 1000, overall_rank: 123, bank: 50, points: 60 },
       transferCount: 2,
+      history: [
+        {
+          gameweek: 1,
+          points: 60,
+          total_points: 60,
+          overall_rank: 123,
+          value: 1000,
+          bank: 50,
+          event_transfers: 1,
+          event_transfers_cost: 0,
+        },
+      ],
     });
 
     expect(result.transferCount).toBe(2);
+    expect(result.history).toEqual([
+      expect.objectContaining({ gameweek: 1, total_points: 60 }),
+    ]);
     expect(result.overall).toEqual({
       value: 1000,
       overall_rank: 123,

@@ -24,7 +24,7 @@ export async function swapPlayers(
   let inPlayer: FPLPlayerData;
   if (inPlayerIndex === -1) {
     inPlayer = {
-      fpl_player: substitutedIn.data,
+      fpl_player: substitutedIn.data as unknown as FPLPlayerData["fpl_player"],
       position: data.data[outPlayerIndex].position,
       selling_price: substitutedIn.price,
     };

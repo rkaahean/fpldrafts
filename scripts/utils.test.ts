@@ -62,6 +62,44 @@ describe("syncGameweeks", () => {
     expect(picks.map((p) => p.gameweek)).toEqual([1, 2]);
   });
 
+  it("captures active_chip from the picks response onto the overall stats row", async () => {
+    server.use(
+      picksHandler((_teamId, gameweek) => ({
+        active_chip: gameweek === "1" ? "wildcard" : null,
+        picks: [
+          {
+            element: 1,
+            position: 1,
+            multiplier: 1,
+            is_captain: false,
+            is_vice_captain: false,
+          },
+        ],
+        entry_history: {
+          bank: 0,
+          value: 1000,
+          points: 50,
+          total_points: 50,
+          rank: 1,
+          overall_rank: 1,
+          event_transfers: 0,
+          event_transfers_cost: 0,
+        },
+      })),
+      transfersHandler(() => [])
+    );
+
+    const { syncGameweeks } = await import("./utils");
+    await syncGameweeks("team-db-1", 12345, [1, 2]);
+
+    const history = mockPrisma.tableRows("FPLGameweekOverallStats");
+    const gw1 = history.find((h) => h.gameweek === 1);
+    const gw2 = history.find((h) => h.gameweek === 2);
+
+    expect(gw1?.active_chip).toBe("wildcard");
+    expect(gw2?.active_chip).toBeNull();
+  });
+
   it("skips gameweeks the FPL API reports as not found without failing the sync", async () => {
     server.use(
       picksHandler((_teamId, gameweek) =>

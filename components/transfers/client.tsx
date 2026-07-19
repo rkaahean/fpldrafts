@@ -1,6 +1,7 @@
 "use client";
 
 import { picksStore } from "@/app/store";
+import { useMemo } from "react";
 
 import { columns, miniColumns } from "./columns";
 import { DataTable } from "./table";
@@ -14,25 +15,15 @@ export default function ClientTable(
 
   const { picks } = picksSelectors;
 
-  let filteredData;
-  if (picks) {
-    filteredData = props.data.map((player: any) => {
-      return {
-        ...player,
-        is_in_team:
-          picks.data.filter(
-            (pick) => pick.fpl_player.player_id == player.player_id
-          ).length != 0,
-      };
-    });
-  } else {
-    filteredData = props.data.map((player: any) => {
-      return {
-        ...player,
-        is_in_team: true,
-      };
-    });
-  }
+  const filteredData = useMemo(() => {
+    const playerIds = new Set(
+      picks?.data.map((pick) => pick.fpl_player.player_id) ?? []
+    );
+    return props.data.map((player: any) => ({
+      ...player,
+      is_in_team: picks ? playerIds.has(player.player_id) : true,
+    }));
+  }, [picks, props.data]);
 
   return (
     <div

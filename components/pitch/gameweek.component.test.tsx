@@ -80,7 +80,10 @@ describe("Gameweek component (integration)", () => {
     );
 
     expect(screen.getByText("Transfers")).toBeInTheDocument();
-    expect(screen.getByText("ITB")).toBeInTheDocument();
+    expect(screen.getByText("Bank")).toBeInTheDocument();
+    expect(screen.getByText("Total points")).toBeInTheDocument();
+    expect(screen.getByText("Team value")).toBeInTheDocument();
+    expect(screen.getByText("Rank trend")).toBeInTheDocument();
     expect(screen.getByText("Planned transfers")).toBeInTheDocument();
     expect(screen.getByText("No transfers this GW")).toBeInTheDocument();
   });

@@ -1,5 +1,6 @@
 "use client";
 
+import type { FPLPlayerData } from "@/app/api";
 import { picksStore } from "@/app/store";
 import { removeTransfer } from "@/app/store/utils";
 import {
@@ -232,6 +233,26 @@ export const columns: ColumnDef<DataType>[] = [
     header: ({ column }) => <SortableHeader column={column} label="Mins" description="Minutes played" />,
   },
   {
+    accessorKey: "clean_sheets",
+    header: ({ column }) => <SortableHeader column={column} label="CS" description="Clean sheets" />,
+  },
+  {
+    accessorKey: "saves",
+    header: ({ column }) => <SortableHeader column={column} label="Saves" description="Saves made" />,
+  },
+  {
+    accessorKey: "bonus",
+    header: ({ column }) => <SortableHeader column={column} label="Bonus" description="Bonus points" />,
+  },
+  {
+    accessorKey: "bps",
+    header: ({ column }) => <SortableHeader column={column} label="BPS" description="Bonus points system score" />,
+  },
+  {
+    accessorKey: "defensive_contribution",
+    header: ({ column }) => <SortableHeader column={column} label="DefCon" description="Defensive contributions" />,
+  },
+  {
     id: "is_in_team",
   },
   {
@@ -258,7 +279,7 @@ export const columns: ColumnDef<DataType>[] = [
             table.getColumn("web_name")?.setFilterValue("");
             const formatted = FPLPlayerDataToPlayerData({
               position: 1,
-              fpl_player: row.original,
+              fpl_player: row.original as unknown as FPLPlayerData["fpl_player"],
               selling_price: row.original.now_value,
             });
             // if not already selected, push into state

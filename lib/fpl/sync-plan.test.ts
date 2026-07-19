@@ -139,4 +139,134 @@ describe("flattenPlayerGameweekStats", () => {
     const playersData = [{}, { id: "player-1", history: [] }];
     expect(flattenPlayerGameweekStats(playersData as any)).toEqual([]);
   });
+
+  it("captures the expanded per-gameweek fields", () => {
+    const playersData = [
+      {
+        id: "player-1",
+        history: [
+          {
+            round: 1,
+            total_points: 10,
+            goals_scored: 0,
+            assists: 0,
+            expected_goals: "0.0",
+            expected_assists: "0.0",
+            value: 55,
+            fixture: 101,
+            clean_sheets: 1,
+            goals_conceded: 0,
+            own_goals: 0,
+            penalties_saved: 0,
+            penalties_missed: 0,
+            yellow_cards: 1,
+            red_cards: 0,
+            saves: 7,
+            bonus: 3,
+            bps: 38,
+            influence: "49.2",
+            creativity: "0.0",
+            threat: "0.0",
+            ict_index: "4.9",
+            clearances_blocks_interceptions: 1,
+            recoveries: 13,
+            tackles: 0,
+            defensive_contribution: 0,
+            starts: 1,
+            expected_goals_conceded: "1.52",
+            opponent_team: 14,
+            was_home: false,
+            team_h_score: 0,
+            team_a_score: 1,
+            kickoff_time: "2025-08-17T15:30:00Z",
+            selected: 1531911,
+            transfers_balance: 0,
+            transfers_in: 0,
+            transfers_out: 0,
+          },
+        ],
+      },
+    ];
+
+    const [row] = flattenPlayerGameweekStats(playersData as any);
+
+    expect(row).toMatchObject({
+      clean_sheets: 1,
+      yellow_cards: 1,
+      saves: 7,
+      bonus: 3,
+      bps: 38,
+      influence: 49.2,
+      creativity: 0,
+      threat: 0,
+      ict_index: 4.9,
+      clearances_blocks_interceptions: 1,
+      recoveries: 13,
+      defensive_contribution: 0,
+      starts: 1,
+      expected_goals_conceded: 1.52,
+      opponent_team: 14,
+      was_home: false,
+      team_h_score: 0,
+      team_a_score: 1,
+      selected: 1531911,
+      transfers_balance: 0,
+    });
+    expect(row.kickoff_time).toEqual(new Date("2025-08-17T15:30:00Z"));
+  });
+
+  it("keeps team_h_score/team_a_score/kickoff_time null when FPL reports them as null", () => {
+    const playersData = [
+      {
+        id: "player-1",
+        history: [
+          {
+            round: 1,
+            total_points: 0,
+            goals_scored: 0,
+            assists: 0,
+            expected_goals: "0.0",
+            expected_assists: "0.0",
+            value: 50,
+            fixture: 101,
+            clean_sheets: 0,
+            goals_conceded: 0,
+            own_goals: 0,
+            penalties_saved: 0,
+            penalties_missed: 0,
+            yellow_cards: 0,
+            red_cards: 0,
+            saves: 0,
+            bonus: 0,
+            bps: 0,
+            influence: "0.0",
+            creativity: "0.0",
+            threat: "0.0",
+            ict_index: "0.0",
+            clearances_blocks_interceptions: 0,
+            recoveries: 0,
+            tackles: 0,
+            defensive_contribution: 0,
+            starts: 0,
+            expected_goals_conceded: "0.0",
+            opponent_team: 1,
+            was_home: true,
+            team_h_score: null,
+            team_a_score: null,
+            kickoff_time: null,
+            selected: 0,
+            transfers_balance: 0,
+            transfers_in: 0,
+            transfers_out: 0,
+          },
+        ],
+      },
+    ];
+
+    const [row] = flattenPlayerGameweekStats(playersData as any);
+
+    expect(row.team_h_score).toBeNull();
+    expect(row.team_a_score).toBeNull();
+    expect(row.kickoff_time).toBeNull();
+  });
 });

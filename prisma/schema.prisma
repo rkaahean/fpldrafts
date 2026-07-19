@@ -16,27 +16,90 @@ datasource db {
 }
 
 model FPLPlayer {
-  id                                String             @id @default(uuid())
-  player_id                         Int // the player_id = element from the JSON
-  season_id                         String
-  first_name                        String
-  second_name                       String
-  team                              Int // this is the team id. will change across seasons
-  web_name                          String
-  team_code                         Int
-  element_type                      Int
-  total_points                      Int
-  goals_scored                      Int
-  assists                           Int
-  expected_goals                    Float
-  expected_assists                  Float
-  expected_goal_involvements        Float
-  expected_goals_per_90             Float
-  expected_assists_per_90           Float
-  expected_goal_involvements_per_90 Float
-  minutes                           Int
-  now_value                         Int
-  FPLGameweekPicks                  FPLGameweekPicks[]
+  id                                   String             @id @default(uuid())
+  player_id                            Int // the player_id = element from the JSON
+  season_id                            String
+  first_name                           String
+  second_name                          String
+  team                                 Int // this is the team id. will change across seasons
+  web_name                             String
+  team_code                            Int
+  element_type                         Int
+  total_points                         Int
+  goals_scored                         Int
+  assists                              Int
+  expected_goals                       Float
+  expected_assists                     Float
+  expected_goal_involvements           Float
+  expected_goals_per_90                Float
+  expected_assists_per_90              Float
+  expected_goal_involvements_per_90    Float
+  minutes                              Int
+  now_value                            Int
+  clean_sheets                         Int
+  goals_conceded                       Int
+  own_goals                            Int
+  penalties_saved                      Int
+  penalties_missed                     Int
+  yellow_cards                         Int
+  red_cards                            Int
+  saves                                Int
+  bonus                                Int
+  bps                                  Int
+  influence                            Float
+  creativity                           Float
+  threat                               Float
+  ict_index                            Float
+  clearances_blocks_interceptions      Int
+  recoveries                           Int
+  tackles                              Int
+  defensive_contribution               Int
+  starts                               Int
+  expected_goals_conceded              Float
+  saves_per_90                         Float
+  expected_goals_conceded_per_90       Float
+  goals_conceded_per_90                Float
+  starts_per_90                        Float
+  clean_sheets_per_90                  Float
+  defensive_contribution_per_90        Float
+  selected_by_percent                  Float
+  transfers_in                         Int
+  transfers_out                        Int
+  transfers_in_event                   Int
+  transfers_out_event                  Int
+  cost_change_event                    Int
+  cost_change_start                    Int
+  form                                 Float
+  points_per_game                      Float
+  value_season                         Float
+  value_form                           Float
+  ep_next                              Float?
+  ep_this                              Float?
+  influence_rank                       Int?
+  influence_rank_type                  Int?
+  creativity_rank                      Int?
+  creativity_rank_type                 Int?
+  threat_rank                          Int?
+  threat_rank_type                     Int?
+  ict_index_rank                       Int?
+  ict_index_rank_type                  Int?
+  now_cost_rank                        Int?
+  now_cost_rank_type                   Int?
+  form_rank                            Int?
+  form_rank_type                       Int?
+  points_per_game_rank                 Int?
+  points_per_game_rank_type            Int?
+  selected_rank                        Int?
+  selected_rank_type                   Int?
+  chance_of_playing_next_round         Int?
+  chance_of_playing_this_round         Int?
+  status                               String             @default("a")
+  news                                 String             @default("")
+  news_added                           DateTime?
+  corners_and_indirect_freekicks_order Int?
+  direct_freekicks_order               Int?
+  penalties_order                      Int?
+  FPLGameweekPicks                     FPLGameweekPicks[]
 
   fpl_season                FPLSeason                @relation(fields: [season_id], references: [id])
   fpl_gameweek_player_stats FPLGameweekPlayerStats[]
@@ -57,13 +120,19 @@ model FPLPlayer {
 }
 
 model FPLPlayerTeam {
-  id         String @id @default(uuid())
-  season_id  String
-  code       Int // this is the actual team code that likely reamins across seasons
-  team_id    Int // this is the id (1-20). Usually used for sorting
-  name       String
-  short_name String
-  strength   Int
+  id                    String @id @default(uuid())
+  season_id             String
+  code                  Int // this is the actual team code that likely reamins across seasons
+  team_id               Int // this is the id (1-20). Usually used for sorting
+  name                  String
+  short_name            String
+  strength              Int
+  strength_overall_home Int
+  strength_overall_away Int
+  strength_attack_home  Int
+  strength_attack_away  Int
+  strength_defence_home Int
+  strength_defence_away Int
 
   fpl_season    FPLSeason     @relation(fields: [season_id], references: [id])
   home_fixtures FPLFixtures[] @relation("home_team")
@@ -103,7 +172,7 @@ model FPLFixtures {
 }
 
 model FPLGameweekOverallStats {
-  id                   String @id @default(uuid())
+  id                   String  @id @default(uuid())
   fpl_team_id          String
   gameweek             Int
   bank                 Int
@@ -114,6 +183,7 @@ model FPLGameweekOverallStats {
   overall_rank         Int?
   event_transfers      Int
   event_transfers_cost Int
+  active_chip          String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -143,17 +213,46 @@ model FPLGameweekPicks {
 // store fpl player stats on a gameweek level that have 
 // been played so far
 model FPLGameweekPlayerStats {
-  id               String    @id @default(uuid())
-  fpl_player_id    String
-  fixture_id       Int
-  gameweek         Int
-  total_points     Int
-  goals_scored     Int
-  assists          Int
-  expected_goals   Float
-  expected_assists Float
-  value            Int
-  fpl_player       FPLPlayer @relation(fields: [fpl_player_id], references: [id])
+  id                              String    @id @default(uuid())
+  fpl_player_id                   String
+  fixture_id                      Int
+  gameweek                        Int
+  total_points                    Int
+  goals_scored                    Int
+  assists                         Int
+  expected_goals                  Float
+  expected_assists                Float
+  value                           Int
+  clean_sheets                    Int
+  goals_conceded                  Int
+  own_goals                       Int
+  penalties_saved                 Int
+  penalties_missed                Int
+  yellow_cards                    Int
+  red_cards                       Int
+  saves                           Int
+  bonus                           Int
+  bps                             Int
+  influence                       Float
+  creativity                      Float
+  threat                          Float
+  ict_index                       Float
+  clearances_blocks_interceptions Int
+  recoveries                      Int
+  tackles                         Int
+  defensive_contribution          Int
+  starts                          Int
+  expected_goals_conceded         Float
+  opponent_team                   Int
+  was_home                        Boolean
+  team_h_score                    Int?
+  team_a_score                    Int?
+  kickoff_time                    DateTime?
+  selected                        Int
+  transfers_balance               Int
+  transfers_in                    Int
+  transfers_out                   Int
+  fpl_player                      FPLPlayer @relation(fields: [fpl_player_id], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt

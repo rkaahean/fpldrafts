@@ -1,8 +1,10 @@
 "use client";
 
-import type {
-  TransferActivity,
-  TransferActivitySource,
+import { Badge } from "@/components/ui/badge";
+import {
+  chipLabel,
+  type TransferActivity,
+  type TransferActivitySource,
 } from "@/lib/fpl/transfer-activity";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -15,9 +17,11 @@ const TRANSFER_ROW_GAP = 8;
 export default function TransferActivityStrip({
   source,
   transfers,
+  activeChip = null,
 }: {
   source: TransferActivitySource;
   transfers: TransferActivity[];
+  activeChip?: string | null;
 }) {
   const railRef = useRef<HTMLElement>(null);
   const transferRowRef = useRef<HTMLDivElement>(null);
@@ -91,7 +95,12 @@ export default function TransferActivityStrip({
       aria-label={title}
       className="flex min-h-10 flex-col gap-3 rounded-md border bg-background/40 p-3 text-xs shadow-sm lg:h-full lg:overflow-hidden"
     >
-      <span className="font-medium text-muted-foreground">{title}</span>
+      <div className="flex items-center gap-2">
+        <span className="font-medium text-muted-foreground">{title}</span>
+        {source === "completed" && chipLabel(activeChip) && (
+          <Badge variant="secondary">{chipLabel(activeChip)}</Badge>
+        )}
+      </div>
       {transfers.length ? (
         <>
           <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">

@@ -1,5 +1,6 @@
 import { auth } from "@/auth/main";
 import Fixtures from "@/components/fixtures/server";
+import { getCachedFixtures } from "@/components/fixtures/server";
 import GameweekSeed from "@/components/fixtures/gameweek-seed";
 import type { Metadata } from "next";
 import { getNextGameweekForSession } from "../../api";
@@ -14,11 +15,14 @@ export default async function FixturesPage() {
   if (!session?.accessToken || !session.hasTeam) {
     return null;
   }
-  const newGameweek = await getNextGameweekForSession(session);
+  const [newGameweek, fixtures] = await Promise.all([
+    getNextGameweekForSession(session),
+    getCachedFixtures(process.env.FPL_SEASON_ID!),
+  ]);
 
   return (
     <GameweekSeed gameweek={newGameweek}>
-      <Fixtures />
+      <Fixtures fixtures={fixtures} />
     </GameweekSeed>
   );
 }

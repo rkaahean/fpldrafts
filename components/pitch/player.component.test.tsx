@@ -1,9 +1,23 @@
 // @vitest-environment happy-dom
-import { render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { cleanup, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import type { ReactNode } from "react";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { picksStore } from "@/app/store";
 import type { PlayerData } from "@/app/store/utils";
 import Player from "./Player";
+
+afterEach(cleanup);
+
+function renderWithClient(ui: ReactNode) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false, gcTime: 0 } },
+  });
+  return render(
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+  );
+}
 
 function makePlayer(overrides: Partial<PlayerData> = {}): PlayerData {
   return {
@@ -17,10 +31,18 @@ function makePlayer(overrides: Partial<PlayerData> = {}): PlayerData {
     total_points: 0,
     element_type: 1,
     fixtures: [],
-    selling_price: 50,
-    now_value: 50,
+    selling_price: 55,
+    now_value: 55,
     fpl_gameweek_player_stats: {},
     fpl_player_team: {},
+    form: 4.2,
+    status: "a",
+    news: "",
+    clean_sheets: 0,
+    bonus: 0,
+    bps: 0,
+    defensive_contribution: 0,
+    chance_of_playing_next_round: null,
     ...overrides,
   };
 }
@@ -37,8 +59,58 @@ describe("Player component", () => {
   it("renders without crashing when the player has no fixture for the current gameweek", () => {
     const data = makePlayer({ fixtures: [] });
 
-    render(<Player data={data} gameweek={5} />);
+    renderWithClient(<Player data={data} gameweek={5} />);
 
     expect(screen.getByText("Test Player")).toBeInTheDocument();
+  });
+
+  it("shows price and total points at a glance", () => {
+    const data = makePlayer({ selling_price: 65, total_points: 88 });
+
+    renderWithClient(<Player data={data} gameweek={5} />);
+
+    expect(screen.getByText("£6.5")).toBeInTheDocument();
+    expect(screen.getByText("88")).toBeInTheDocument();
+  });
+
+  it("shows an injury/availability indicator when the player is not fully available", () => {
+    const data = makePlayer({ status: "d", news: "Knock - 75% chance" });
+
+    renderWithClient(<Player data={data} gameweek={5} />);
+
+    expect(screen.getByLabelText("Availability concern")).toBeInTheDocument();
+  });
+
+  it("does not show an availability indicator for a fully available player", () => {
+    const data = makePlayer({ status: "a" });
+
+    renderWithClient(<Player data={data} gameweek={5} />);
+
+    expect(
+      screen.queryByLabelText("Availability concern")
+    ).not.toBeInTheDocument();
+  });
+
+  it("opens the detail sheet when the card body is tapped", async () => {
+    const user = userEvent.setup();
+    const data = makePlayer();
+
+    renderWithClient(<Player data={data} gameweek={5} />);
+
+    expect(screen.queryByText("Total points")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "View player details" }));
+
+    expect(screen.getByText("Total points")).toBeInTheDocument();
+  });
+
+  it("does not open the detail sheet when an action icon is clicked", async () => {
+    const user = userEvent.setup();
+    const data = makePlayer();
+
+    renderWithClient(<Player data={data} gameweek={5} />);
+
+    await user.click(screen.getByRole("button", { name: "Substitute player" }));
+
+    expect(screen.queryByText("Total points")).not.toBeInTheDocument();
   });
 });

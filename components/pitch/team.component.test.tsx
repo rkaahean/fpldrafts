@@ -23,21 +23,33 @@ vi.mock("../transfers/player-pane", () => ({
   ),
 }));
 vi.mock("./Gameweek", () => ({
-  default: () => <div>Gameweek</div>,
+  default: ({ toolbar }: { toolbar?: ReactNode }) => (
+    <div>
+      Gameweek
+      {toolbar}
+    </div>
+  ),
 }));
 
-describe("Team desktop draft toolbar", () => {
-  it("keeps action icons visible above the pitch and prevents the rail shrinking", () => {
+describe("Team draft toolbar", () => {
+  it("passes a single overlay toolbar into Gameweek with action icons grouped together", () => {
     render(<Team gameweek={5} />);
 
     const toolbar = screen.getByLabelText("Draft actions");
-    expect(toolbar).toHaveClass("relative", "z-10", "shrink-0");
+    expect(toolbar).toHaveClass(
+      "rounded-full",
+      "border",
+      "bg-card/80",
+      "backdrop-blur"
+    );
     expect(toolbar).toHaveClass("text-foreground", "[&_svg]:block");
   });
 
   it("puts the player selector behind an action-rail icon", () => {
     render(<Team gameweek={5} playerSelector={<span>Selector</span>} />);
 
-    expect(screen.getByLabelText("Browse players")).toHaveTextContent("Selector");
+    expect(screen.getByLabelText("Browse players")).toHaveTextContent(
+      "Selector"
+    );
   });
 });

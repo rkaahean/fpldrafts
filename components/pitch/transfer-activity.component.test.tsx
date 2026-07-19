@@ -1,8 +1,10 @@
 // @vitest-environment happy-dom
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import TransferActivityStrip from "./transfer-activity";
+
+afterEach(cleanup);
 
 describe("TransferActivityStrip", () => {
   it("shows labelled player-out and player-in pairs", () => {
@@ -30,6 +32,52 @@ describe("TransferActivityStrip", () => {
 
     expect(screen.getByText("Planned transfers")).toBeInTheDocument();
     expect(screen.getByText("No transfers this GW")).toBeInTheDocument();
+  });
+
+  it("shows a chip badge when completed transfers were made under a wildcard", () => {
+    render(
+      <TransferActivityStrip
+        source="completed"
+        transfers={[
+          {
+            out: { id: "out-1", webName: "Salah", team: "LIV" },
+            in: { id: "in-1", webName: "Saka", team: "ARS" },
+          },
+        ]}
+        activeChip="wildcard"
+      />
+    );
+
+    expect(screen.getByText("Wildcard")).toBeInTheDocument();
+  });
+
+  it("shows no badge when there is no active chip", () => {
+    render(
+      <TransferActivityStrip
+        source="completed"
+        transfers={[
+          {
+            out: { id: "out-1", webName: "Salah", team: "LIV" },
+            in: { id: "in-1", webName: "Saka", team: "ARS" },
+          },
+        ]}
+        activeChip={null}
+      />
+    );
+
+    expect(screen.queryByText("Wildcard")).not.toBeInTheDocument();
+  });
+
+  it("shows no badge for planned transfers even if an active chip is passed in", () => {
+    render(
+      <TransferActivityStrip
+        source="planned"
+        transfers={[]}
+        activeChip="freehit"
+      />
+    );
+
+    expect(screen.queryByText("Free Hit")).not.toBeInTheDocument();
   });
 
   it("paginates a long transfer list instead of growing beyond its container", async () => {

@@ -3,7 +3,7 @@ import Team from "@/components/pitch/team";
 import MiniSelector from "@/components/transfers/mini-selector";
 
 import type { Metadata } from "next";
-import { getNextGameweekForSession } from "../api";
+import { getGameweekStatusForSession } from "../api";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -15,11 +15,15 @@ export default async function Home() {
   if (!session?.accessToken || !session.hasTeam) {
     return null;
   }
-  const newGameweek = await getNextGameweekForSession(session);
+  const { nextGameweek, seasonComplete } = await getGameweekStatusForSession(session);
 
   return (
     <div className="h-full min-h-0 w-full">
-      <Team gameweek={newGameweek} playerSelector={<MiniSelector />} />
+      <Team
+        gameweek={nextGameweek}
+        seasonComplete={seasonComplete}
+        playerSelector={<MiniSelector />}
+      />
     </div>
   );
 }

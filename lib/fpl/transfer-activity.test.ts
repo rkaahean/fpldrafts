@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  chipLabel,
   draftTransferActivity,
   selectTransferActivity,
   type TransferActivity,
@@ -45,7 +46,7 @@ describe("selectTransferActivity", () => {
         historical,
         draftChanges: [],
       })
-    ).toEqual({ source: "completed", transfers: historical });
+    ).toEqual({ source: "completed", transfers: historical, activeChip: null });
 
     expect(
       selectTransferActivity({
@@ -54,6 +55,53 @@ describe("selectTransferActivity", () => {
         historical,
         draftChanges: [],
       })
-    ).toEqual({ source: "planned", transfers: [] });
+    ).toEqual({ source: "planned", transfers: [], activeChip: null });
+
+    expect(
+      selectTransferActivity({
+        currentGameweek: 38,
+        nextGameweek: 38,
+        seasonComplete: true,
+        historical,
+        draftChanges: [],
+      })
+    ).toEqual({ source: "completed", transfers: historical, activeChip: null });
+  });
+
+  it("surfaces the active chip for completed transfers", () => {
+    expect(
+      selectTransferActivity({
+        currentGameweek: 4,
+        nextGameweek: 5,
+        historical,
+        draftChanges: [],
+        activeChip: "wildcard",
+      })
+    ).toEqual({ source: "completed", transfers: historical, activeChip: "wildcard" });
+  });
+
+  it("never surfaces a chip for planned transfers, even if one is passed in", () => {
+    expect(
+      selectTransferActivity({
+        currentGameweek: 5,
+        nextGameweek: 5,
+        historical,
+        draftChanges: [],
+        activeChip: "wildcard",
+      })
+    ).toEqual({ source: "planned", transfers: [], activeChip: null });
+  });
+});
+
+describe("chipLabel", () => {
+  it("maps each known chip to its display name", () => {
+    expect(chipLabel("wildcard")).toBe("Wildcard");
+    expect(chipLabel("freehit")).toBe("Free Hit");
+    expect(chipLabel("bboost")).toBe("Bench Boost");
+    expect(chipLabel("3xc")).toBe("Triple Captain");
+  });
+
+  it("returns null for no chip", () => {
+    expect(chipLabel(null)).toBeNull();
   });
 });

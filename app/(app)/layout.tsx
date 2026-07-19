@@ -18,9 +18,13 @@ export default async function AppLayout({
   }
 
   const mobileContent = (
-    <div className="flex flex-col bg-grainy px-4 gap-4">
-      <Navbar image={session.user!.image!} />
-      <div className="flex flex-col gap-8">{children}</div>
+    <div className="flex h-screen max-w-screen flex-col overflow-hidden bg-grainy">
+      <div className="flex-shrink-0 border-b px-4">
+        <Navbar image={session.user!.image!} />
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-2">
+        {children}
+      </div>
     </div>
   );
 

@@ -103,6 +103,7 @@ async function parseHistoryData(data: any, gameweek: number, teamId: string) {
       overall_rank: history.overall_rank,
       event_transfers: history.event_transfers,
       event_transfers_cost: history.event_transfers_cost,
+      active_chip: data["active_chip"] ?? null,
     };
   }
 }

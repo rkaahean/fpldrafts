@@ -2,9 +2,17 @@ export function recentForm(
   stats: { gameweek: number; total_points: number }[],
   count = 5
 ) {
-  const recent = [...stats]
-    .sort((left, right) => right.gameweek - left.gameweek)
-    .slice(0, count);
+  const pointsByGameweek = new Map<number, number>();
+  for (const stat of stats) {
+    pointsByGameweek.set(
+      stat.gameweek,
+      (pointsByGameweek.get(stat.gameweek) ?? 0) + stat.total_points
+    );
+  }
+  const recent = [...pointsByGameweek.entries()]
+    .sort(([left], [right]) => right - left)
+    .slice(0, count)
+    .map(([gameweek, total_points]) => ({ gameweek, total_points }));
 
   return {
     points: recent.reduce((total, stat) => total + stat.total_points, 0),

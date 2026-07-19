@@ -84,16 +84,16 @@ export async function GET(req: NextRequest) {
     // welbeck: 178
     // richarlison: 597
 
-    const allPlayers: FPLPlayerData2[] = await getPlayerDataBySeason(
+    const allPlayers = (await getPlayerDataBySeason(
       process.env.FPL_SEASON_ID!,
       [101, 670, 74, 694, 151, 258, 295, 517, 329, 457, 303, 237, 691, 178, 597]
-    );
+    )) as unknown as FPLPlayerData2[];
 
     return response(buildInitialGameweekPayload(allPlayers));
   }
 
   const baseGameweek = gameweek - 1;
-  const { overall, data, transferCount, transfers, transferActivity, priceStats } = await measure("gameweek data query", () =>
+  const { overall, data, transferCount, transfers, transferActivity, activeChip, priceStats, history } = await measure("gameweek data query", () =>
     getGameweekBaseData(
       baseGameweek,
       teamId,
@@ -113,6 +113,8 @@ export async function GET(req: NextRequest) {
     overall,
     transferCount,
     transferActivity,
+    activeChip,
+    history,
   };
   recordTiming(
     "response construction",

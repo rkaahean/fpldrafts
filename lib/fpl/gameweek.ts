@@ -1,4 +1,5 @@
 import { swapPlayers } from "./swap";
+import type { GameweekTrendPoint } from "./gameweek-trends";
 import type {
   DraftTransfer,
   FPLGameweekPicksData,
@@ -31,6 +32,31 @@ export interface GameweekPickRow {
   expected_goal_involvements_per_90: number;
   now_value: number;
   team_short_name: string;
+  clean_sheets: number;
+  bonus: number;
+  bps: number;
+  defensive_contribution: number;
+  form: number;
+  status: string;
+  chance_of_playing_next_round: number | null;
+  news: string;
+  saves: number;
+  influence: number;
+  creativity: number;
+  threat: number;
+  ict_index: number;
+  yellow_cards: number;
+  red_cards: number;
+  starts: number;
+  selected_by_percent: number;
+  points_per_game: number;
+  expected_goals: number;
+  expected_assists: number;
+  expected_goals_conceded: number;
+  goals_conceded: number;
+  expected_assists_per_90: number;
+  expected_goals_per_90: number;
+  saves_per_90: number;
   stat_values?: number[];
   stat_value?: number | null;
 }
@@ -60,6 +86,7 @@ export interface GameweekOverallRow {
   overall_rank: number;
   bank: number;
   points: number;
+  total_points?: number;
 }
 
 export interface GameweekBaseQueryResult {
@@ -67,6 +94,8 @@ export interface GameweekBaseQueryResult {
   fixtureRows: GameweekFixtureRow[];
   overall: GameweekOverallRow | null;
   transferCount: number;
+  activeChip?: string | null;
+  history?: GameweekTrendPoint[];
 }
 
 export function groupFixturesForTeamCodes(
@@ -143,6 +172,31 @@ export function assembleGameweekPicks(
         expected_goal_involvements_per_90:
           pick.expected_goal_involvements_per_90,
         now_value: pick.now_value,
+        clean_sheets: pick.clean_sheets,
+        bonus: pick.bonus,
+        bps: pick.bps,
+        defensive_contribution: pick.defensive_contribution,
+        form: pick.form,
+        status: pick.status,
+        chance_of_playing_next_round: pick.chance_of_playing_next_round,
+        news: pick.news,
+        saves: pick.saves,
+        influence: pick.influence,
+        creativity: pick.creativity,
+        threat: pick.threat,
+        ict_index: pick.ict_index,
+        yellow_cards: pick.yellow_cards,
+        red_cards: pick.red_cards,
+        starts: pick.starts,
+        selected_by_percent: pick.selected_by_percent,
+        points_per_game: pick.points_per_game,
+        expected_goals: pick.expected_goals,
+        expected_assists: pick.expected_assists,
+        expected_goals_conceded: pick.expected_goals_conceded,
+        goals_conceded: pick.goals_conceded,
+        expected_assists_per_90: pick.expected_assists_per_90,
+        expected_goals_per_90: pick.expected_goals_per_90,
+        saves_per_90: pick.saves_per_90,
         fpl_player_team: {
           short_name: pick.team_short_name,
           home_fixtures,
@@ -164,6 +218,7 @@ export function assembleGameweekBaseData({
   fixtureRows,
   overall,
   transferCount,
+  history,
 }: GameweekBaseQueryResult) {
   const teamCodes = new Set(pickRows.map((pick) => pick.team_code));
   const fixturesByTeamCode = groupFixturesForTeamCodes(fixtureRows, teamCodes);
@@ -172,6 +227,7 @@ export function assembleGameweekBaseData({
     data: assembleGameweekPicks(pickRows, fixturesByTeamCode),
     overall,
     transferCount,
+    history,
   };
 }
 
@@ -247,6 +303,7 @@ export function buildInitialGameweekPayload(
       points: 0,
     } as FPLGameweekPicksData["overall"],
     transferCount: 0,
+    history: [],
   };
 }
 

@@ -14,6 +14,16 @@ describe("recentForm", () => {
       ])
     ).toEqual({ points: 32, games: 5 });
   });
+
+  it("counts double-gameweek fixtures as one gameweek of form", () => {
+    expect(
+      recentForm([
+        { gameweek: 4, total_points: 3 },
+        { gameweek: 4, total_points: 5 },
+        { gameweek: 3, total_points: 2 },
+      ])
+    ).toEqual({ points: 10, games: 2 });
+  });
 });
 
 describe("playerPageSize", () => {

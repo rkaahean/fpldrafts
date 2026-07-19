@@ -29,23 +29,49 @@ export function draftTransferActivity(
     }));
 }
 
+const CHIP_LABELS: Record<string, string> = {
+  wildcard: "Wildcard",
+  freehit: "Free Hit",
+  bboost: "Bench Boost",
+  "3xc": "Triple Captain",
+};
+
+export function chipLabel(chip: string | null): string | null {
+  if (!chip) {
+    return null;
+  }
+  return CHIP_LABELS[chip] ?? null;
+}
+
 export function selectTransferActivity({
   currentGameweek,
   nextGameweek,
+  seasonComplete = false,
   historical,
   draftChanges,
+  activeChip = null,
 }: {
   currentGameweek: number;
   nextGameweek: number;
+  seasonComplete?: boolean;
   historical: TransferActivity[];
   draftChanges: DraftTransfer[];
-}): { source: TransferActivitySource; transfers: TransferActivity[] } {
-  if (currentGameweek < nextGameweek) {
-    return { source: "completed", transfers: historical };
+  activeChip?: string | null;
+}): {
+  source: TransferActivitySource;
+  transfers: TransferActivity[];
+  activeChip: string | null;
+} {
+  if (
+    currentGameweek < nextGameweek ||
+    (seasonComplete && currentGameweek === nextGameweek)
+  ) {
+    return { source: "completed", transfers: historical, activeChip };
   }
 
   return {
     source: "planned",
     transfers: draftTransferActivity(draftChanges, currentGameweek),
+    activeChip: null,
   };
 }

@@ -49,6 +49,11 @@ describe("Player columns", () => {
     expect(accessorKeys).toContain("expected_goal_involvements");
     expect(accessorKeys).toContain("expected_goals");
     expect(accessorKeys).toContain("expected_assists");
+    expect(accessorKeys).toContain("clean_sheets");
+    expect(accessorKeys).toContain("saves");
+    expect(accessorKeys).toContain("bonus");
+    expect(accessorKeys).toContain("bps");
+    expect(accessorKeys).toContain("defensive_contribution");
 
     render(
       <>
@@ -58,6 +63,7 @@ describe("Player columns", () => {
         <MetricHeader label="xA" description="Expected assists" />
         <MetricHeader label="xG/90" description="Expected goals per 90 minutes" />
         <MetricHeader label="xA/90" description="Expected assists per 90 minutes" />
+        <MetricHeader label="DefCon" description="Defensive contributions" />
       </>
     );
 
@@ -73,6 +79,9 @@ describe("Player columns", () => {
     expect(screen.getByTitle("Expected assists per 90 minutes")).toHaveTextContent(
       "xA/90"
     );
+    expect(screen.getByTitle("Defensive contributions")).toHaveTextContent(
+      "DefCon"
+    );
   });
 
   it("keeps comparison-only metrics out of constrained table layouts", () => {
@@ -83,6 +92,9 @@ describe("Player columns", () => {
       "hidden lg:table-cell"
     );
     expect(playerColumnClassName("expected_assists_per_90")).toContain(
+      "hidden lg:table-cell"
+    );
+    expect(playerColumnClassName("defensive_contribution")).toContain(
       "hidden lg:table-cell"
     );
   });

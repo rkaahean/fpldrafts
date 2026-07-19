@@ -8,7 +8,7 @@ export default function PitchRow(props: {
 }) {
   // sort props.data with position == "GK being the first"
   return props.position === "subs" ? (
-    <div className="flex flex-row w-full h-full min-h-0 items-center justify-evenly gap-1 py-0.5">
+    <div className="flex h-full w-full min-h-0 items-center justify-center gap-3 overflow-x-auto py-0.5 sm:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20">
       {props.data.map((player) => (
         <Player
           key={player.player_id}
@@ -18,7 +18,7 @@ export default function PitchRow(props: {
       ))}
     </div>
   ) : (
-    <div className="flex flex-row w-full h-full min-h-0 items-center justify-evenly gap-1 py-0.5">
+    <div className="flex h-full w-full min-h-0 items-center justify-center gap-3 overflow-x-auto py-0.5 sm:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20">
       {props.data.map((player) => (
         <Player
           key={player.player_id}

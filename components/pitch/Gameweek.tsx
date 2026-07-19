@@ -17,14 +17,20 @@ import {
 import { filterData } from "@/scripts/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
+import PitchBackground from "./PitchBackground";
 import PitchRow from "./PitchRow";
 import TransferActivityStrip from "./transfer-activity";
+import TrendChart from "./trend-chart";
 
 import { useRef } from "react";
-import Pitch from "../../public/pitch.svg";
+import type { ReactNode } from "react";
+import { isMobile } from "react-device-detect";
 import { Button } from "../ui/button";
-export default function Gameweek(props: { gameweek: number }) {
+export default function Gameweek(props: {
+  gameweek: number;
+  seasonComplete?: boolean;
+  toolbar?: ReactNode;
+}) {
   const picksSelectors = picksStore((state) => ({
     setBase: state.setBase,
     setCurrentGameweek: state.setCurrentGameweek,
@@ -153,12 +159,16 @@ export default function Gameweek(props: { gameweek: number }) {
     const transferActivity = selectTransferActivity({
       currentGameweek,
       nextGameweek: props.gameweek,
+      seasonComplete: props.seasonComplete,
       historical: gameweekData?.transferActivity ?? [],
       draftChanges: drafts.changes,
+      activeChip: gameweekData?.activeChip ?? null,
     });
+    const seasonSummary = gameweekData?.overall ?? data.overall;
+    const totalPoints = seasonSummary.total_points ?? seasonSummary.points;
 
     return (
-      <div className="relative flex h-full flex-col gap-3 lg:min-h-0">
+      <div className="relative flex h-full min-h-0 flex-col gap-3">
         <div className="flex flex-row justify-between gap-3 rounded-md border bg-background/30 p-2 flex-shrink-0">
           <Button
             onClick={() =>
@@ -170,9 +180,26 @@ export default function Gameweek(props: { gameweek: number }) {
           >
             <ArrowLeft className="w-4 h-4 lg:w-6 lg:h-6" />
           </Button>
-          <div className="flex w-full items-center justify-around gap-2">
-            <GameweekStat title="Points" value={data.overall.points} />
-            <GameweekStat title="Gameweek" value={currentGameweek} />
+          <div className="flex w-full items-center justify-around gap-2 overflow-x-auto">
+            {!isMobile && (
+              <>
+                <GameweekStat title="Total points" value={totalPoints} />
+                <GameweekStat
+                  title="Overall rank"
+                  value={
+                    seasonSummary.overall_rank
+                      ? seasonSummary.overall_rank.toLocaleString()
+                      : "—"
+                  }
+                />
+                <GameweekStat
+                  title="Squad value"
+                  value={`£${(seasonSummary.value / 10).toFixed(1)}`}
+                />
+                <GameweekStat title="Gameweek" value={currentGameweek} />
+              </>
+            )}
+            <GameweekStat title="Bank" value={`£${picks.overall.bank! / 10}`} />
             <GameweekStat
               title="Transfers"
               value={`${transfersMade} / ${transferCount}`}
@@ -181,14 +208,9 @@ export default function Gameweek(props: { gameweek: number }) {
               title="Hit"
               value={transferCost === 0 ? "0" : `${transferCost}`}
             />
-            <GameweekStat title="ITB" value={`${picks.overall.bank! / 10}`} />
             {budget && !budget.valid && (
               <GameweekStat title="Budget" value="Over" />
             )}
-            <GameweekStat
-              title="Rank"
-              value={data.overall.overall_rank!.toLocaleString()}
-            />
           </div>
           <Button
             onClick={() =>
@@ -202,14 +224,17 @@ export default function Gameweek(props: { gameweek: number }) {
           </Button>
         </div>
 
-        <div className="flex min-h-[400px] flex-1 flex-col gap-3 lg:min-h-0 lg:flex-row lg:gap-4">
-          <div className="relative min-h-[400px] flex-1 rounded-md border bg-background/20 p-2 lg:min-h-0">
-            <Image
-              src={Pitch}
-              alt=""
-              fill
-              className="pointer-events-none -z-10 select-none object-contain"
-            />
+        <div className="flex min-h-0 flex-1 flex-col gap-3 xl:grid xl:grid-cols-[minmax(13rem,0.8fr)_minmax(0,3.5fr)_minmax(14rem,1fr)] xl:gap-4">
+          <aside className="order-2 min-h-0 xl:order-none">
+            <TrendChart kind="value" history={gameweekData?.history ?? []} />
+          </aside>
+          <div className="order-1 relative min-h-0 flex-1 overflow-hidden rounded-md border bg-background/20 p-2 xl:order-none">
+            <PitchBackground />
+            {props.toolbar && (
+              <div className="absolute right-2 top-2 z-10">
+                {props.toolbar}
+              </div>
+            )}
             <div className="relative z-0 grid h-full w-full grid-rows-[1fr_1fr_1fr_1fr_1.15fr]">
               {["GK", "DEF", "MID", "FWD", "subs"].map((position: string) => (
                 <PitchRow
@@ -221,8 +246,11 @@ export default function Gameweek(props: { gameweek: number }) {
               ))}
             </div>
           </div>
-          <aside className="order-first w-full shrink-0 lg:order-none lg:min-h-0 lg:w-60 xl:w-72">
-            <TransferActivityStrip {...transferActivity} />
+          <aside className="order-3 flex min-h-0 flex-col gap-3 xl:order-none">
+            <TrendChart kind="rank" history={gameweekData?.history ?? []} />
+            <div className="min-h-[12rem] flex-1 xl:min-h-0">
+              <TransferActivityStrip {...transferActivity} />
+            </div>
           </aside>
         </div>
       </div>
@@ -244,7 +272,7 @@ function GameweekStat({
   value: number | string;
 }) {
   return (
-    <div className="text-[8px] lg:text-xs 2xl:text-sm flex flex-col w-10 lg:w-14 2xl:w-48">
+    <div className="flex min-w-12 flex-col text-[10px] lg:min-w-16 lg:text-xs 2xl:min-w-24 2xl:text-sm">
       <div className="font-light text-muted-foreground truncate">{title}</div>
       <div className="font-semibold text-xs lg:text-sm 2xl:text-xl">
         {value}

@@ -9,6 +9,7 @@ import {
   computeNextGameweek,
 } from "@/lib/fpl/gameweek";
 import type { TransferActivity } from "@/lib/fpl/transfer-activity";
+import type { GameweekTrendPoint } from "@/lib/fpl/gameweek-trends";
 import prisma from "../../scripts/lib/db";
 import { DraftTransfer } from "../store/utils";
 import type { Session } from "next-auth";
@@ -55,6 +56,20 @@ export async function getPlayerData(
       expected_goal_involvements_per_90: true,
       now_value: true,
       minutes: true,
+      expected_goals: true,
+      expected_assists: true,
+      expected_goals_conceded: true,
+      goals_conceded: true,
+      influence: true,
+      creativity: true,
+      threat: true,
+      ict_index: true,
+      saves: true,
+      yellow_cards: true,
+      red_cards: true,
+      starts: true,
+      selected_by_percent: true,
+      points_per_game: true,
       fpl_player_team: {
         select: {
           short_name: true,
@@ -111,10 +126,51 @@ export async function getPlayerData(
   return players;
 }
 
+export async function getPlayerGameweekHistory(
+  playerId: number,
+  seasonId: string
+) {
+  return prisma.fPLGameweekPlayerStats.findMany({
+    where: {
+      fpl_player: { player_id: playerId, season_id: seasonId },
+    },
+    select: {
+      gameweek: true,
+      total_points: true,
+      value: true,
+      expected_goals: true,
+      expected_assists: true,
+    },
+    orderBy: { gameweek: "asc" },
+  });
+}
+
 export async function getPlayerDataBySeason(
   season_id: string,
-  player_filter?: number[]
+  player_filter?: number[],
+  currentGameweek?: number,
+  lastCompletedGameweek = currentGameweek
+    ? Math.max(0, currentGameweek - 1)
+    : undefined
 ) {
+  const fixtureWhere = currentGameweek
+    ? {
+        season_id,
+        event: {
+          gte: currentGameweek,
+          lte: currentGameweek + 4,
+        },
+      }
+    : { season_id };
+  const statsWhere = lastCompletedGameweek
+    ? {
+        gameweek: {
+          gte: Math.max(1, lastCompletedGameweek - 4),
+          lte: lastCompletedGameweek,
+        },
+      }
+    : undefined;
+
   // get from prisma
   const players = await prisma.fPLPlayer.findMany({
     // Include the related FPLPlayer record
@@ -135,13 +191,16 @@ export async function getPlayerDataBySeason(
       goals_scored: true,
       assists: true,
       minutes: true,
+      clean_sheets: true,
+      saves: true,
+      bonus: true,
+      bps: true,
+      defensive_contribution: true,
       fpl_player_team: {
         select: {
           short_name: true,
           home_fixtures: {
-            where: {
-              season_id,
-            },
+            where: fixtureWhere,
             select: {
               fpl_team_a: {
                 select: {
@@ -155,9 +214,7 @@ export async function getPlayerDataBySeason(
             },
           },
           away_fixtures: {
-            where: {
-              season_id,
-            },
+            where: fixtureWhere,
             select: {
               fpl_team_h: {
                 select: {
@@ -173,6 +230,7 @@ export async function getPlayerDataBySeason(
         },
       },
       fpl_gameweek_player_stats: {
+        where: statsWhere,
         select: {
           value: true,
           gameweek: true,
@@ -222,7 +280,9 @@ type GameweekBaseQueryRow = {
   transferCount: number;
   transfers: { in_player_id: string; in_player_cost: number; time: string }[];
   transferActivity: TransferActivity[];
+  activeChip: string | null;
   priceStats: { fpl_player_id: string; value: number }[];
+  history: GameweekTrendPoint[];
 };
 
 export async function getGameweekBaseData(
@@ -247,6 +307,31 @@ export async function getGameweekBaseData(
         player."total_points",
         player."expected_goal_involvements_per_90",
         player."now_value",
+        player."clean_sheets",
+        player."bonus",
+        player."bps",
+        player."defensive_contribution",
+        player."form",
+        player."status",
+        player."chance_of_playing_next_round",
+        player."news",
+        player."saves",
+        player."influence",
+        player."creativity",
+        player."threat",
+        player."ict_index",
+        player."yellow_cards",
+        player."red_cards",
+        player."starts",
+        player."selected_by_percent",
+        player."points_per_game",
+        player."expected_goals",
+        player."expected_assists",
+        player."expected_goals_conceded",
+        player."goals_conceded",
+        player."expected_assists_per_90",
+        player."expected_goals_per_90",
+        player."saves_per_90",
         player_team."short_name" AS "team_short_name",
         COALESCE(
           array_agg(stat."value") FILTER (WHERE stat."id" IS NOT NULL),
@@ -272,6 +357,31 @@ export async function getGameweekBaseData(
         player."total_points",
         player."expected_goal_involvements_per_90",
         player."now_value",
+        player."clean_sheets",
+        player."bonus",
+        player."bps",
+        player."defensive_contribution",
+        player."form",
+        player."status",
+        player."chance_of_playing_next_round",
+        player."news",
+        player."saves",
+        player."influence",
+        player."creativity",
+        player."threat",
+        player."ict_index",
+        player."yellow_cards",
+        player."red_cards",
+        player."starts",
+        player."selected_by_percent",
+        player."points_per_game",
+        player."expected_goals",
+        player."expected_assists",
+        player."expected_goals_conceded",
+        player."goals_conceded",
+        player."expected_assists_per_90",
+        player."expected_goals_per_90",
+        player."saves_per_90",
         player_team."short_name"
     ), player_ids AS (
       SELECT "fpl_player_id" FROM pick_rows
@@ -307,13 +417,33 @@ export async function getGameweekBaseData(
       (
         SELECT to_jsonb(overall_row)
         FROM (
-          SELECT "value", "overall_rank", "bank", "points"
+          SELECT "value", "overall_rank", "bank", "points", "total_points"
           FROM "FPLGameweekOverallStats"
           WHERE "gameweek" = ${gameweek}
             AND "fpl_team_id" = ${teamId}
           LIMIT 1
         ) AS overall_row
       ) AS "overall",
+      COALESCE(
+        (
+          SELECT jsonb_agg(to_jsonb(overall_history_row) ORDER BY overall_history_row."gameweek")
+          FROM (
+            SELECT
+              "gameweek",
+              "points",
+              "total_points",
+              "overall_rank",
+              "value",
+              "bank",
+              "event_transfers",
+              "event_transfers_cost"
+            FROM "FPLGameweekOverallStats"
+            WHERE "fpl_team_id" = ${teamId}
+              AND "gameweek" <= ${gameweek}
+          ) AS overall_history_row
+        ),
+        '[]'::jsonb
+      ) AS "history",
       (
         SELECT COUNT(*)::INTEGER
         FROM "FPLGameweekTransfers"
@@ -351,6 +481,13 @@ export async function getGameweekBaseData(
         ),
         '[]'::jsonb
       ) AS "transferActivity",
+      (
+        SELECT "active_chip"
+        FROM "FPLGameweekOverallStats"
+        WHERE "fpl_team_id" = ${teamId}
+          AND "gameweek" = ${transferActivityGameweek}
+        LIMIT 1
+      ) AS "activeChip",
       COALESCE(
         (
           SELECT jsonb_agg(to_jsonb(transfer_row))
@@ -385,6 +522,7 @@ export async function getGameweekBaseData(
       time: new Date(transfer.time),
     })),
     transferActivity: row.transferActivity,
+    activeChip: row.activeChip,
     priceStats: row.priceStats,
   };
 }
@@ -570,6 +708,31 @@ export type FPLGameweekPickData = {
     total_points: number;
     expected_goal_involvements_per_90: number;
     now_value: number;
+    clean_sheets: number;
+    bonus: number;
+    bps: number;
+    defensive_contribution: number;
+    form: number;
+    status: string;
+    chance_of_playing_next_round: number | null;
+    news: string;
+    saves: number;
+    influence: number;
+    creativity: number;
+    threat: number;
+    ict_index: number;
+    yellow_cards: number;
+    red_cards: number;
+    starts: number;
+    selected_by_percent: number;
+    points_per_game: number;
+    expected_goals: number;
+    expected_assists: number;
+    expected_goals_conceded: number;
+    goals_conceded: number;
+    expected_assists_per_90: number;
+    expected_goals_per_90: number;
+    saves_per_90: number;
     fpl_player_team: {
       short_name: string;
       home_fixtures: {
@@ -596,6 +759,7 @@ export type FPLGameweekPicksData = {
   overall: NonNullable<Awaited<ReturnType<typeof getGameweekOverallData>>>;
   transferCount?: number;
   transferActivity?: TransferActivity[];
+  history?: GameweekTrendPoint[];
 };
 export type FPLPlayerData = Pick<
   FPLGameweekPicksData["data"][number],
@@ -857,12 +1021,20 @@ export async function getLatestGameweek(teamId: string) {
   });
 }
 
+export async function getGameweekStatusForSession(session: Session) {
+  if (!session.team_id) {
+    return { nextGameweek: 1, seasonComplete: false };
+  }
+
+  const maxGameweek = await getLatestGameweek(session.team_id);
+  const latestGameweek = maxGameweek._max.gameweek;
+  return {
+    nextGameweek: computeNextGameweek(latestGameweek),
+    seasonComplete: latestGameweek === 38,
+  };
+}
+
 export async function getNextGameweekForSession(session: Session) {
-  const decoded = jwtDecode<{ email: string }>(session.accessToken!);
-  const { teamId } = await getUserTeamFromEmail(
-    decoded.email,
-    process.env.FPL_SEASON_ID!
-  );
-  const maxGameweek = await getLatestGameweek(teamId);
-  return computeNextGameweek(maxGameweek._max.gameweek);
+  const { nextGameweek } = await getGameweekStatusForSession(session);
+  return nextGameweek;
 }

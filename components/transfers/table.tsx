@@ -71,6 +71,11 @@ export function playerColumnClassName(columnId: string) {
     case "expected_goal_involvements":
     case "expected_goals":
     case "expected_assists":
+    case "clean_sheets":
+    case "saves":
+    case "bonus":
+    case "bps":
+    case "defensive_contribution":
       return "w-16 !max-w-none hidden lg:table-cell lg:w-[5%]";
     case "player_add":
       return "w-20 !max-w-none lg:w-[6%]";
