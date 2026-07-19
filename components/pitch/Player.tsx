@@ -60,7 +60,7 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
         >
           <Card
             className={cn(
-              "relative flex h-full max-h-full w-24 min-w-24 max-w-[9rem] flex-col rounded-lg border text-player-foreground shadow-sm sm:w-28 lg:w-32",
+              "relative flex h-auto max-h-[92%] w-28 min-w-28 max-w-[11rem] aspect-[0.78] flex-col rounded-lg border text-player-foreground shadow-sm sm:w-32 lg:w-36 2xl:w-44",
               player?.player_id == props.data.player_id
                 ? "bg-muted"
                 : "bg-player",
@@ -131,9 +131,9 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
                 <Image
                   src={`https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${props.data.team_code}-110.webp`}
                   alt="Player"
-                  width={80}
-                  height={80}
-                  priority
+                  width={110}
+                  height={110}
+                  unoptimized
                   className="h-full max-h-full w-auto max-w-full object-contain"
                 />
               </div>
