@@ -1,11 +1,17 @@
 import { validateSubstitution } from "@/lib/fpl/formation";
 import { toast } from "@/components/ui/use-toast";
-import { elementTypeToPosition } from "@/scripts/lib/utils";
+import { FPLPlayerDataToPlayerData } from "@/scripts/lib/utils";
 import { create } from "zustand";
-import { FPLGameweekPicksData } from "../api";
+import { FPLGameweekPicksData, FPLPlayerData } from "../api";
 import { DraftState, DraftTransfer, PlayerData } from "./utils";
 
 export { swapPlayers } from "@/lib/fpl/swap";
+
+export interface TransferSlot {
+  id: string;
+  out: PlayerData;
+  in: PlayerData | null;
+}
 
 interface State {
   currentGameweek: number;
@@ -15,8 +21,8 @@ interface State {
   substitutedIn?: PlayerData;
   substitutedOut?: PlayerData;
   drafts: DraftState;
-  transfersIn: { [key: number]: PlayerData[] };
-  transfersOut: { [key: number]: PlayerData[] };
+  transferSlots: TransferSlot[];
+  activeSlotId: string | null;
   setBase: (picks: FPLGameweekPicksData) => void;
   setSubstituteIn: (player: PlayerData) => void;
   setSubstituteOut: (player: PlayerData) => void;
@@ -29,23 +35,24 @@ interface State {
   setDrafts: (drafts: DraftState) => void;
   setPicks: (picks: FPLGameweekPicksData) => void;
   setCommittedBank: (bank: number) => void;
-  setTransferIn: (players: { [key: number]: PlayerData[] }) => void;
-  setTransferOut: (players: { [key: number]: PlayerData[] }) => void;
+  markOut: (player: PlayerData) => void;
+  markAllOut: () => void;
+  setActiveSlot: (id: string | null) => void;
+  fillSlot: (slotId: string, inPlayer: PlayerData) => void;
+  clearSlotIn: (slotId: string) => void;
   resetSubs: () => void;
   resetTransfers: () => void;
   addToBank(value: number): void;
   removeFromBank(value: number): void;
 }
 
-const TRANSFER_INIT_VALUE = { 1: [], 2: [], 3: [], 4: [] };
-
 export const picksStore = create<State>()((set, get) => ({
   drafts: {
     changes: [],
   },
   currentGameweek: 1,
-  transfersIn: structuredClone(TRANSFER_INIT_VALUE),
-  transfersOut: structuredClone(TRANSFER_INIT_VALUE),
+  transferSlots: [],
+  activeSlotId: null,
   setPicks: (picks: FPLGameweekPicksData) => {
     set({ picks });
   },
@@ -63,8 +70,8 @@ export const picksStore = create<State>()((set, get) => ({
   },
   resetTransfers: () => {
     set({
-      transfersIn: structuredClone(TRANSFER_INIT_VALUE),
-      transfersOut: structuredClone(TRANSFER_INIT_VALUE),
+      transferSlots: [],
+      activeSlotId: null,
     });
   },
   addToBank: (value: number) => {
@@ -93,8 +100,84 @@ export const picksStore = create<State>()((set, get) => ({
   },
   setSubstituteIn: (player: PlayerData) => set({ substitutedIn: player }),
   setSubstituteOut: (player: PlayerData) => set({ substitutedOut: player }),
-  setTransferIn: (players) => set({ transfersIn: players }),
-  setTransferOut: (players) => set({ transfersOut: players }),
+  setActiveSlot: (id) => set({ activeSlotId: id }),
+  markOut: (player: PlayerData) => {
+    const { transferSlots, activeSlotId, addToBank, removeFromBank } = get();
+    const slotId = String(player.player_id);
+    const existing = transferSlots.find((slot) => slot.id === slotId);
+
+    if (existing) {
+      removeFromBank(existing.out.selling_price);
+      if (existing.in) {
+        addToBank(existing.in.selling_price);
+      }
+      set({
+        transferSlots: transferSlots.filter((slot) => slot.id !== slotId),
+        activeSlotId: activeSlotId === slotId ? null : activeSlotId,
+      });
+      return;
+    }
+
+    addToBank(player.selling_price);
+    set({
+      transferSlots: [...transferSlots, { id: slotId, out: player, in: null }],
+      activeSlotId: slotId,
+    });
+  },
+  markAllOut: () => {
+    const { picks, transferSlots, addToBank } = get();
+    if (!picks) {
+      return;
+    }
+    const existingById = new Map(transferSlots.map((slot) => [slot.id, slot]));
+    let bankDelta = 0;
+    const nextSlots: TransferSlot[] = picks.data.map((pick) => {
+      const outPlayer = FPLPlayerDataToPlayerData(pick as unknown as FPLPlayerData);
+      const slotId = String(outPlayer.player_id);
+      const existing = existingById.get(slotId);
+      if (!existing) {
+        bankDelta += outPlayer.selling_price;
+      }
+      return {
+        id: slotId,
+        out: outPlayer,
+        in: existing?.in ?? null,
+      };
+    });
+    if (bankDelta !== 0) {
+      addToBank(bankDelta);
+    }
+    set({ transferSlots: nextSlots, activeSlotId: null });
+  },
+  fillSlot: (slotId: string, inPlayer: PlayerData) => {
+    const { transferSlots, addToBank, removeFromBank } = get();
+    const slot = transferSlots.find((s) => s.id === slotId);
+    if (!slot) {
+      return;
+    }
+    if (slot.in) {
+      addToBank(slot.in.selling_price);
+    }
+    removeFromBank(inPlayer.selling_price);
+    set({
+      transferSlots: transferSlots.map((s) =>
+        s.id === slotId ? { ...s, in: inPlayer } : s
+      ),
+    });
+  },
+  clearSlotIn: (slotId: string) => {
+    const { transferSlots, addToBank } = get();
+    const slot = transferSlots.find((s) => s.id === slotId);
+    if (!slot || !slot.in) {
+      return;
+    }
+    addToBank(slot.in.selling_price);
+    set({
+      transferSlots: transferSlots.map((s) =>
+        s.id === slotId ? { ...s, in: null } : s
+      ),
+    });
+  },
   setDrafts: (drafts) => set({ drafts }),
   setCurrentGameweek: (gameweek: number) => {
     set({ currentGameweek: Math.min(Math.max(gameweek, 1), 38) });
@@ -151,68 +234,50 @@ export const picksStore = create<State>()((set, get) => ({
           ...drafts,
           changes: draftTransfers,
         },
-        // transfersIn: structuredClone(TRANSFER_INIT_VALUE),
-        // transfersOut: structuredClone(TRANSFER_INIT_VALUE),
       });
     }
   },
   makeTransfers: async () => {
-    const {
-      drafts,
-      transfersIn,
-      transfersOut,
-      currentGameweek: gameweek,
-    } = get();
+    const { drafts, transferSlots, currentGameweek: gameweek } = get();
 
-    let isvalid = true;
-    let reason = "OK";
-    // if there is atleast one transfer in and out
-    for (let i = 0; i < Object.keys(transfersIn).length; i++) {
-      const e_type = parseInt(Object.keys(transfersIn)[i]);
+    const filledSlots = transferSlots.filter((slot) => slot.in != null);
 
-      // if there are transfers of in type, but no transfers of out type
-      if (transfersIn[e_type].length > 0 && transfersOut[e_type].length == 0) {
-        isvalid = false;
-        reason = `Select a ${elementTypeToPosition(
-          transfersIn[e_type][0].element_type
-        )} in team to transfer in ${transfersIn[e_type][0].web_name}.`;
-        break;
-      }
-
-      // console.log("Parsing", e_type);
-      let newDraftChanges: DraftTransfer[] = drafts.changes;
-      // console.log("Drafts", newDrafts);
-      while (
-        transfersIn[e_type].length &&
-        transfersIn[e_type].length <= transfersOut[e_type].length
-      ) {
-        const in_transfer = transfersIn[e_type].pop()!;
-        const out_transfer = transfersOut[e_type].pop()!;
-        newDraftChanges.push({
-          in: {
-            data: in_transfer,
-            price: in_transfer.selling_price,
-          },
-          out: {
-            data: out_transfer,
-            price: out_transfer.selling_price,
-          },
-          gameweek,
-          type: "transfer",
-        });
-      }
-      // otherwise keep transferring elements
-      set({
-        drafts: {
-          ...drafts,
-          changes: newDraftChanges,
-        },
-      });
+    if (filledSlots.length === 0) {
+      return {
+        isvalid: false,
+        reason: "Select a replacement for at least one player.",
+      };
     }
 
+    const newDraftChanges: DraftTransfer[] = [
+      ...drafts.changes,
+      ...filledSlots.map((slot) => ({
+        in: {
+          data: slot.in!,
+          price: slot.in!.selling_price,
+        },
+        out: {
+          data: slot.out,
+          price: slot.out.selling_price,
+        },
+        gameweek,
+        type: "transfer" as const,
+      })),
+    ];
+
+    const filledIds = new Set(filledSlots.map((slot) => slot.id));
+
+    set({
+      drafts: {
+        ...drafts,
+        changes: newDraftChanges,
+      },
+      transferSlots: transferSlots.filter((slot) => !filledIds.has(slot.id)),
+    });
+
     return {
-      isvalid,
-      reason,
+      isvalid: true,
+      reason: "OK",
     };
   },
 }));

@@ -91,6 +91,7 @@ interface DataTableProps<TData, TValue> {
   showAdvancedFilters?: boolean;
   fillContainer?: boolean;
   compact?: boolean;
+  externalElementTypeFilter?: number | null;
 }
 
 export function DataTable<TData, TValue>({
@@ -100,6 +101,7 @@ export function DataTable<TData, TValue>({
   showAdvancedFilters = true,
   fillContainer = true,
   compact = false,
+  externalElementTypeFilter,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
     {
@@ -161,6 +163,19 @@ export function DataTable<TData, TValue>({
         },
     },
   });
+
+  useEffect(() => {
+    if (externalElementTypeFilter === undefined) {
+      return;
+    }
+    table
+      .getColumn("element_type")
+      ?.setFilterValue(
+        externalElementTypeFilter != null
+          ? String(externalElementTypeFilter)
+          : null
+      );
+  }, [externalElementTypeFilter, table]);
 
   const teamCodeToShortName = data.reduce((acc, team: any) => {
     acc[team.team_code] = team.fpl_player_team.short_name;

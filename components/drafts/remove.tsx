@@ -1,6 +1,4 @@
 import { picksStore } from "@/app/store";
-import { updateTransfer } from "@/app/store/utils";
-import { FPLPlayerDataToPlayerData } from "@/scripts/lib/utils";
 import { X } from "lucide-react";
 import { Button } from "../ui/button";
 import {
@@ -11,13 +9,7 @@ import {
 } from "../ui/tooltip";
 
 export function RemoveAll() {
-  const transfersOut = picksStore((state) => state.transfersOut);
-  const setTransferOut = picksStore((state) => state.setTransferOut);
-
-  const picks = picksStore((state) => state.picks);
-
-  const addToBank = picksStore((state) => state.addToBank);
-  const removeFromBank = picksStore((state) => state.removeFromBank);
+  const markAllOut = picksStore((state) => state.markAllOut);
 
   return (
     <div>
@@ -27,17 +19,7 @@ export function RemoveAll() {
             <Button
               variant="ghost"
               className="h-6 w-6 p-1 text-xs rounded-sm 2xl:h-8 2xl:w-8"
-              onClick={() => {
-                picks?.data.map((player) =>
-                  updateTransfer(
-                    transfersOut,
-                    FPLPlayerDataToPlayerData(player),
-                    addToBank,
-                    removeFromBank
-                  )
-                );
-                setTransferOut(transfersOut);
-              }}
+              onClick={() => markAllOut()}
             >
               <X className="w-4 h-4 2xl:w-6 2xl:h-6" />
             </Button>

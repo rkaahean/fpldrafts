@@ -2,7 +2,6 @@
 
 import type { FPLPlayerData } from "@/app/api";
 import { picksStore } from "@/app/store";
-import { removeTransfer } from "@/app/store/utils";
 import {
   recentForm,
   upcomingFixtures,
@@ -259,71 +258,61 @@ export const columns: ColumnDef<DataType>[] = [
     id: "player_add",
     cell: ({ row, table }) => {
       const closePlayerDrawer = usePlayerDrawerClose();
-      const transfersIn = picksStore((store) => store.transfersIn);
-      const setTransferIn = picksStore((store) => store.setTransferIn);
-
+      const activeSlotId = picksStore((store) => store.activeSlotId);
+      const transferSlots = picksStore((store) => store.transferSlots);
+      const fillSlot = picksStore((store) => store.fillSlot);
+      const clearSlotIn = picksStore((store) => store.clearSlotIn);
       const makeTransfers = picksStore((store) => store.makeTransfers);
 
+      const activeSlot = transferSlots.find((slot) => slot.id === activeSlotId);
       const isSelectedForTransfer =
-        transfersIn[row.original.element_type].filter(
-          (transfer) => transfer.player_id == row.original.player_id
-        ).length > 0;
+        activeSlot?.in?.player_id === row.original.player_id;
 
       return (
         <Button
         variant="secondary"
         size="table"
-        disabled={row.original.is_in_team}
+        disabled={row.original.is_in_team || !activeSlotId}
+        title={!activeSlotId ? "Remove a player from your squad first" : undefined}
         className="h-8 min-w-14 rounded-md px-3 text-xs font-semibold"
           onClick={async () => {
+            if (!activeSlotId) {
+              return;
+            }
             table.getColumn("web_name")?.setFilterValue("");
+
+            if (isSelectedForTransfer) {
+              clearSlotIn(activeSlotId);
+              return;
+            }
+
             const formatted = FPLPlayerDataToPlayerData({
               position: 1,
               fpl_player: row.original as unknown as FPLPlayerData["fpl_player"],
               selling_price: row.original.now_value,
             });
-            // if not already selected, push into state
-            if (!isSelectedForTransfer) {
-              transfersIn[row.original.element_type].push({
-                id: row.original.id,
-                player_id: row.original.player_id,
-                selling_price: row.original.now_value,
-                web_name: row.original.web_name,
-                // made up
-                team_name: formatted.team_name,
-                position: 1,
-                team_code: row.original.team_code,
-                expected_goal_involvements_per_90:
-                  row.original.expected_goal_involvements_per_90,
-                total_points: row.original.total_points,
-                element_type: row.original.element_type,
-                now_value: row.original.now_value,
-                fpl_gameweek_player_stats:
-                  row.original.fpl_gameweek_player_stats,
-                fpl_player_team: row.original.fpl_player_team,
-                fixtures: formatted.fixtures,
-              });
-            }
-            // if already selected, remove from state
-            else {
-              transfersIn[row.original.element_type] = transfersIn[
-                row.original.element_type
-              ].filter(
-                (transfer) => transfer.player_id != row.original.player_id
-              );
-              setTransferIn(transfersIn);
-              return;
-            }
+            fillSlot(activeSlotId, {
+              id: row.original.id,
+              player_id: row.original.player_id,
+              selling_price: row.original.now_value,
+              web_name: row.original.web_name,
+              team_name: formatted.team_name,
+              position: 1,
+              team_code: row.original.team_code,
+              expected_goal_involvements_per_90:
+                row.original.expected_goal_involvements_per_90,
+              total_points: row.original.total_points,
+              element_type: row.original.element_type,
+              now_value: row.original.now_value,
+              fpl_gameweek_player_stats:
+                row.original.fpl_gameweek_player_stats,
+              fpl_player_team: row.original.fpl_player_team,
+              fixtures: formatted.fixtures,
+            });
 
             const { isvalid, reason } = await makeTransfers();
             if (!isvalid) {
-              // remove the transfer in as it is invalid
-              const newTransfers = removeTransfer(transfersIn, {
-                player_id: row.original.player_id,
-                element_type: row.original.element_type,
-                selling_price: row.original.now_value,
-              });
-              setTransferIn(newTransfers);
+              clearSlotIn(activeSlotId);
               toast({
                 title: "Cannot make transfer.",
                 description: reason,
@@ -335,7 +324,6 @@ export const columns: ColumnDef<DataType>[] = [
           }}
         >
           Add
-          {/* <PlusIcon className="w-[14px] h-[14px] 2xl:w-6 2xl:h-6 text-accent hover:text-primary transition-all hover:bg-accent rounded-full" /> */}
         </Button>
       );
     },
@@ -355,6 +343,7 @@ const MINI_COLUMN_IDS = new Set([
   "fixtures",
   "expected_goal_involvements_per_90",
   "player_add",
+  "element_type",
 ]);
 
 export const miniColumns = columns.filter((column) => {

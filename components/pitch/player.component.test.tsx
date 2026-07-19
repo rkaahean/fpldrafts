@@ -52,7 +52,9 @@ describe("Player component", () => {
     picksStore.setState({
       substitutedIn: undefined,
       substitutedOut: undefined,
-      transfersOut: { 1: [], 2: [], 3: [], 4: [] },
+      transferSlots: [],
+      activeSlotId: null,
+      picks: { data: [], overall: { bank: 100 } as any } as any,
     });
   });
 
@@ -112,5 +114,76 @@ describe("Player component", () => {
     await user.click(screen.getByRole("button", { name: "Substitute player" }));
 
     expect(screen.queryByText("Total points")).not.toBeInTheDocument();
+  });
+
+  it("clicking the remove button marks the player out and sets it as the active transfer slot", async () => {
+    const user = userEvent.setup();
+    const data = makePlayer({ player_id: 7, element_type: 2, selling_price: 45 });
+
+    renderWithClient(<Player data={data} gameweek={5} />);
+    await user.click(screen.getByRole("button", { name: "Remove player" }));
+
+    const state = picksStore.getState();
+    expect(state.transferSlots).toHaveLength(1);
+    expect(state.transferSlots[0].out.player_id).toBe(7);
+    expect(state.activeSlotId).toBe(state.transferSlots[0].id);
+  });
+
+  it("shows a Replace badge and reduced opacity once a player is marked out, with no flat grey background", async () => {
+    const user = userEvent.setup();
+    const data = makePlayer({ player_id: 7 });
+
+    renderWithClient(<Player data={data} gameweek={5} />);
+    await user.click(screen.getByRole("button", { name: "Remove player" }));
+
+    expect(
+      screen.getByRole("button", { name: "Choose replacement" })
+    ).toBeInTheDocument();
+    expect(screen.getByText("Replace")).toBeInTheDocument();
+  });
+
+  it("clicking the remove button again un-marks the player and removes the badge", async () => {
+    const user = userEvent.setup();
+    const data = makePlayer({ player_id: 7 });
+
+    renderWithClient(<Player data={data} gameweek={5} />);
+    const removeButton = screen.getByRole("button", { name: "Remove player" });
+    await user.click(removeButton);
+    await user.click(removeButton);
+
+    expect(picksStore.getState().transferSlots).toHaveLength(0);
+    expect(
+      screen.queryByRole("button", { name: "Choose replacement" })
+    ).not.toBeInTheDocument();
+  });
+
+  it("clicking the badge on an already out-marked, unfilled slot re-sets the active slot", async () => {
+    const user = userEvent.setup();
+    const data = makePlayer({ player_id: 7 });
+
+    renderWithClient(<Player data={data} gameweek={5} />);
+    await user.click(screen.getByRole("button", { name: "Remove player" }));
+    picksStore.setState({ activeSlotId: null });
+
+    await user.click(screen.getByRole("button", { name: "Choose replacement" }));
+
+    expect(picksStore.getState().activeSlotId).not.toBeNull();
+  });
+
+  it("shows the assigned in-player's name on the badge once the slot is filled", () => {
+    const data = makePlayer({ player_id: 7, element_type: 2 });
+    const inPlayer = makePlayer({
+      player_id: 99,
+      web_name: "Replacement Guy",
+      element_type: 2,
+    });
+    picksStore.setState({
+      transferSlots: [{ id: "7", out: data, in: inPlayer }],
+      activeSlotId: null,
+    });
+
+    renderWithClient(<Player data={data} gameweek={5} />);
+
+    expect(screen.getByText(/Replacement Guy/)).toBeInTheDocument();
   });
 });

@@ -41,7 +41,7 @@ export default function Gameweek(props: {
     currentGameweek: state.currentGameweek,
     picks: state.picks!,
     committedBank: state.committedBank,
-    transfers: state.transfersOut,
+    transferSlots: state.transferSlots,
   }));
 
   const {
@@ -54,8 +54,17 @@ export default function Gameweek(props: {
     currentGameweek,
     picks,
     committedBank,
-    transfers,
+    transferSlots,
   } = picksSelectors;
+
+  const transfersOutByType = transferSlots.reduce<{
+    [key: number]: (typeof transferSlots)[number]["out"][];
+  }>((buckets, slot) => {
+    const bucket = buckets[slot.out.element_type] ?? [];
+    bucket.push(slot.out);
+    buckets[slot.out.element_type] = bucket;
+    return buckets;
+  }, {});
 
   const seededGameweekRef = useRef<number | null>(null);
   let effectiveGameweek = currentGameweek;
@@ -123,7 +132,7 @@ export default function Gameweek(props: {
         dbbase,
         draftChanges: drafts.changes,
         currentGameweek: effectiveGameweek,
-        transfersOut: transfers,
+        transfersOut: transfersOutByType,
       });
 
       if (!resolved) {

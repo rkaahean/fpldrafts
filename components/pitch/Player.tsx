@@ -1,5 +1,5 @@
 import { picksStore } from "@/app/store";
-import { PlayerData, updateTransfer } from "@/app/store/utils";
+import { PlayerData } from "@/app/store/utils";
 import {
   cn,
   elementTypeToPosition,
@@ -24,17 +24,15 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
   const substitutedIn = picksStore((store) => store.substitutedIn);
   const substitutedOut = picksStore((store) => store.substitutedOut);
 
-  const transfersOut = picksStore((store) => store.transfersOut);
-
-  const setTransferOut = picksStore((store) => store.setTransferOut);
-  const addToBank = picksStore((store) => store.addToBank);
-  const removeFromBank = picksStore((store) => store.removeFromBank);
+  const transferSlots = picksStore((store) => store.transferSlots);
+  const markOut = picksStore((store) => store.markOut);
+  const setActiveSlot = picksStore((store) => store.setActiveSlot);
 
   const isSubstitute = props.data.position > 11;
-  const isSelectedForTransfer =
-    transfersOut[props.data.element_type].filter(
-      (transfer) => transfer.player_id == props.data.player_id
-    ).length > 0;
+  const mySlot = transferSlots.find(
+    (slot) => slot.out.player_id === props.data.player_id
+  );
+  const isSelectedForTransfer = !!mySlot;
   const player = isSubstitute ? substitutedIn : substitutedOut;
   const isAvailabilityConcern =
     !!props.data.status && props.data.status !== "a";
@@ -60,11 +58,11 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
         >
           <Card
             className={cn(
-              "relative flex h-auto max-h-[92%] w-28 min-w-28 max-w-[11rem] aspect-[0.78] flex-col rounded-lg border text-player-foreground shadow-sm sm:w-32 lg:w-36 2xl:w-44",
+              "relative flex h-full min-h-0 max-h-full w-28 min-w-28 max-w-[11rem] flex-col rounded-lg border text-player-foreground shadow-sm sm:w-32 lg:w-36",
+              isSubstitute ? "2xl:w-36" : "2xl:w-44",
               player?.player_id == props.data.player_id
                 ? "bg-muted"
-                : "bg-player",
-              isSelectedForTransfer ? "bg-destructive" : ""
+                : "bg-player"
             )}
           >
             <div className="absolute left-1 top-1 z-10 flex flex-row gap-0.5">
@@ -92,14 +90,8 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
                 aria-label="Remove player"
                 onClick={(event) => {
                   event.stopPropagation();
-                  updateTransfer(
-                    transfersOut,
-                    props.data,
-                    addToBank,
-                    removeFromBank
-                  );
+                  markOut(props.data);
                   resetSubs();
-                  setTransferOut(transfersOut);
                 }}
               >
                 <X className="w-[10px] h-[10px] lg:w-3 lg:h-3 2xl:w-6 2xl:h-6" />
@@ -125,7 +117,10 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
                   setDetailOpen(true);
                 }
               }}
-              className="flex h-full min-h-0 flex-1 cursor-pointer flex-col items-center justify-between gap-0 px-1 pb-1 pt-4"
+              className={cn(
+                "flex h-full min-h-0 flex-1 cursor-pointer flex-col items-center justify-between gap-0 px-1 pb-1 pt-4",
+                isSelectedForTransfer ? "opacity-50" : ""
+              )}
             >
               <div className="flex min-h-0 w-full max-h-10 flex-1 items-center justify-center sm:max-h-12 lg:max-h-14">
                 <Image
@@ -142,6 +137,22 @@ export default function Player(props: { data: PlayerData; gameweek: number }) {
               </div>
               <PlayerGlanceRow data={props.data} nextFixture={nextFixture} />
             </CardContent>
+
+            {mySlot && (
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setActiveSlot(mySlot.id);
+                }}
+                aria-label={
+                  mySlot.in ? "Transfer out, change replacement" : "Choose replacement"
+                }
+                className="absolute inset-x-0 bottom-0 z-10 truncate rounded-b-lg bg-destructive/90 px-1 py-0.5 text-center text-[8px] font-bold uppercase tracking-wide text-destructive-foreground lg:text-[10px]"
+              >
+                {mySlot.in ? `Out → ${mySlot.in.web_name}` : "Replace"}
+              </button>
+            )}
           </Card>
         </motion.div>
       </div>

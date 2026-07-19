@@ -11,9 +11,12 @@ export default function ClientTable(
 ) {
   const picksSelectors = picksStore((state) => ({
     picks: state.picks!,
+    activeSlot: state.transferSlots.find(
+      (slot) => slot.id === state.activeSlotId
+    ),
   }));
 
-  const { picks } = picksSelectors;
+  const { picks, activeSlot } = picksSelectors;
 
   const filteredData = useMemo(() => {
     const playerIds = new Set(
@@ -38,6 +41,7 @@ export default function ClientTable(
         showAdvancedFilters={props.showAdvancedFilters}
         fillContainer={props.showAdvancedFilters !== false}
         compact={props.compact}
+        externalElementTypeFilter={activeSlot?.out.element_type ?? null}
       />
     </div>
   );
