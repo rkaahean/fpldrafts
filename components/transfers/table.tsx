@@ -34,7 +34,7 @@ import {
 import { Users, X } from "lucide-react";
 import clsx from "clsx";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import {
@@ -115,6 +115,8 @@ export function DataTable<TData, TValue>({
     pageSize: 10,
   });
   const tableViewportRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [highlightedRowIndex, setHighlightedRowIndex] = useState(0);
 
   useEffect(() => {
     if (!fillContainer || typeof ResizeObserver === "undefined") {
@@ -182,6 +184,45 @@ export function DataTable<TData, TValue>({
     return acc;
   }, {} as Record<number, string>);
   const playerCount = table.getFilteredRowModel().rows.length;
+  const visibleRows = table.getRowModel().rows;
+
+  useEffect(() => {
+    setHighlightedRowIndex((index) =>
+      visibleRows.length ? Math.min(index, visibleRows.length - 1) : 0
+    );
+  }, [visibleRows.length, pagination.pageIndex, columnFilters]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  const handlePlayerNavigation = (event: ReactKeyboardEvent) => {
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      if (!visibleRows.length) return;
+      setHighlightedRowIndex((index) =>
+        event.key === "ArrowDown"
+          ? (index + 1) % visibleRows.length
+          : (index - 1 + visibleRows.length) % visibleRows.length
+      );
+      return;
+    }
+
+    if (event.key === "Enter" && visibleRows[highlightedRowIndex]) {
+      event.preventDefault();
+      const row = tableViewportRef.current?.querySelector(
+        `[data-row-id="${visibleRows[highlightedRowIndex].id}"]`
+      );
+      row?.querySelector<HTMLButtonElement>('button[aria-label="Add"]')?.click();
+    }
+  };
 
   return (
     <Card
@@ -206,6 +247,7 @@ export function DataTable<TData, TValue>({
         </CardHeader>
       )}
       <CardContent
+        onKeyDown={handlePlayerNavigation}
         className={clsx("flex flex-col gap-3 p-3 sm:p-4", {
           "min-h-0 flex-1 overflow-hidden": fillContainer,
         })}
@@ -213,6 +255,7 @@ export function DataTable<TData, TValue>({
         <div className="flex flex-col gap-3 rounded-md border bg-background/40 p-3">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <Input
+            ref={searchInputRef}
             placeholder={`Filter ${name}...`}
             value={
               (table.getColumn("web_name")?.getFilterValue() as string) ?? ""
@@ -368,10 +411,15 @@ export function DataTable<TData, TValue>({
             </TableHeader>
             <TableBody>
               {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
+                visibleRows.map((row, rowIndex) => (
                   <TableRow
                     key={row.id}
-                    className="hover:bg-muted/40"
+                    data-row-id={row.id}
+                    aria-selected={rowIndex === highlightedRowIndex}
+                    className={clsx(
+                      "hover:bg-muted/40",
+                      rowIndex === highlightedRowIndex && "bg-accent/40"
+                    )}
                     data-state={row.getIsSelected() && "selected"}
                   >
                     {row.getVisibleCells().map((cell, idx) => (

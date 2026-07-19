@@ -24,6 +24,7 @@ export default function PlayerPane({ children }: { children: ReactNode }) {
   const transferSlots = picksStore((store) => store.transferSlots);
 
   const activeSlot = transferSlots.find((slot) => slot.id === activeSlotId) ?? null;
+  const pendingReplacementCount = transferSlots.filter((slot) => !slot.in).length;
   const open = manualOpen || activeSlotId != null;
 
   const handleOpenChange = (next: boolean) => {
@@ -63,6 +64,9 @@ export default function PlayerPane({ children }: { children: ReactNode }) {
               <span className="font-semibold">{activeSlot.out.web_name}</span>
               <span className="text-xs text-muted-foreground">
                 ({elementTypeToPosition(activeSlot.out.element_type)})
+              </span>
+              <span className="ml-auto text-xs font-medium text-muted-foreground">
+                {pendingReplacementCount} player{pendingReplacementCount === 1 ? "" : "s"} left
               </span>
             </div>
           )}

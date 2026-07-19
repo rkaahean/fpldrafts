@@ -272,6 +272,7 @@ export const columns: ColumnDef<DataType>[] = [
         <Button
         variant="secondary"
         size="table"
+        aria-label="Add"
         disabled={row.original.is_in_team || !activeSlotId}
         title={!activeSlotId ? "Remove a player from your squad first" : undefined}
         className="h-8 min-w-14 rounded-md px-3 text-xs font-semibold"
@@ -309,6 +310,14 @@ export const columns: ColumnDef<DataType>[] = [
               fpl_player_team: row.original.fpl_player_team,
               fixtures: formatted.fixtures,
             });
+
+            const nextUnfilledSlot = picksStore
+              .getState()
+              .transferSlots.find((slot) => !slot.in);
+            if (nextUnfilledSlot) {
+              picksStore.getState().setActiveSlot(nextUnfilledSlot.id);
+              return;
+            }
 
             const { isvalid, reason } = await makeTransfers();
             if (!isvalid) {

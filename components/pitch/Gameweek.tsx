@@ -21,6 +21,7 @@ import PitchBackground from "./PitchBackground";
 import PitchRow from "./PitchRow";
 import TransferActivityStrip from "./transfer-activity";
 import TrendChart from "./trend-chart";
+import TransferCommandPalette from "./transfer-command-palette";
 
 import { useRef } from "react";
 import type { ReactNode } from "react";
@@ -175,6 +176,9 @@ export default function Gameweek(props: {
     });
     const seasonSummary = gameweekData?.overall ?? data.overall;
     const totalPoints = seasonSummary.total_points ?? seasonSummary.points;
+    const squadPlayers = ["GK", "DEF", "MID", "FWD"].flatMap((position) =>
+      filterData(data.data, position)
+    );
 
     return (
       <div className="relative flex h-full min-h-0 flex-col gap-3">
@@ -241,7 +245,10 @@ export default function Gameweek(props: {
             <PitchBackground />
             {props.toolbar && (
               <div className="absolute right-2 top-2 z-10">
-                {props.toolbar}
+                <div className="flex items-center gap-1">
+                  {props.toolbar}
+                  <TransferCommandPalette players={squadPlayers} />
+                </div>
               </div>
             )}
             <div className="relative z-0 grid h-full w-full grid-rows-[1fr_1fr_1fr_1fr_1.15fr]">
