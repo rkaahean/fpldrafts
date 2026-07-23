@@ -6,11 +6,15 @@ fixtures/players are actually published by FPL, typically shortly before
 gameweek 1 opens). When triggered, the steps below should be run in order,
 each one confirmed before moving to the next.
 
+**Cutover completed 2026-07-23:** the 2027 season is populated and local,
+Vercel, and Railway `FPL_SEASON_ID` values now point to
+`b3f23577-24ce-44e7-b30d-afe8ab6761a2`.
+
 ## Quick reference (fill in `<new-id>` once step 1 runs)
 
 ```
 Old FPL_SEASON_ID: 73065daa-0457-4101-90ef-f469289a88ff  (year 2026)
-New FPL_SEASON_ID: <new-id>                              (year 2027)
+New FPL_SEASON_ID: b3f23577-24ce-44e7-b30d-afe8ab6761a2 (year 2027)
 
 Railway project:      d6db9925-aa14-4a1a-b079-790cec96f0bf
 Railway environment:  37492dc8-a29d-44df-a792-464e8d184ef1 (production)
@@ -52,7 +56,7 @@ Deployment surfaces that read `FPL_SEASON_ID` and need updating:
   Elements + Fixtures Cron (`becbfef4-0780-426f-b808-9474bb6e3e26`), Bootstrap
   Cron (`f51ff7a1-0912-4c02-95c7-213157503176`) — same three services whose
   `DATABASE_URL`/`DIRECT_URL` were already fixed earlier this session.
-- Local `.env` (`FPL_SEASON_ID=73065daa-0457-4101-90ef-f469289a88ff`), for
+- Local `.env` (now `FPL_SEASON_ID=b3f23577-24ce-44e7-b30d-afe8ab6761a2`), for
   local dev/testing to stay consistent with production.
 
 Ordering matters: the new `FPLSeason` row and its player/team data must exist

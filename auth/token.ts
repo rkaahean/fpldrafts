@@ -48,3 +48,8 @@ export function persistTeamId<T extends TokenFields>(
 
   return { ...token, team_id: teamId };
 }
+
+export function clearTeamId<T extends TokenFields>(token: T): T {
+  const { team_id: _teamId, ...withoutTeam } = token;
+  return withoutTeam as T;
+}

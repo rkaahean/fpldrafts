@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { persistSignInToken, persistTeamId } from "./token";
+import { clearTeamId, persistSignInToken, persistTeamId } from "./token";
 
 describe("persistSignInToken", () => {
   it("stores the user and Google ID token when a user signs in", () => {
@@ -49,5 +49,13 @@ describe("persistTeamId", () => {
     const token = { id: "user-1", team_id: "team-123" };
 
     expect(persistTeamId(token, undefined)).toBe(token);
+  });
+});
+
+describe("clearTeamId", () => {
+  it("removes a stale team association from the token", () => {
+    expect(clearTeamId({ id: "user-1", team_id: "old-season-team" })).toEqual({
+      id: "user-1",
+    });
   });
 });

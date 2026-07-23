@@ -118,7 +118,7 @@ function parseBoostrapData(data: any): {
       name: team.name,
       short_name: team.short_name,
       code: team.code,
-      strength: team.strength,
+      strength: team.strength ?? 0,
       team_id: team.id,
       strength_overall_home: team.strength_overall_home,
       strength_overall_away: team.strength_overall_away,
@@ -142,8 +142,9 @@ export async function syncBootstrapData() {
   const { players, teams } = parseBoostrapData(data);
 
   await Promise.all(
-    teams.map((team) =>
-      prisma.fPLPlayerTeam.upsert({
+    teams.map((team) => {
+      const { season_id: _seasonId, ...teamWithoutSeason } = team;
+      return prisma.fPLPlayerTeam.upsert({
         where: {
           season_id_code: {
             season_id: process.env.FPL_SEASON_ID!,
@@ -151,9 +152,12 @@ export async function syncBootstrapData() {
           },
         },
         update: team,
-        create: team,
-      })
-    )
+        create: {
+          ...teamWithoutSeason,
+          fpl_season: { connect: { id: process.env.FPL_SEASON_ID! } },
+        },
+      });
+    })
   );
 
   const existingPlayers = await prisma.fPLPlayer.findMany({

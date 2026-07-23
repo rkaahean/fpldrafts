@@ -1,6 +1,6 @@
 import prisma from "@/scripts/lib/db";
 import { teamSessionFields, verifiedTeamId } from "./session";
-import { persistSignInToken, persistTeamId } from "./token";
+import { clearTeamId, persistSignInToken, persistTeamId } from "./token";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
@@ -56,16 +56,31 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             fpl_season_id: process.env.FPL_SEASON_ID!,
           },
         });
-        return persistTeamId(
-          signedInToken,
-          verifiedTeamId(updatedTeamId, verifiedTeam)
-        );
+        const verifiedId = verifiedTeamId(updatedTeamId, verifiedTeam);
+        return verifiedId
+          ? persistTeamId(signedInToken, verifiedId)
+          : clearTeamId(signedInToken);
       }
 
       const tokenWithUpdatedTeam = signedInToken;
 
-      if (tokenWithUpdatedTeam.team_id || !tokenWithUpdatedTeam.id) {
+      if (!tokenWithUpdatedTeam.id) {
         return tokenWithUpdatedTeam;
+      }
+
+      const tokenTeam = tokenWithUpdatedTeam.team_id
+        ? await prisma.fPLTeam.findFirst({
+            select: { id: true },
+            where: {
+              id: tokenWithUpdatedTeam.team_id,
+              user_id: tokenWithUpdatedTeam.id,
+              fpl_season_id: process.env.FPL_SEASON_ID!,
+            },
+          })
+        : null;
+
+      if (tokenTeam) {
+        return persistTeamId(tokenWithUpdatedTeam, tokenTeam.id);
       }
 
       const team = await prisma.fPLTeam.findFirst({
@@ -76,7 +91,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
       });
 
-      return persistTeamId(tokenWithUpdatedTeam, team?.id);
+      return persistTeamId(clearTeamId(tokenWithUpdatedTeam), team?.id);
     },
   },
 });
