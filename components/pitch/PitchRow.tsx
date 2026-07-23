@@ -8,7 +8,7 @@ export default function PitchRow(props: {
 }) {
   // sort props.data with position == "GK being the first"
   const players = (
-    <div className="relative z-10 flex h-full w-full min-h-0 items-center justify-center gap-3 overflow-x-auto py-0.5 sm:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20">
+    <div className="relative z-10 flex h-full w-full min-h-0 items-center justify-center gap-3 overflow-x-auto px-2 py-0.5 sm:gap-4 lg:gap-5 xl:gap-6 2xl:gap-8">
       {props.data.map((player) => (
         <Player
           key={player.player_id}
