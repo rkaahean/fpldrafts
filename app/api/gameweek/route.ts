@@ -84,10 +84,19 @@ export async function GET(req: NextRequest) {
     // welbeck: 178
     // richarlison: 597
 
-    const allPlayers = (await getPlayerDataBySeason(
+    const requestedPlayers = (await getPlayerDataBySeason(
       process.env.FPL_SEASON_ID!,
       [101, 670, 74, 694, 151, 258, 295, 517, 329, 457, 303, 237, 691, 178, 597]
     )) as unknown as FPLPlayerData2[];
+
+    // The placeholder IDs are season-specific. If they are not present in a
+    // newly published season, use the current season's player pool instead.
+    const allPlayers =
+      requestedPlayers.length >= 15
+        ? requestedPlayers
+        : ((await getPlayerDataBySeason(
+            process.env.FPL_SEASON_ID!
+          )) as unknown as FPLPlayerData2[]);
 
     return response(buildInitialGameweekPayload(allPlayers));
   }

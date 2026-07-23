@@ -247,33 +247,29 @@ export function buildInitialGameweekPayload(
   const gks = allPlayers
     .filter((player) => player.element_type == 1)
     .slice(0, 2);
-  gks[0].position = 1;
-  gks[1].position = 12;
+  if (gks[0]) gks[0].position = 1;
+  if (gks[1]) gks[1].position = 12;
 
   const defs = allPlayers
     .filter((player) => player.element_type == 2)
     .slice(0, 5);
-  defs[0].position = 2;
-  defs[1].position = 3;
-  defs[2].position = 4;
-  defs[3].position = 13;
-  defs[4].position = 14;
+  defs.forEach((player, index) => {
+    player.position = [2, 3, 4, 13, 14][index];
+  });
 
   const mids = allPlayers
     .filter((player) => player.element_type == 3)
     .slice(0, 5);
-  mids[0].position = 5;
-  mids[1].position = 6;
-  mids[2].position = 7;
-  mids[3].position = 8;
-  mids[4].position = 9;
+  mids.forEach((player, index) => {
+    player.position = [5, 6, 7, 8, 9][index];
+  });
 
   const fwds = allPlayers
     .filter((player) => player.element_type == 4)
     .slice(0, 3);
-  fwds[0].position = 10;
-  fwds[1].position = 11;
-  fwds[2].position = 15;
+  fwds.forEach((player, index) => {
+    player.position = [10, 11, 15][index];
+  });
 
   const selectedPlayers = [gks, defs, mids, fwds].flat();
   const totalValue = selectedPlayers.reduce(
